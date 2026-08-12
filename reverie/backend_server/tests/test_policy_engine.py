@@ -29,5 +29,16 @@ class TestTypes(unittest.TestCase):
                         fiscal_spending=0.0)
         self.assertEqual(m.segment_unemployment["D型"], 0.2)
 
+class TestPolicies(unittest.TestCase):
+    def test_policy_library_has_real_world_policies(self):
+        from policy.policies import POLICY_LIBRARY
+        self.assertIn("housing_subsidy", POLICY_LIBRARY)
+        self.assertIn("ai_talent_special", POLICY_LIBRARY)
+        self.assertIn("layoff_control", POLICY_LIBRARY)
+        for pid, p in POLICY_LIBRARY.items():
+            self.assertTrue(p["source"], f"{pid} 缺出处")
+            self.assertIn("type", p)
+            self.assertIn("target_segments", p)
+
 if __name__ == "__main__":
     unittest.main()
