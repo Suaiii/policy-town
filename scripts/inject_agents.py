@@ -16,8 +16,8 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AGENTS_DIR = os.path.join(REPO_ROOT, "agents")
 PERSONAS_DIR = os.path.join(AGENTS_DIR, "personas")
 FIRMS_FILE = os.path.join(AGENTS_DIR, "firms.yaml")
-SIM_ROOT = os.path.join(REPO_ROOT, "environment", "frontend_server", "static_dirs", "assets", "the_ville")
-SIM_CODE = os.path.join(REPO_ROOT, "reverie", "backend_server")
+SIM_ROOT = os.path.join(REPO_ROOT, "environment", "frontend_server", "storage")
+SIM_CODE = "base_the_ville_isabella_maria_klaus"
 SIM_DIR = os.path.join(SIM_ROOT, "simulated_agent_series")
 
 try:
@@ -252,7 +252,10 @@ def inject_all(personas, firms, sim, start_step=0):
     _write_json(env_path, env)
 
     st_path = os.path.join(sim, "policy", "state.json")
-    st = json.load(open(st_path, encoding="utf-8"))
+    if os.path.exists(st_path):
+        st = json.load(open(st_path, encoding="utf-8"))
+    else:
+        st = {"profiles": [], "firms": [], "policies": {}, "month": 0}
     st_profiles = st.setdefault("profiles", [])
     for p in personas:
         st_profiles.append({
@@ -287,3 +290,34 @@ def inject_all(personas, firms, sim, start_step=0):
             st_firms.append(entry)
     _write_json(st_path, st)
     return {"personas": len(personas), "firms": len(firms)}
+
+
+def main():
+    import argparse
+    ap = argparse.ArgumentParser(description="星河市 Agent 注入管线")
+    ap.add_argument("--sim", default=SIM_CODE, help="目标模拟代码")
+    ap.add_argument("--step", type=int, default=0, help="environment 起始 step")
+    ap.add_argument("--dry-run", action="store_true", help="只解析不写盘")
+    args = ap.parse_args()
+
+    global SIM_DIR
+    SIM_DIR = os.path.join(SIM_ROOT, args.sim)
+
+    personas = load_personas()
+    firms = load_firms()
+    if not personas:
+        print("agents/personas/ 下没有 yaml，请参考 agents/example_persona.yaml")
+        return 1
+    print(f"解析到 {len(personas)} 个角色、{len(firms)} 家企业")
+    for p in personas:
+        print(f"  - {p['name']}（{p['segment']}）→ {p['employer']}")
+    if args.dry_run:
+        print("dry-run 完成，未写盘")
+        return 0
+    result = inject_all(personas, firms, SIM_DIR, start_step=args.step)
+    print(f"注入完成：{result['personas']} 人、{result['firms']} 家企业 → {SIM_DIR}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

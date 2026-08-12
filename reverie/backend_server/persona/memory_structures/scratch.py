@@ -158,6 +158,18 @@ class Scratch:
     # e.g., [(50, 10), (49, 10), (48, 10), ...]
     self.planned_path = []
 
+    # ---- 星河市人才字段（P0 注入管线 / P2 政策引擎扩展）----
+    self.segment = None
+    self.education_tier = None
+    self.major_type = None
+    self.employer = None
+    self.salary = None
+    self.savings_months = None
+    self.risk_aversion = None
+    self.family_tie = None
+    self.job_searching = False
+    self.offer = None
+
     if check_if_file_exists(f_saved): 
       # If we have a bootstrap file, load that here. 
       scratch_load = json.load(open(f_saved))
@@ -233,6 +245,17 @@ class Scratch:
       self.act_path_set = scratch_load["act_path_set"]
       self.planned_path = scratch_load["planned_path"]
 
+      self.segment = scratch_load.get("segment")
+      self.education_tier = scratch_load.get("education_tier")
+      self.major_type = scratch_load.get("major_type")
+      self.employer = scratch_load.get("employer")
+      self.salary = scratch_load.get("salary")
+      self.savings_months = scratch_load.get("savings_months")
+      self.risk_aversion = scratch_load.get("risk_aversion")
+      self.family_tie = scratch_load.get("family_tie")
+      self.job_searching = scratch_load.get("job_searching", False)
+      self.offer = scratch_load.get("offer")
+
 
   def save(self, out_json):
     """
@@ -305,6 +328,17 @@ class Scratch:
 
     scratch["act_path_set"] = self.act_path_set
     scratch["planned_path"] = self.planned_path
+
+    scratch["segment"] = self.segment
+    scratch["education_tier"] = self.education_tier
+    scratch["major_type"] = self.major_type
+    scratch["employer"] = self.employer
+    scratch["salary"] = self.salary
+    scratch["savings_months"] = self.savings_months
+    scratch["risk_aversion"] = self.risk_aversion
+    scratch["family_tie"] = self.family_tie
+    scratch["job_searching"] = self.job_searching
+    scratch["offer"] = self.offer
 
     with open(out_json, "w") as outfile:
       json.dump(scratch, outfile, indent=2) 
