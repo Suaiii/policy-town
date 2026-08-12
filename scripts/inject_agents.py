@@ -249,7 +249,7 @@ def inject_all(personas, firms, sim, start_step=0):
     env = json.load(open(env_path, encoding="utf-8"))
     for idx, p in enumerate(personas):
         x, y = SPAWN_POOL[(start_step + idx) % len(SPAWN_POOL)]
-        env[p["name"]] = {"x": x, "y": y}
+        env[p["name"]] = {"maze": "the_ville", "x": x, "y": y}
     _write_json(env_path, env)
 
     st_path = os.path.join(sim, "policy", "state.json")
