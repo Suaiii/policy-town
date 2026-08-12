@@ -1,0 +1,270 @@
+[
+  {
+    "profile": {
+      "firm_id": "A",
+      "archetype": "platform_product_company",
+      "calibration_case": "tencent_docs_2026_regional_adjustment",
+      "affected_workers": 1200,
+      "ai_transition_pressure": 0.8,
+      "internal_transfer_capacity": 700,
+      "skill_match_rate": 0.46,
+      "relocation_acceptance": 0.52,
+      "outsource_capacity": 180,
+      "relocation_support": false,
+      "government_bridge_capacity": 160
+    },
+    "intent": {
+      "strategy_priority": "ai_reorganization",
+      "layoff_direction": "maintain",
+      "internal_transfer_direction": "expand",
+      "relocation_direction": "offer",
+      "outsource_direction": "moderate",
+      "magnitude": "moderate",
+      "reasoning_summary": "AI 产品协同目标保持不变，先以内部转岗吸收，再处理无法匹配或无法迁移的岗位。",
+      "worry": "传统技能与 AI 岗位不匹配，且跨城迁移会降低内部转岗接受率。"
+    },
+    "tools": {
+      "training_match_lift": 0.0,
+      "relocation_acceptance_lift": 0.0,
+      "bridge_capacity": 0
+    },
+    "settlement": {
+      "scenario_id": "A0",
+      "affected_workers": 1200,
+      "transfer_eligible": 0,
+      "internal_transfer_accepted": 0,
+      "relocation_declined": 0,
+      "channel_outsource": 180,
+      "government_bridged": 0,
+      "layoff_formal": 1020,
+      "net_unemployment": 1020,
+      "evidence_chain": [
+        {
+          "id": "fact:internal_mobility_offer",
+          "provenance": "public_fact",
+          "confidence": "L2"
+        },
+        {
+          "id": "mechanism:internal_mobility_buffer",
+          "provenance": "mechanism",
+          "confidence": "L2"
+        },
+        {
+          "id": "assumption:A0",
+          "provenance": "scenario_assumption",
+          "confidence": "L3"
+        },
+        {
+          "id": "rule:firm_settlement_v1:A0",
+          "provenance": "rule_result",
+          "confidence": "L3"
+        }
+      ]
+    },
+    "limitations": [
+      "公开案例仅校准机制，不复原真实企业人数。",
+      "所有人数和比例均为 scenario_assumption 或 rule_result。"
+    ]
+  },
+  {
+    "profile": {
+      "firm_id": "A",
+      "archetype": "platform_product_company",
+      "calibration_case": "tencent_docs_2026_regional_adjustment",
+      "affected_workers": 1200,
+      "ai_transition_pressure": 0.8,
+      "internal_transfer_capacity": 700,
+      "skill_match_rate": 0.46,
+      "relocation_acceptance": 0.52,
+      "outsource_capacity": 180,
+      "relocation_support": false,
+      "government_bridge_capacity": 160
+    },
+    "intent": {
+      "strategy_priority": "ai_reorganization",
+      "layoff_direction": "maintain",
+      "internal_transfer_direction": "expand",
+      "relocation_direction": "offer",
+      "outsource_direction": "moderate",
+      "magnitude": "moderate",
+      "reasoning_summary": "AI 产品协同目标保持不变，先以内部转岗吸收，再处理无法匹配或无法迁移的岗位。",
+      "worry": "传统技能与 AI 岗位不匹配，且跨城迁移会降低内部转岗接受率。"
+    },
+    "tools": {
+      "training_match_lift": 0.0,
+      "relocation_acceptance_lift": 0.0,
+      "bridge_capacity": 0
+    },
+    "settlement": {
+      "scenario_id": "A1",
+      "affected_workers": 1200,
+      "transfer_eligible": 322,
+      "internal_transfer_accepted": 167,
+      "relocation_declined": 155,
+      "channel_outsource": 180,
+      "government_bridged": 0,
+      "layoff_formal": 853,
+      "net_unemployment": 853,
+      "evidence_chain": [
+        {
+          "id": "fact:internal_mobility_offer",
+          "provenance": "public_fact",
+          "confidence": "L2"
+        },
+        {
+          "id": "mechanism:internal_mobility_buffer",
+          "provenance": "mechanism",
+          "confidence": "L2"
+        },
+        {
+          "id": "assumption:A1",
+          "provenance": "scenario_assumption",
+          "confidence": "L3"
+        },
+        {
+          "id": "rule:firm_settlement_v1:A1",
+          "provenance": "rule_result",
+          "confidence": "L3"
+        }
+      ]
+    },
+    "limitations": [
+      "公开案例仅校准机制，不复原真实企业人数。",
+      "所有人数和比例均为 scenario_assumption 或 rule_result。"
+    ]
+  },
+  {
+    "profile": {
+      "firm_id": "A",
+      "archetype": "platform_product_company",
+      "calibration_case": "tencent_docs_2026_regional_adjustment",
+      "affected_workers": 1200,
+      "ai_transition_pressure": 0.8,
+      "internal_transfer_capacity": 700,
+      "skill_match_rate": 0.46,
+      "relocation_acceptance": 0.52,
+      "outsource_capacity": 180,
+      "relocation_support": false,
+      "government_bridge_capacity": 160
+    },
+    "intent": {
+      "strategy_priority": "ai_reorganization",
+      "layoff_direction": "maintain",
+      "internal_transfer_direction": "expand",
+      "relocation_direction": "offer",
+      "outsource_direction": "moderate",
+      "magnitude": "moderate",
+      "reasoning_summary": "AI 产品协同目标保持不变，先以内部转岗吸收，再处理无法匹配或无法迁移的岗位。",
+      "worry": "传统技能与 AI 岗位不匹配，且跨城迁移会降低内部转岗接受率。"
+    },
+    "tools": {
+      "training_match_lift": 0.0,
+      "relocation_acceptance_lift": 0.18,
+      "bridge_capacity": 0
+    },
+    "settlement": {
+      "scenario_id": "A2",
+      "affected_workers": 1200,
+      "transfer_eligible": 322,
+      "internal_transfer_accepted": 225,
+      "relocation_declined": 97,
+      "channel_outsource": 180,
+      "government_bridged": 0,
+      "layoff_formal": 795,
+      "net_unemployment": 795,
+      "evidence_chain": [
+        {
+          "id": "fact:internal_mobility_offer",
+          "provenance": "public_fact",
+          "confidence": "L2"
+        },
+        {
+          "id": "mechanism:internal_mobility_buffer",
+          "provenance": "mechanism",
+          "confidence": "L2"
+        },
+        {
+          "id": "assumption:A2",
+          "provenance": "scenario_assumption",
+          "confidence": "L3"
+        },
+        {
+          "id": "rule:firm_settlement_v1:A2",
+          "provenance": "rule_result",
+          "confidence": "L3"
+        }
+      ]
+    },
+    "limitations": [
+      "公开案例仅校准机制，不复原真实企业人数。",
+      "所有人数和比例均为 scenario_assumption 或 rule_result。"
+    ]
+  },
+  {
+    "profile": {
+      "firm_id": "A",
+      "archetype": "platform_product_company",
+      "calibration_case": "tencent_docs_2026_regional_adjustment",
+      "affected_workers": 1200,
+      "ai_transition_pressure": 0.8,
+      "internal_transfer_capacity": 700,
+      "skill_match_rate": 0.46,
+      "relocation_acceptance": 0.52,
+      "outsource_capacity": 180,
+      "relocation_support": false,
+      "government_bridge_capacity": 160
+    },
+    "intent": {
+      "strategy_priority": "ai_reorganization",
+      "layoff_direction": "maintain",
+      "internal_transfer_direction": "expand",
+      "relocation_direction": "offer",
+      "outsource_direction": "moderate",
+      "magnitude": "moderate",
+      "reasoning_summary": "AI 产品协同目标保持不变，先以内部转岗吸收，再处理无法匹配或无法迁移的岗位。",
+      "worry": "传统技能与 AI 岗位不匹配，且跨城迁移会降低内部转岗接受率。"
+    },
+    "tools": {
+      "training_match_lift": 0.12,
+      "relocation_acceptance_lift": 0.18,
+      "bridge_capacity": 80
+    },
+    "settlement": {
+      "scenario_id": "A3",
+      "affected_workers": 1200,
+      "transfer_eligible": 406,
+      "internal_transfer_accepted": 284,
+      "relocation_declined": 122,
+      "channel_outsource": 180,
+      "government_bridged": 240,
+      "layoff_formal": 496,
+      "net_unemployment": 496,
+      "evidence_chain": [
+        {
+          "id": "fact:internal_mobility_offer",
+          "provenance": "public_fact",
+          "confidence": "L2"
+        },
+        {
+          "id": "mechanism:internal_mobility_buffer",
+          "provenance": "mechanism",
+          "confidence": "L2"
+        },
+        {
+          "id": "assumption:A3",
+          "provenance": "scenario_assumption",
+          "confidence": "L3"
+        },
+        {
+          "id": "rule:firm_settlement_v1:A3",
+          "provenance": "rule_result",
+          "confidence": "L3"
+        }
+      ]
+    },
+    "limitations": [
+      "公开案例仅校准机制，不复原真实企业人数。",
+      "所有人数和比例均为 scenario_assumption 或 rule_result。"
+    ]
+  }
+]

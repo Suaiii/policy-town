@@ -23,5 +23,11 @@ dist/
 build/
 tsconfig.tsbuildinfo
 
+# Generated Hefei simulation artifacts
+data/hefei_industry_simulation.sqlite3
+data/hefei_mvp_runs/
+data/hefei_mvp/real_backend_run.json
+data/source_archive/
+
 # IDE / Superpowers temp files
 .superpowers/

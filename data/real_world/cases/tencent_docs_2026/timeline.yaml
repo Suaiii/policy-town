@@ -1,0 +1,12 @@
+- order: 1
+  event: regional_team_adjustment_reported
+  provenance: public_fact
+- order: 2
+  event: ai_strategy_and_coordination_reason_reported
+  provenance: public_fact
+- order: 3
+  event: internal_mobility_and_relocation_offered
+  provenance: public_fact
+- order: 4
+  event: anonymized_scenario_settlement
+  provenance: scenario_assumption

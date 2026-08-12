@@ -1,0 +1,12 @@
+- mechanism_id: regional_consolidation
+  source_fact_ids: [work_center_shift]
+  action_intents: [consolidate_office_center, offer_relocation, offer_internal_transfer]
+  affected_dimensions: [location, relocation_cost, job_continuity]
+- mechanism_id: ai_coordination_restructuring
+  source_fact_ids: [ai_strategy_reason]
+  action_intents: [reduce_traditional_coordination_roles, increase_ai_product_roles]
+  affected_dimensions: [skill_match, internal_transfer_capacity]
+- mechanism_id: internal_mobility_buffer
+  source_fact_ids: [internal_mobility_offer, employee_choice]
+  action_intents: [offer_internal_transfer, accept_or_reject_transfer]
+  affected_dimensions: [net_unemployment, relocation_burden, income_change]

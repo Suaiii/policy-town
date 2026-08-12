@@ -206,17 +206,17 @@ def build_firm(fid: str, rnd: int, run: str) -> FirmAction:
 # ============================================================ 员工（10 个抽样个体）
 
 WORKERS = [
-    # id, firm, skill, savings, rights_prior
-    ("W01", "A", "traditional", 3, 0.20),
-    ("W02", "A", "ai",          8, 0.60),
-    ("W03", "A", "ai",          5, 0.35),
-    ("W04", "A", "traditional", 2, 0.15),
-    ("W05", "B", "ai",          9, 0.50),
-    ("W06", "B", "traditional", 4, 0.45),
-    ("W07", "C", "ai",          7, 0.55),
-    ("W08", "C", "traditional", 5, 0.25),
-    ("W09", "D", "traditional", 3, 0.10),
-    ("W10", None, "traditional", 4, 0.50),
+    # id, firm, skill, savings, rights_prior, weight, cohort_label
+    ("W01", "A", "traditional", 3, 0.20, 1900, "A厂传统岗 · 储蓄薄"),
+    ("W02", "A", "ai",          8, 0.60,  620, "A厂 AI 岗 · 储蓄厚"),
+    ("W03", "A", "ai",          5, 0.35,  480, "A厂 AI 岗 · 储蓄中"),
+    ("W04", "A", "traditional", 2, 0.15, 1000, "A厂传统岗 · 无缓冲"),
+    ("W05", "B", "ai",          9, 0.50,  760, "B厂 AI 岗"),
+    ("W06", "B", "traditional", 4, 0.45,  740, "B厂传统岗"),
+    ("W07", "C", "ai",          7, 0.55,  900, "C厂 AI 岗"),
+    ("W08", "C", "traditional", 5, 0.25, 1300, "C厂传统岗 · 转型受冲击"),
+    ("W09", "D", "traditional", 3, 0.10,  800, "外包商 · 在岗"),
+    ("W10", None, "traditional", 4, 0.50,    0, "市场存量待业"),
 ]
 
 # (round, worker) -> (status, action, target, reasoning, hesitation)
@@ -279,10 +279,26 @@ EVENTS = {
 }
 
 
-def build_workers(rnd: int, run: str, state: dict) -> list[WorkerAction]:
+ACTION_SINK = {
+    "accept_transfer": "D", "sign": "unemployed", "jobhunt": "unemployed",
+    "exit_labor_force": "exited", "delay": None, "arbitrate": None,
+}
+
+
+def _share(action, firm_id, skill, weight, flows) -> float:
+    sink = ACTION_SINK.get(action)
+    if sink is None or not weight:
+        return 0.0
+    n = sum(f.count for f in flows
+            if f.to == sink and f.skill == skill
+            and (f.from_ == firm_id or f.from_ in ("market", "entrants")))
+    return round(min(1.0, n / weight), 4)
+
+
+def build_workers(rnd: int, run: str, state: dict, flows) -> list[WorkerAction]:
     out = []
     ev = EVENTS[run].get(rnd, {})
-    for wid, firm, skill, sav, rp in WORKERS:
+    for wid, firm, skill, sav, rp, weight, label in WORKERS:
         if wid in ev:
             status, action, target, reason, hes = ev[wid]
             state[wid] = status
@@ -291,6 +307,8 @@ def build_workers(rnd: int, run: str, state: dict) -> list[WorkerAction]:
         out.append(WorkerAction(
             worker_id=wid, round=rnd, firm_id=firm, skill_type=skill,
             savings_months=sav, rights_prior=rp,
+            cohort_weight=weight, cohort_label=label,
+            cohort_share=_share(action, firm, skill, weight, flows),
             status=status, action=action, target=target,
             reasoning=reason, hesitation=hes,
         ))
@@ -432,6 +450,8 @@ POSTS = {
 # ============================================================ 主流程
 
 def build(run: str):
+    assert sum(w[5] for w in WORKERS) == sum(INIT_HEADCOUNT.values()), \
+        "cohort 权重之和必须等于初始劳动力"
     hc = deepcopy(INIT_HEADCOUNT)
     cum = {"unemployed": 0, "exited": 0}
     state = {w[0]: ("employed" if w[1] else "unemployed") for w in WORKERS}
@@ -449,7 +469,7 @@ def build(run: str):
         snap = Snapshot(
             run_id=run, round=rnd,
             policy=pol,
-            firms=firms, workers=build_workers(rnd, run, state),
+            firms=firms, workers=build_workers(rnd, run, state, flows),
             flows=flows, metrics=metrics,
             sentiment_heat=heat, group_mood=mood, top_post=POSTS[run][rnd - 1],
         )

@@ -1,6 +1,18 @@
-import json, glob, collections
+import json, glob, collections, os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from contracts.schema import Snapshot
 def load(r): return [json.load(open(f"data/run_{r}/round_{i}.json",encoding="utf-8")) for i in range(1,9)]
 A,B=load("A"),load("B")
+for snapshot in A + B:
+    parsed = Snapshot(**snapshot)
+    assert parsed.contract_version == "1.2"
+    assert sum(worker.cohort_weight for worker in parsed.workers) == 8500
+assert sum(1 for s in B for f in s["firms"] for batch in f["layoff_batches"] if batch == 19) >= 10
+assert not any(sum(1 for f in s["firms"] for batch in f["layoff_batches"] if batch == 19) >= 4 for s in A)
+assert [s["firms"][1]["hiring_campus"] + s["firms"][1]["hiring_social"] for s in B][1:] == [95, 86, 60, 46, 42, 41, 43]
+market_c = [f for f in B[5]["flows"] if f["from"] == "market" and f["to"] == "C"]
+assert sum(f["count"] for f in market_c if f["skill"] == "ai") == 12
+assert sum(f["count"] for f in market_c if f["skill"] == "traditional") <= 2
 print("=== ① 裁员批次直方图（尖峰应卡在 19）===")
 for r,S in (("A",A),("B",B)):
     c=collections.Counter(b for s in S for f in s["firms"] for b in f["layoff_batches"])
