@@ -1,79 +1,38 @@
 {
-  "the Ville": {
-    "artist's co-living space": {
-      "Hailey Johnson's room": [
-        "closet",
-        "easel",
-        "desk",
-        "bed"
+  "星河市": {
+    "科技园区": {
+      "星云科技大厦": [
+        "前台",
+        "会议室",
+        "茶水间"
       ],
-      "Hailey Johnson's bathroom": [
-        "shower",
-        "bathroom sink",
-        "toilet"
+      "华芯半导体大厦": [
+        "前台",
+        "产线车间",
+        "会议室"
+      ]
+    },
+    "中央商务区": {
+      "智联软件大厦": [
+        "前台",
+        "开放办公区",
+        "咖啡角"
       ],
-      "kitchen": [
-        "refrigerator",
-        "toaster",
-        "kitchen sink",
-        "cooking area"
+      "星河重工大厦": [
+        "前台",
+        "装配车间",
+        "食堂"
+      ]
+    },
+    "市民广场": {
+      "市政府大楼": [
+        "大厅",
+        "会议室",
+        "政策研究室"
       ],
-      "common room": [
-        "common room table",
-        "common room sofa"
-      ]
-    },
-    "The Rose and Crown Pub": {
-      "pub": [
-        "shelf",
-        "refrigerator",
-        "bar customer seating",
-        "behind the bar counter",
-        "kitchen sink",
-        "cooking area",
-        "microphone"
-      ]
-    },
-    "Hobbs Cafe": {
-      "cafe": [
-        "refrigerator",
-        "cafe customer seating",
-        "cooking area",
-        "kitchen sink",
-        "behind the cafe counter",
-        "piano"
-      ]
-    },
-    "Oak Hill College": {
-      "hallway": []
-    },
-    "Dorm for Oak Hill College": {
-      "common room": [
-        "common room sofa",
-        "pool table",
-        "common room table"
-      ]
-    },
-    "The Willows Market and Pharmacy": {
-      "store": [
-        "grocery store shelf",
-        "behind the grocery counter",
-        "grocery store counter",
-        "pharmacy store shelf",
-        "pharmacy store counter",
-        "behind the pharmacy counter"
-      ]
-    },
-    "Harvey Oak Supply Store": {
-      "supply store": [
-        "supply store product shelf",
-        "behind the supply store counter",
-        "supply store counter"
-      ]
-    },
-    "Johnson Park": {
-      "park": [
-        "park garden"
+      "中央广场": [
+        "喷泉",
+        "长椅"
       ]
     }
   }
