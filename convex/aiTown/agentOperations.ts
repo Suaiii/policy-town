@@ -14,6 +14,11 @@ import { ACTIVITIES, ACTIVITY_COOLDOWN, CONVERSATION_COOLDOWN } from '../constan
 import { api, internal } from '../_generated/api';
 import { sleep } from '../util/sleep';
 import { serializedPlayer } from './player';
+import {
+  cognitiveRememberConversation,
+  generateCognitiveChatLine,
+  isCognitiveEnabled,
+} from '../cognitive/engine';
 
 export const agentRememberConversation = internalAction({
   args: {
@@ -24,13 +29,22 @@ export const agentRememberConversation = internalAction({
     operationId: v.string(),
   },
   handler: async (ctx, args) => {
-    await rememberConversation(
-      ctx,
-      args.worldId,
-      args.agentId as GameId<'agents'>,
-      args.playerId as GameId<'players'>,
-      args.conversationId as GameId<'conversations'>,
-    );
+    if (await isCognitiveEnabled(ctx, args.worldId)) {
+      await cognitiveRememberConversation(ctx, {
+        worldId: args.worldId,
+        agentId: args.agentId,
+        playerId: args.playerId,
+        conversationId: args.conversationId,
+      });
+    } else {
+      await rememberConversation(
+        ctx,
+        args.worldId,
+        args.agentId as GameId<'agents'>,
+        args.playerId as GameId<'players'>,
+        args.conversationId as GameId<'conversations'>,
+      );
+    }
     await sleep(Math.random() * 1000);
     await ctx.runMutation(api.aiTown.main.sendInput, {
       worldId: args.worldId,
@@ -55,27 +69,39 @@ export const agentGenerateMessage = internalAction({
     messageUuid: v.string(),
   },
   handler: async (ctx, args) => {
-    let completionFn;
-    switch (args.type) {
-      case 'start':
-        completionFn = startConversationMessage;
-        break;
-      case 'continue':
-        completionFn = continueConversationMessage;
-        break;
-      case 'leave':
-        completionFn = leaveConversationMessage;
-        break;
-      default:
-        assertNever(args.type);
+    let text: string;
+    if (args.type !== 'leave' && (await isCognitiveEnabled(ctx, args.worldId))) {
+      // Cognitive brain generates the dialogue line with retrieved memories.
+      text = await generateCognitiveChatLine(ctx, {
+        worldId: args.worldId,
+        playerId: args.playerId,
+        otherPlayerId: args.otherPlayerId,
+        conversationId: args.conversationId,
+        type: args.type,
+      });
+    } else {
+      let completionFn;
+      switch (args.type) {
+        case 'start':
+          completionFn = startConversationMessage;
+          break;
+        case 'continue':
+          completionFn = continueConversationMessage;
+          break;
+        case 'leave':
+          completionFn = leaveConversationMessage;
+          break;
+        default:
+          assertNever(args.type);
+      }
+      text = await completionFn(
+        ctx,
+        args.worldId,
+        args.conversationId as GameId<'conversations'>,
+        args.playerId as GameId<'players'>,
+        args.otherPlayerId as GameId<'players'>,
+      );
     }
-    const text = await completionFn(
-      ctx,
-      args.worldId,
-      args.conversationId as GameId<'conversations'>,
-      args.playerId as GameId<'players'>,
-      args.otherPlayerId as GameId<'players'>,
-    );
 
     await ctx.runMutation(internal.aiTown.agent.agentSendMessage, {
       worldId: args.worldId,

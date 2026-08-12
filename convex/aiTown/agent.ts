@@ -2,7 +2,9 @@ import { ObjectType, v } from 'convex/values';
 import { GameId, parseGameId } from './ids';
 import { agentId, conversationId, playerId } from './ids';
 import { serializedPlayer } from './player';
+import { serializedWorldMap } from './worldMap';
 import { Game } from './game';
+import { Id } from '../_generated/dataModel';
 import {
   ACTION_TIMEOUT,
   AWKWARD_CONVERSATION_TIMEOUT,
@@ -22,6 +24,7 @@ import { distance } from '../util/geometry';
 import { internal } from '../_generated/api';
 import { movePlayer } from './movement';
 import { insertInput } from './insertInput';
+import { COGNITIVE_WAKEUP_INTERVAL } from '../constants';
 
 export class Agent {
   id: GameId<'agents'>;
@@ -29,6 +32,7 @@ export class Agent {
   toRemember?: GameId<'conversations'>;
   lastConversation?: number;
   lastInviteAttempt?: number;
+  lastCognitiveWakeup?: number;
   inProgressOperation?: {
     name: string;
     operationId: string;
@@ -36,7 +40,8 @@ export class Agent {
   };
 
   constructor(serialized: SerializedAgent) {
-    const { id, lastConversation, lastInviteAttempt, inProgressOperation } = serialized;
+    const { id, lastConversation, lastInviteAttempt, inProgressOperation, lastCognitiveWakeup } =
+      serialized;
     const playerId = parseGameId('players', serialized.playerId);
     this.id = parseGameId('agents', id);
     this.playerId = playerId;
@@ -46,6 +51,7 @@ export class Agent {
         : undefined;
     this.lastConversation = lastConversation;
     this.lastInviteAttempt = lastInviteAttempt;
+    this.lastCognitiveWakeup = lastCognitiveWakeup;
     this.inProgressOperation = inProgressOperation;
   }
 
@@ -76,6 +82,35 @@ export class Agent {
     // If we have been wandering but haven't thought about something to do for
     // a while, do something.
     if (!conversation && !doingActivity && (!player.pathfinding || !recentlyAttemptedInvite)) {
+      if (game.cognitiveEnabled) {
+        // Cognitive brain: run the perceive->retrieve->plan->execute pipeline,
+        // throttled so we don't hammer the LLM every tick.
+        const throttled =
+          this.lastCognitiveWakeup !== undefined &&
+          now < this.lastCognitiveWakeup + COGNITIVE_WAKEUP_INTERVAL;
+        if (!throttled) {
+          this.lastCognitiveWakeup = now;
+          const description = game.playerDescriptions.get(this.playerId);
+          this.startOperation(game, now, 'agentCognitiveStep', {
+            worldId: game.worldId,
+            agentId: this.id,
+            playerId: this.playerId,
+            name: description?.name ?? this.playerId,
+            description: description?.description ?? '',
+            player: player.serialize(),
+            players: [...game.world.players.values()].map((p) => p.serialize()),
+            playerNames: [...game.playerDescriptions.values()].map((d) => ({
+              playerId: d.playerId,
+              name: d.name,
+            })),
+            conversations: [...game.world.conversations.values()].map((c) => ({
+              participants: [...c.participants.keys()],
+            })),
+            map: game.worldMap.serialize(),
+          });
+        }
+        return;
+      }
       this.startOperation(game, now, 'agentDoSomething', {
         worldId: game.worldId,
         player: player.serialize(),
@@ -240,7 +275,14 @@ export class Agent {
     now: number,
     name: Name,
     args: Omit<FunctionArgs<AgentOperations[Name]>, 'operationId'>,
-  ) {
+  ): void;
+  startOperation(
+    game: Game,
+    now: number,
+    name: 'agentCognitiveStep',
+    args: CognitiveStepArgs,
+  ): void;
+  startOperation(game: Game, now: number, name: string, args: any) {
     if (this.inProgressOperation) {
       throw new Error(
         `Agent ${this.id} already has an operation: ${JSON.stringify(this.inProgressOperation)}`,
@@ -263,6 +305,7 @@ export class Agent {
       toRemember: this.toRemember,
       lastConversation: this.lastConversation,
       lastInviteAttempt: this.lastInviteAttempt,
+      lastCognitiveWakeup: this.lastCognitiveWakeup,
       inProgressOperation: this.inProgressOperation,
     };
   }
@@ -274,6 +317,7 @@ export const serializedAgent = {
   toRemember: v.optional(conversationId),
   lastConversation: v.optional(v.number()),
   lastInviteAttempt: v.optional(v.number()),
+  lastCognitiveWakeup: v.optional(v.number()),
   inProgressOperation: v.optional(
     v.object({
       name: v.string(),
@@ -286,6 +330,19 @@ export type SerializedAgent = ObjectType<typeof serializedAgent>;
 
 type AgentOperations = typeof internal.aiTown.agentOperations;
 
+type CognitiveStepArgs = {
+  worldId: Id<'worlds'>;
+  agentId: GameId<'agents'>;
+  playerId: GameId<'players'>;
+  name: string;
+  description: string;
+  player: ObjectType<typeof serializedPlayer>;
+  players: ObjectType<typeof serializedPlayer>[];
+  playerNames: { playerId: GameId<'players'>; name: string }[];
+  conversations: { participants: GameId<'players'>[] }[];
+  map: ObjectType<typeof serializedWorldMap>;
+};
+
 export async function runAgentOperation(ctx: MutationCtx, operation: string, args: any) {
   let reference;
   switch (operation) {
@@ -297,6 +354,9 @@ export async function runAgentOperation(ctx: MutationCtx, operation: string, arg
       break;
     case 'agentDoSomething':
       reference = internal.aiTown.agentOperations.agentDoSomething;
+      break;
+    case 'agentCognitiveStep':
+      reference = internal.cognitive.engine.agentCognitiveStep;
       break;
     default:
       throw new Error(`Unknown operation: ${operation}`);

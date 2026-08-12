@@ -66,6 +66,11 @@ export class GameTime {
     return toGameMinutes(realMs, this.config);
   }
 
+  /** Duration of a game-minute duration in real ms. */
+  gameMinuteToRealMs(gameMinutes: number): number {
+    return (gameMinutes / this.config.gameMinutesPerRealSecond) * 1000;
+  }
+
   serialize(): { baseRealTs: number; config: GameClockConfig } {
     return { baseRealTs: this.baseRealTs, config: this.config };
   }

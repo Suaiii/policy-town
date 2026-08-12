@@ -3,6 +3,7 @@ import { v } from 'convex/values';
 import { agentTables } from './agent/schema';
 import { aiTownTables } from './aiTown/schema';
 import { conversationId, playerId } from './aiTown/ids';
+import { cognitiveTables } from './cognitive/schema';
 import { engineTables } from './engine/schema';
 
 export default defineSchema({
@@ -23,5 +24,6 @@ export default defineSchema({
 
   ...agentTables,
   ...aiTownTables,
+  ...cognitiveTables,
   ...engineTables,
 });

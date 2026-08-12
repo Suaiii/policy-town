@@ -22,6 +22,11 @@ export const aiTownTables = {
     engineId: v.id('engines'),
     lastViewed: v.number(),
     status: v.union(v.literal('running'), v.literal('stoppedByDeveloper'), v.literal('inactive')),
+    // When true, agents in this world run the cognitive brain (convex/cognitive)
+    // instead of the default random behavior.
+    cognitiveEnabled: v.boolean(),
+    // Game clock compression for the cognitive module (game-minutes per real second).
+    cognitiveGameMinutesPerRealSecond: v.optional(v.number()),
   }).index('worldId', ['worldId']),
 
   // This table contains the map data for a given world. Since it's a bit larger than the player

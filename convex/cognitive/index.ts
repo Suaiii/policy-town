@@ -14,6 +14,7 @@ import { Dialogue } from './dialogue';
 import { Intention } from './intentions';
 import { GameDate, PerceivedEvent, SensoryInput } from './types';
 import { CognitiveMemory } from './memoryStore';
+import { summarizeConversationPrompt } from './prompts';
 
 export interface CognitiveConfig {
   // Sum of poignancy since last reflection required to trigger reflection.
@@ -155,6 +156,22 @@ export class CognitiveAgent {
       embedding,
       nowGameMin: params.nowGameMin,
     });
+  }
+
+  /** Summarize a finished conversation from this agent's perspective. */
+  async summarizeConversation(
+    messages: { speaker: string; utterance: string }[],
+    otherName: string,
+  ): Promise<string> {
+    const raw = await this.llm.chat(
+      summarizeConversationPrompt({
+        selfName: this.scratch.name,
+        otherName,
+        messages,
+      }),
+      { temperature: 0.3, maxTokens: 200 },
+    );
+    return raw.trim();
   }
 
   /** Retrieve memories for dialogue / decision making. */
