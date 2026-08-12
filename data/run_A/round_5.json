@@ -1,0 +1,351 @@
+{
+  "contract_version": "1.0",
+  "run_id": "A",
+  "round": 5,
+  "policy": {
+    "round": 5,
+    "active": false,
+    "layoff_threshold": 999,
+    "compensation_multiple": "N+1",
+    "enforcement": 0.0,
+    "skill_subsidy": 0.0,
+    "hiring_subsidy": 0.0,
+    "policy_text": "（无管制基线，本组不发布裁员相关政策）",
+    "compromise_log": []
+  },
+  "firms": [
+    {
+      "firm_id": "A",
+      "round": 5,
+      "layoff_batches": [
+        38,
+        28,
+        24
+      ],
+      "layoff_formal": 90,
+      "channel_outsource": 13,
+      "channel_transfer": 7,
+      "channel_attrition": 13,
+      "hiring_campus": 3,
+      "hiring_social": 8,
+      "comp_offer": 1.0,
+      "expected_future_firing_cost": 0.27,
+      "reasoning": "",
+      "worry": ""
+    },
+    {
+      "firm_id": "B",
+      "round": 5,
+      "layoff_batches": [],
+      "layoff_formal": 0,
+      "channel_outsource": 0,
+      "channel_transfer": 0,
+      "channel_attrition": 4,
+      "hiring_campus": 43,
+      "hiring_social": 53,
+      "comp_offer": 1.0,
+      "expected_future_firing_cost": 0.22,
+      "reasoning": "",
+      "worry": ""
+    },
+    {
+      "firm_id": "C",
+      "round": 5,
+      "layoff_batches": [
+        15,
+        10
+      ],
+      "layoff_formal": 25,
+      "channel_outsource": 5,
+      "channel_transfer": 6,
+      "channel_attrition": 6,
+      "hiring_campus": 8,
+      "hiring_social": 32,
+      "comp_offer": 1.0,
+      "expected_future_firing_cost": 0.24,
+      "reasoning": "",
+      "worry": ""
+    },
+    {
+      "firm_id": "D",
+      "round": 5,
+      "layoff_batches": [],
+      "layoff_formal": 0,
+      "channel_outsource": 0,
+      "channel_transfer": 0,
+      "channel_attrition": 6,
+      "hiring_campus": 0,
+      "hiring_social": 29,
+      "comp_offer": 0.6,
+      "expected_future_firing_cost": 0.1,
+      "reasoning": "",
+      "worry": ""
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "W01",
+      "round": 5,
+      "firm_id": "A",
+      "skill_type": "traditional",
+      "savings_months": 3,
+      "rights_prior": 0.2,
+      "status": "reemployed",
+      "action": null,
+      "target": "B",
+      "reasoning": "面了四家，B 厂给的比原来低一点，但岗位是对口的，下周入职。",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W02",
+      "round": 5,
+      "firm_id": "A",
+      "skill_type": "ai",
+      "savings_months": 8,
+      "rights_prior": 0.6,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W03",
+      "round": 5,
+      "firm_id": "A",
+      "skill_type": "ai",
+      "savings_months": 5,
+      "rights_prior": 0.35,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W04",
+      "round": 5,
+      "firm_id": "A",
+      "skill_type": "traditional",
+      "savings_months": 2,
+      "rights_prior": 0.15,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W05",
+      "round": 5,
+      "firm_id": "B",
+      "skill_type": "ai",
+      "savings_months": 9,
+      "rights_prior": 0.5,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W06",
+      "round": 5,
+      "firm_id": "B",
+      "skill_type": "traditional",
+      "savings_months": 4,
+      "rights_prior": 0.45,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W07",
+      "round": 5,
+      "firm_id": "C",
+      "skill_type": "ai",
+      "savings_months": 7,
+      "rights_prior": 0.55,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W08",
+      "round": 5,
+      "firm_id": "C",
+      "skill_type": "traditional",
+      "savings_months": 5,
+      "rights_prior": 0.25,
+      "status": "notified",
+      "action": "jobhunt",
+      "target": "market",
+      "reasoning": "公司说我这条测试线要并进 AI 平台，让我自己找内部机会。看了下内部岗位，全是算法和数据，我投了两个都没过初筛。",
+      "hesitation": "四十岁转算法来得及吗"
+    },
+    {
+      "worker_id": "W09",
+      "round": 5,
+      "firm_id": "D",
+      "skill_type": "traditional",
+      "savings_months": 3,
+      "rights_prior": 0.1,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W10",
+      "round": 5,
+      "firm_id": null,
+      "skill_type": "traditional",
+      "savings_months": 4,
+      "rights_prior": 0.5,
+      "status": "unemployed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    }
+  ],
+  "flows": [
+    {
+      "from": "entrants",
+      "to": "A",
+      "count": 2,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "A",
+      "count": 1,
+      "skill": "ai"
+    },
+    {
+      "from": "entrants",
+      "to": "B",
+      "count": 26,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "B",
+      "count": 17,
+      "skill": "ai"
+    },
+    {
+      "from": "entrants",
+      "to": "C",
+      "count": 5,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "C",
+      "count": 3,
+      "skill": "ai"
+    },
+    {
+      "from": "entrants",
+      "to": "market",
+      "count": 3,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "market",
+      "count": 3,
+      "skill": "ai"
+    },
+    {
+      "from": "A",
+      "to": "D",
+      "count": 14,
+      "skill": "traditional"
+    },
+    {
+      "from": "A",
+      "to": "D",
+      "count": 3,
+      "skill": "ai"
+    },
+    {
+      "from": "C",
+      "to": "D",
+      "count": 7,
+      "skill": "traditional"
+    },
+    {
+      "from": "C",
+      "to": "D",
+      "count": 1,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "C",
+      "count": 15,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "C",
+      "count": 1,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "B",
+      "count": 27,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "D",
+      "count": 4,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "unemployed",
+      "count": 78,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "exited",
+      "count": 18,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "unemployed",
+      "count": 3,
+      "skill": "ai"
+    }
+  ],
+  "metrics": {
+    "employment_total": 8306,
+    "formal_layoff": 115,
+    "outsource_share": 0.1085,
+    "reemployment_rate": 0.3219,
+    "hidden_unemployment": 69,
+    "skill_mismatch_gap": 16,
+    "unemployment_rate": 0.0432,
+    "kpi": {
+      "人社": 0.231,
+      "财政": 0.985,
+      "产业": 0.788,
+      "监管": 0.757
+    }
+  },
+  "sentiment_heat": 0.27,
+  "group_mood": 0.52,
+  "top_post": "朋友上周入职 B 厂了"
+}

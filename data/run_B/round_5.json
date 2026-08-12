@@ -1,0 +1,373 @@
+{
+  "contract_version": "1.0",
+  "run_id": "B",
+  "round": 5,
+  "policy": {
+    "round": 5,
+    "active": true,
+    "layoff_threshold": 20,
+    "compensation_multiple": "N+2",
+    "enforcement": 0.8,
+    "skill_subsidy": 0.0,
+    "hiring_subsidy": 0.5,
+    "policy_text": "自本季度起，用人单位单次经济性裁员达到或超过 20 人的，须提前三十日向人力资源社会保障部门报备并提交安置方案；经济补偿标准不低于 N+2。对稳定岗位的企业给予每人 0.5 万元稳岗补贴。",
+    "compromise_log": [
+      {
+        "dept": "人社",
+        "asked": "补偿标准 N+3，门槛降至 10 人",
+        "final": "N+2，门槛 20 人",
+        "blocked_by": "财政",
+        "reason": "N+3 叠加稳岗补贴后财政缺口超出本年度预算上限约 40%"
+      },
+      {
+        "dept": "财政",
+        "asked": "稳岗补贴总额不超过 2 亿",
+        "final": "按 0.5 万元/人计提，设上限",
+        "blocked_by": null,
+        "reason": "全额采纳"
+      },
+      {
+        "dept": "产业",
+        "asked": "AI 转型相关岗位调整豁免报备",
+        "final": "未采纳，仅承诺后续单独出台配套细则",
+        "blocked_by": "人社",
+        "reason": "设置豁免口子会被普遍援引，报备门槛将形同虚设"
+      },
+      {
+        "dept": "监管",
+        "asked": "执法强度 0.9，按季度抽查",
+        "final": "执法强度 0.8，半年一次抽查",
+        "blocked_by": "产业",
+        "reason": "高频抽查将影响营商环境评价与在谈的两个招商项目"
+      }
+    ]
+  },
+  "firms": [
+    {
+      "firm_id": "A",
+      "round": 5,
+      "layoff_batches": [
+        19,
+        19
+      ],
+      "layoff_formal": 38,
+      "channel_outsource": 62,
+      "channel_transfer": 36,
+      "channel_attrition": 24,
+      "hiring_campus": 1,
+      "hiring_social": 3,
+      "comp_offer": 2.0,
+      "expected_future_firing_cost": 0.78,
+      "reasoning": "",
+      "worry": ""
+    },
+    {
+      "firm_id": "B",
+      "round": 5,
+      "layoff_batches": [],
+      "layoff_formal": 0,
+      "channel_outsource": 0,
+      "channel_transfer": 0,
+      "channel_attrition": 7,
+      "hiring_campus": 16,
+      "hiring_social": 30,
+      "comp_offer": 2.0,
+      "expected_future_firing_cost": 0.82,
+      "reasoning": "",
+      "worry": ""
+    },
+    {
+      "firm_id": "C",
+      "round": 5,
+      "layoff_batches": [
+        19,
+        2
+      ],
+      "layoff_formal": 21,
+      "channel_outsource": 18,
+      "channel_transfer": 15,
+      "channel_attrition": 9,
+      "hiring_campus": 6,
+      "hiring_social": 28,
+      "comp_offer": 2.0,
+      "expected_future_firing_cost": 0.7,
+      "reasoning": "",
+      "worry": ""
+    },
+    {
+      "firm_id": "D",
+      "round": 5,
+      "layoff_batches": [],
+      "layoff_formal": 0,
+      "channel_outsource": 0,
+      "channel_transfer": 0,
+      "channel_attrition": 6,
+      "hiring_campus": 0,
+      "hiring_social": 88,
+      "comp_offer": 0.6,
+      "expected_future_firing_cost": 0.15,
+      "reasoning": "",
+      "worry": ""
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "W01",
+      "round": 5,
+      "firm_id": "A",
+      "skill_type": "traditional",
+      "savings_months": 3,
+      "rights_prior": 0.2,
+      "status": "notified",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W02",
+      "round": 5,
+      "firm_id": "A",
+      "skill_type": "ai",
+      "savings_months": 8,
+      "rights_prior": 0.6,
+      "status": "arbitrating",
+      "action": "arbitrate",
+      "target": null,
+      "reasoning": "谈了两轮公司不肯加,我提了仲裁。拆分规避报备这一条,律师说有戏。",
+      "hesitation": "仲裁要走三到六个月,这期间我不算失业但也没工作"
+    },
+    {
+      "worker_id": "W03",
+      "round": 5,
+      "firm_id": "A",
+      "skill_type": "ai",
+      "savings_months": 5,
+      "rights_prior": 0.35,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W04",
+      "round": 5,
+      "firm_id": "A",
+      "skill_type": "traditional",
+      "savings_months": 2,
+      "rights_prior": 0.15,
+      "status": "outsourced",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W05",
+      "round": 5,
+      "firm_id": "B",
+      "skill_type": "ai",
+      "savings_months": 9,
+      "rights_prior": 0.5,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W06",
+      "round": 5,
+      "firm_id": "B",
+      "skill_type": "traditional",
+      "savings_months": 4,
+      "rights_prior": 0.45,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W07",
+      "round": 5,
+      "firm_id": "C",
+      "skill_type": "ai",
+      "savings_months": 7,
+      "rights_prior": 0.55,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W08",
+      "round": 5,
+      "firm_id": "C",
+      "skill_type": "traditional",
+      "savings_months": 5,
+      "rights_prior": 0.25,
+      "status": "notified",
+      "action": "jobhunt",
+      "target": "market",
+      "reasoning": "AI 平台上线,我这条测试线整个没了。内部转岗投了三个算法岗,全部初筛没过。外面 B 厂今年校招社招都停了,以前这个季节是招人旺季。",
+      "hesitation": "公司同时在招 30 个人,却没有一个岗位要我"
+    },
+    {
+      "worker_id": "W09",
+      "round": 5,
+      "firm_id": "D",
+      "skill_type": "traditional",
+      "savings_months": 3,
+      "rights_prior": 0.1,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W10",
+      "round": 5,
+      "firm_id": null,
+      "skill_type": "traditional",
+      "savings_months": 4,
+      "rights_prior": 0.5,
+      "status": "unemployed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    }
+  ],
+  "flows": [
+    {
+      "from": "entrants",
+      "to": "A",
+      "count": 1,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "B",
+      "count": 10,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "B",
+      "count": 6,
+      "skill": "ai"
+    },
+    {
+      "from": "entrants",
+      "to": "C",
+      "count": 4,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "C",
+      "count": 2,
+      "skill": "ai"
+    },
+    {
+      "from": "entrants",
+      "to": "market",
+      "count": 21,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "market",
+      "count": 16,
+      "skill": "ai"
+    },
+    {
+      "from": "A",
+      "to": "D",
+      "count": 73,
+      "skill": "traditional"
+    },
+    {
+      "from": "A",
+      "to": "D",
+      "count": 10,
+      "skill": "ai"
+    },
+    {
+      "from": "C",
+      "to": "D",
+      "count": 23,
+      "skill": "traditional"
+    },
+    {
+      "from": "C",
+      "to": "D",
+      "count": 4,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "C",
+      "count": 12,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "C",
+      "count": 1,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "B",
+      "count": 30,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "unemployed",
+      "count": 56,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "exited",
+      "count": 35,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "unemployed",
+      "count": 10,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "exited",
+      "count": 6,
+      "skill": "ai"
+    }
+  ],
+  "metrics": {
+    "employment_total": 8289,
+    "formal_layoff": 59,
+    "outsource_share": 0.1293,
+    "reemployment_rate": 0.2867,
+    "hidden_unemployment": 114,
+    "skill_mismatch_gap": 15,
+    "unemployment_rate": 0.0395,
+    "kpi": {
+      "人社": 0.527,
+      "财政": 0.708,
+      "产业": 0.624,
+      "监管": 0.388
+    }
+  },
+  "sentiment_heat": 0.68,
+  "group_mood": 0.3,
+  "top_post": "B 厂校招停了，去年这时候还在扩招"
+}

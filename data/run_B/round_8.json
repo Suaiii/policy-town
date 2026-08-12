@@ -1,0 +1,373 @@
+{
+  "contract_version": "1.0",
+  "run_id": "B",
+  "round": 8,
+  "policy": {
+    "round": 8,
+    "active": true,
+    "layoff_threshold": 20,
+    "compensation_multiple": "N+2",
+    "enforcement": 0.8,
+    "skill_subsidy": 0.0,
+    "hiring_subsidy": 0.5,
+    "policy_text": "自本季度起，用人单位单次经济性裁员达到或超过 20 人的，须提前三十日向人力资源社会保障部门报备并提交安置方案；经济补偿标准不低于 N+2。对稳定岗位的企业给予每人 0.5 万元稳岗补贴。",
+    "compromise_log": [
+      {
+        "dept": "人社",
+        "asked": "补偿标准 N+3，门槛降至 10 人",
+        "final": "N+2，门槛 20 人",
+        "blocked_by": "财政",
+        "reason": "N+3 叠加稳岗补贴后财政缺口超出本年度预算上限约 40%"
+      },
+      {
+        "dept": "财政",
+        "asked": "稳岗补贴总额不超过 2 亿",
+        "final": "按 0.5 万元/人计提，设上限",
+        "blocked_by": null,
+        "reason": "全额采纳"
+      },
+      {
+        "dept": "产业",
+        "asked": "AI 转型相关岗位调整豁免报备",
+        "final": "未采纳，仅承诺后续单独出台配套细则",
+        "blocked_by": "人社",
+        "reason": "设置豁免口子会被普遍援引，报备门槛将形同虚设"
+      },
+      {
+        "dept": "监管",
+        "asked": "执法强度 0.9，按季度抽查",
+        "final": "执法强度 0.8，半年一次抽查",
+        "blocked_by": "产业",
+        "reason": "高频抽查将影响营商环境评价与在谈的两个招商项目"
+      }
+    ]
+  },
+  "firms": [
+    {
+      "firm_id": "A",
+      "round": 8,
+      "layoff_batches": [
+        19,
+        14
+      ],
+      "layoff_formal": 33,
+      "channel_outsource": 60,
+      "channel_transfer": 35,
+      "channel_attrition": 23,
+      "hiring_campus": 1,
+      "hiring_social": 3,
+      "comp_offer": 2.0,
+      "expected_future_firing_cost": 0.79,
+      "reasoning": "",
+      "worry": ""
+    },
+    {
+      "firm_id": "B",
+      "round": 8,
+      "layoff_batches": [],
+      "layoff_formal": 0,
+      "channel_outsource": 0,
+      "channel_transfer": 0,
+      "channel_attrition": 7,
+      "hiring_campus": 14,
+      "hiring_social": 29,
+      "comp_offer": 2.0,
+      "expected_future_firing_cost": 0.82,
+      "reasoning": "",
+      "worry": ""
+    },
+    {
+      "firm_id": "C",
+      "round": 8,
+      "layoff_batches": [
+        15,
+        4
+      ],
+      "layoff_formal": 19,
+      "channel_outsource": 16,
+      "channel_transfer": 14,
+      "channel_attrition": 9,
+      "hiring_campus": 6,
+      "hiring_social": 27,
+      "comp_offer": 2.0,
+      "expected_future_firing_cost": 0.7,
+      "reasoning": "",
+      "worry": ""
+    },
+    {
+      "firm_id": "D",
+      "round": 8,
+      "layoff_batches": [],
+      "layoff_formal": 0,
+      "channel_outsource": 0,
+      "channel_transfer": 0,
+      "channel_attrition": 6,
+      "hiring_campus": 0,
+      "hiring_social": 86,
+      "comp_offer": 0.6,
+      "expected_future_firing_cost": 0.15,
+      "reasoning": "",
+      "worry": ""
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "W01",
+      "round": 8,
+      "firm_id": "A",
+      "skill_type": "traditional",
+      "savings_months": 3,
+      "rights_prior": 0.2,
+      "status": "notified",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W02",
+      "round": 8,
+      "firm_id": "A",
+      "skill_type": "ai",
+      "savings_months": 8,
+      "rights_prior": 0.6,
+      "status": "reemployed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W03",
+      "round": 8,
+      "firm_id": "A",
+      "skill_type": "ai",
+      "savings_months": 5,
+      "rights_prior": 0.35,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W04",
+      "round": 8,
+      "firm_id": "A",
+      "skill_type": "traditional",
+      "savings_months": 2,
+      "rights_prior": 0.15,
+      "status": "outsourced",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W05",
+      "round": 8,
+      "firm_id": "B",
+      "skill_type": "ai",
+      "savings_months": 9,
+      "rights_prior": 0.5,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W06",
+      "round": 8,
+      "firm_id": "B",
+      "skill_type": "traditional",
+      "savings_months": 4,
+      "rights_prior": 0.45,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W07",
+      "round": 8,
+      "firm_id": "C",
+      "skill_type": "ai",
+      "savings_months": 7,
+      "rights_prior": 0.55,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W08",
+      "round": 8,
+      "firm_id": "C",
+      "skill_type": "traditional",
+      "savings_months": 5,
+      "rights_prior": 0.25,
+      "status": "exited",
+      "action": "exit_labor_force",
+      "target": "exited",
+      "reasoning": "不找了。孩子明年上小学,先回老家。这一段就当空白吧。",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W09",
+      "round": 8,
+      "firm_id": "D",
+      "skill_type": "traditional",
+      "savings_months": 3,
+      "rights_prior": 0.1,
+      "status": "outsourced",
+      "action": null,
+      "target": null,
+      "reasoning": "外包这边今年人多了一倍,单价压得很低,加班变多了。但我不敢走,外面比这里还难。",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W10",
+      "round": 8,
+      "firm_id": null,
+      "skill_type": "traditional",
+      "savings_months": 4,
+      "rights_prior": 0.5,
+      "status": "exited",
+      "action": "exit_labor_force",
+      "target": "exited",
+      "reasoning": "失业金领完了,统计上我大概已经不算失业人口了。",
+      "hesitation": ""
+    }
+  ],
+  "flows": [
+    {
+      "from": "entrants",
+      "to": "A",
+      "count": 1,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "B",
+      "count": 9,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "B",
+      "count": 5,
+      "skill": "ai"
+    },
+    {
+      "from": "entrants",
+      "to": "C",
+      "count": 4,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "C",
+      "count": 2,
+      "skill": "ai"
+    },
+    {
+      "from": "entrants",
+      "to": "market",
+      "count": 22,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "market",
+      "count": 17,
+      "skill": "ai"
+    },
+    {
+      "from": "A",
+      "to": "D",
+      "count": 71,
+      "skill": "traditional"
+    },
+    {
+      "from": "A",
+      "to": "D",
+      "count": 10,
+      "skill": "ai"
+    },
+    {
+      "from": "C",
+      "to": "D",
+      "count": 21,
+      "skill": "traditional"
+    },
+    {
+      "from": "C",
+      "to": "D",
+      "count": 3,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "C",
+      "count": 11,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "C",
+      "count": 1,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "B",
+      "count": 29,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "unemployed",
+      "count": 54,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "exited",
+      "count": 31,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "unemployed",
+      "count": 11,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "exited",
+      "count": 6,
+      "skill": "ai"
+    }
+  ],
+  "metrics": {
+    "employment_total": 8110,
+    "formal_layoff": 52,
+    "outsource_share": 0.1705,
+    "reemployment_rate": 0.2867,
+    "hidden_unemployment": 236,
+    "skill_mismatch_gap": 15,
+    "unemployment_rate": 0.0623,
+    "kpi": {
+      "人社": 0.46,
+      "财政": 0.7,
+      "产业": 0.607,
+      "监管": 0.478
+    }
+  },
+  "sentiment_heat": 0.58,
+  "group_mood": 0.32,
+  "top_post": "已经不找了，先回老家"
+}

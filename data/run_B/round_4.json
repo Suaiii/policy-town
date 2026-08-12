@@ -1,0 +1,374 @@
+{
+  "contract_version": "1.0",
+  "run_id": "B",
+  "round": 4,
+  "policy": {
+    "round": 4,
+    "active": true,
+    "layoff_threshold": 20,
+    "compensation_multiple": "N+2",
+    "enforcement": 0.8,
+    "skill_subsidy": 0.0,
+    "hiring_subsidy": 0.5,
+    "policy_text": "自本季度起，用人单位单次经济性裁员达到或超过 20 人的，须提前三十日向人力资源社会保障部门报备并提交安置方案；经济补偿标准不低于 N+2。对稳定岗位的企业给予每人 0.5 万元稳岗补贴。",
+    "compromise_log": [
+      {
+        "dept": "人社",
+        "asked": "补偿标准 N+3，门槛降至 10 人",
+        "final": "N+2，门槛 20 人",
+        "blocked_by": "财政",
+        "reason": "N+3 叠加稳岗补贴后财政缺口超出本年度预算上限约 40%"
+      },
+      {
+        "dept": "财政",
+        "asked": "稳岗补贴总额不超过 2 亿",
+        "final": "按 0.5 万元/人计提，设上限",
+        "blocked_by": null,
+        "reason": "全额采纳"
+      },
+      {
+        "dept": "产业",
+        "asked": "AI 转型相关岗位调整豁免报备",
+        "final": "未采纳，仅承诺后续单独出台配套细则",
+        "blocked_by": "人社",
+        "reason": "设置豁免口子会被普遍援引，报备门槛将形同虚设"
+      },
+      {
+        "dept": "监管",
+        "asked": "执法强度 0.9，按季度抽查",
+        "final": "执法强度 0.8，半年一次抽查",
+        "blocked_by": "产业",
+        "reason": "高频抽查将影响营商环境评价与在谈的两个招商项目"
+      }
+    ]
+  },
+  "firms": [
+    {
+      "firm_id": "A",
+      "round": 4,
+      "layoff_batches": [
+        19,
+        18,
+        5
+      ],
+      "layoff_formal": 42,
+      "channel_outsource": 55,
+      "channel_transfer": 32,
+      "channel_attrition": 22,
+      "hiring_campus": 2,
+      "hiring_social": 4,
+      "comp_offer": 2.0,
+      "expected_future_firing_cost": 0.72,
+      "reasoning": "正式渠道成本上去了。这一轮主力改走两条：一是把整条运营线打包给外包商，人还在干同样的活，但不进我们的裁员数字；二是调岗，撑不住的人自己会走。正式批次继续压在 19 以内。",
+      "worry": "外包商接不下这么多"
+    },
+    {
+      "firm_id": "B",
+      "round": 4,
+      "layoff_batches": [],
+      "layoff_formal": 0,
+      "channel_outsource": 0,
+      "channel_transfer": 0,
+      "channel_attrition": 6,
+      "hiring_campus": 24,
+      "hiring_social": 36,
+      "comp_offer": 2.0,
+      "expected_future_firing_cost": 0.76,
+      "reasoning": "我们不在被管的名单里，但成本已经变了。未来裁人成本变高了，这一轮扩招我们缓一缓。校招从 45 砍到 24，社招只保留核心岗位。宁可业务慢一点，也不想明年背上一支放不掉的队伍。",
+      "worry": "错过窗口不如背上包袱"
+    },
+    {
+      "firm_id": "C",
+      "round": 4,
+      "layoff_batches": [
+        19,
+        3
+      ],
+      "layoff_formal": 22,
+      "channel_outsource": 16,
+      "channel_transfer": 14,
+      "channel_attrition": 9,
+      "hiring_campus": 6,
+      "hiring_social": 29,
+      "comp_offer": 2.0,
+      "expected_future_firing_cost": 0.64,
+      "reasoning": "转型进度必须保住。裁的批次也压在 19 人以内，跟 A 一样的做法。麻烦的是招人这头 —— 市场上放出来的都是传统岗，我们要的算法岗还是招不满，简历量大但匹配率极低。",
+      "worry": "转型窗口关上"
+    },
+    {
+      "firm_id": "D",
+      "round": 4,
+      "layoff_batches": [],
+      "layoff_formal": 0,
+      "channel_outsource": 0,
+      "channel_transfer": 0,
+      "channel_attrition": 6,
+      "hiring_campus": 0,
+      "hiring_social": 78,
+      "comp_offer": 0.6,
+      "expected_future_firing_cost": 0.14,
+      "reasoning": "这一季承接量翻了三倍。A 和 C 都在把整条线打包出来，价格能压得比去年低一成五，他们照样签。人还是那些人，干的还是那些活，只是合同换了一张。",
+      "worry": "承接能力跟不上"
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "W01",
+      "round": 4,
+      "firm_id": "A",
+      "skill_type": "traditional",
+      "savings_months": 3,
+      "rights_prior": 0.2,
+      "status": "notified",
+      "action": "sign",
+      "target": "market",
+      "reasoning": "拖了一个月，公司态度没松，我这边房贷已经扣了两次。签了。现在开始找工作，但招聘网站上的岗位比上个季度少了一大半。",
+      "hesitation": "早知道招聘会缩成这样，我第一周就该签"
+    },
+    {
+      "worker_id": "W02",
+      "round": 4,
+      "firm_id": "A",
+      "skill_type": "ai",
+      "savings_months": 8,
+      "rights_prior": 0.6,
+      "status": "notified",
+      "action": "delay",
+      "target": null,
+      "reasoning": "我算过了，我这个岗位公司很难找人替，而且这次批次拆得很明显，四批每批 19 人，这个我留了截图。我存款够撑八个月，不急着签。",
+      "hesitation": "撕破脸以后这个圈子还怎么混"
+    },
+    {
+      "worker_id": "W03",
+      "round": 4,
+      "firm_id": "A",
+      "skill_type": "ai",
+      "savings_months": 5,
+      "rights_prior": 0.35,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W04",
+      "round": 4,
+      "firm_id": "A",
+      "skill_type": "traditional",
+      "savings_months": 2,
+      "rights_prior": 0.15,
+      "status": "outsourced",
+      "action": "accept_transfer",
+      "target": "D",
+      "reasoning": "公司说不裁我，把我们整个组划给外包商，工位不动，活不变。我看了新合同，工资降 15%，公积金按最低基数。我存款只够两个月，签了。",
+      "hesitation": "这算保住工作还是丢了工作"
+    },
+    {
+      "worker_id": "W05",
+      "round": 4,
+      "firm_id": "B",
+      "skill_type": "ai",
+      "savings_months": 9,
+      "rights_prior": 0.5,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W06",
+      "round": 4,
+      "firm_id": "B",
+      "skill_type": "traditional",
+      "savings_months": 4,
+      "rights_prior": 0.45,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W07",
+      "round": 4,
+      "firm_id": "C",
+      "skill_type": "ai",
+      "savings_months": 7,
+      "rights_prior": 0.55,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W08",
+      "round": 4,
+      "firm_id": "C",
+      "skill_type": "traditional",
+      "savings_months": 5,
+      "rights_prior": 0.25,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W09",
+      "round": 4,
+      "firm_id": "D",
+      "skill_type": "traditional",
+      "savings_months": 3,
+      "rights_prior": 0.1,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W10",
+      "round": 4,
+      "firm_id": null,
+      "skill_type": "traditional",
+      "savings_months": 4,
+      "rights_prior": 0.5,
+      "status": "unemployed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    }
+  ],
+  "flows": [
+    {
+      "from": "entrants",
+      "to": "A",
+      "count": 2,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "B",
+      "count": 15,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "B",
+      "count": 9,
+      "skill": "ai"
+    },
+    {
+      "from": "entrants",
+      "to": "C",
+      "count": 4,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "C",
+      "count": 2,
+      "skill": "ai"
+    },
+    {
+      "from": "entrants",
+      "to": "market",
+      "count": 15,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "market",
+      "count": 13,
+      "skill": "ai"
+    },
+    {
+      "from": "A",
+      "to": "D",
+      "count": 65,
+      "skill": "traditional"
+    },
+    {
+      "from": "A",
+      "to": "D",
+      "count": 9,
+      "skill": "ai"
+    },
+    {
+      "from": "C",
+      "to": "D",
+      "count": 21,
+      "skill": "traditional"
+    },
+    {
+      "from": "C",
+      "to": "D",
+      "count": 3,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "C",
+      "count": 12,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "C",
+      "count": 1,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "B",
+      "count": 31,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "unemployed",
+      "count": 57,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "exited",
+      "count": 28,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "unemployed",
+      "count": 9,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "exited",
+      "count": 4,
+      "skill": "ai"
+    }
+  ],
+  "metrics": {
+    "employment_total": 8349,
+    "formal_layoff": 64,
+    "outsource_share": 0.1159,
+    "reemployment_rate": 0.3099,
+    "hidden_unemployment": 73,
+    "skill_mismatch_gap": 16,
+    "unemployment_rate": 0.0319,
+    "kpi": {
+      "人社": 0.537,
+      "财政": 0.71,
+      "产业": 0.659,
+      "监管": 0.451
+    }
+  },
+  "sentiment_heat": 0.61,
+  "group_mood": 0.36,
+  "top_post": "整个组被打包给外包了，工位没动，工资降 15%"
+}

@@ -1,0 +1,373 @@
+{
+  "contract_version": "1.0",
+  "run_id": "B",
+  "round": 7,
+  "policy": {
+    "round": 7,
+    "active": true,
+    "layoff_threshold": 20,
+    "compensation_multiple": "N+2",
+    "enforcement": 0.8,
+    "skill_subsidy": 0.0,
+    "hiring_subsidy": 0.5,
+    "policy_text": "自本季度起，用人单位单次经济性裁员达到或超过 20 人的，须提前三十日向人力资源社会保障部门报备并提交安置方案；经济补偿标准不低于 N+2。对稳定岗位的企业给予每人 0.5 万元稳岗补贴。",
+    "compromise_log": [
+      {
+        "dept": "人社",
+        "asked": "补偿标准 N+3，门槛降至 10 人",
+        "final": "N+2，门槛 20 人",
+        "blocked_by": "财政",
+        "reason": "N+3 叠加稳岗补贴后财政缺口超出本年度预算上限约 40%"
+      },
+      {
+        "dept": "财政",
+        "asked": "稳岗补贴总额不超过 2 亿",
+        "final": "按 0.5 万元/人计提，设上限",
+        "blocked_by": null,
+        "reason": "全额采纳"
+      },
+      {
+        "dept": "产业",
+        "asked": "AI 转型相关岗位调整豁免报备",
+        "final": "未采纳，仅承诺后续单独出台配套细则",
+        "blocked_by": "人社",
+        "reason": "设置豁免口子会被普遍援引，报备门槛将形同虚设"
+      },
+      {
+        "dept": "监管",
+        "asked": "执法强度 0.9，按季度抽查",
+        "final": "执法强度 0.8，半年一次抽查",
+        "blocked_by": "产业",
+        "reason": "高频抽查将影响营商环境评价与在谈的两个招商项目"
+      }
+    ]
+  },
+  "firms": [
+    {
+      "firm_id": "A",
+      "round": 7,
+      "layoff_batches": [
+        18,
+        16
+      ],
+      "layoff_formal": 34,
+      "channel_outsource": 63,
+      "channel_transfer": 37,
+      "channel_attrition": 24,
+      "hiring_campus": 1,
+      "hiring_social": 3,
+      "comp_offer": 2.0,
+      "expected_future_firing_cost": 0.8,
+      "reasoning": "",
+      "worry": ""
+    },
+    {
+      "firm_id": "B",
+      "round": 7,
+      "layoff_batches": [],
+      "layoff_formal": 0,
+      "channel_outsource": 0,
+      "channel_transfer": 0,
+      "channel_attrition": 7,
+      "hiring_campus": 13,
+      "hiring_social": 28,
+      "comp_offer": 2.0,
+      "expected_future_firing_cost": 0.83,
+      "reasoning": "",
+      "worry": ""
+    },
+    {
+      "firm_id": "C",
+      "round": 7,
+      "layoff_batches": [
+        16,
+        4
+      ],
+      "layoff_formal": 20,
+      "channel_outsource": 17,
+      "channel_transfer": 14,
+      "channel_attrition": 9,
+      "hiring_campus": 6,
+      "hiring_social": 27,
+      "comp_offer": 2.0,
+      "expected_future_firing_cost": 0.71,
+      "reasoning": "",
+      "worry": ""
+    },
+    {
+      "firm_id": "D",
+      "round": 7,
+      "layoff_batches": [],
+      "layoff_formal": 0,
+      "channel_outsource": 0,
+      "channel_transfer": 0,
+      "channel_attrition": 6,
+      "hiring_campus": 0,
+      "hiring_social": 90,
+      "comp_offer": 0.6,
+      "expected_future_firing_cost": 0.15,
+      "reasoning": "",
+      "worry": ""
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "W01",
+      "round": 7,
+      "firm_id": "A",
+      "skill_type": "traditional",
+      "savings_months": 3,
+      "rights_prior": 0.2,
+      "status": "notified",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W02",
+      "round": 7,
+      "firm_id": "A",
+      "skill_type": "ai",
+      "savings_months": 8,
+      "rights_prior": 0.6,
+      "status": "reemployed",
+      "action": null,
+      "target": "B",
+      "reasoning": "仲裁调解结案,公司补到 N+3。但我出来找工作的时候发现,同期签字走的同事早在四月就上岗了,我错过了整个春招。",
+      "hesitation": "多拿的一个月工资,抵不上多空的三个月"
+    },
+    {
+      "worker_id": "W03",
+      "round": 7,
+      "firm_id": "A",
+      "skill_type": "ai",
+      "savings_months": 5,
+      "rights_prior": 0.35,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W04",
+      "round": 7,
+      "firm_id": "A",
+      "skill_type": "traditional",
+      "savings_months": 2,
+      "rights_prior": 0.15,
+      "status": "outsourced",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W05",
+      "round": 7,
+      "firm_id": "B",
+      "skill_type": "ai",
+      "savings_months": 9,
+      "rights_prior": 0.5,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W06",
+      "round": 7,
+      "firm_id": "B",
+      "skill_type": "traditional",
+      "savings_months": 4,
+      "rights_prior": 0.45,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W07",
+      "round": 7,
+      "firm_id": "C",
+      "skill_type": "ai",
+      "savings_months": 7,
+      "rights_prior": 0.55,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W08",
+      "round": 7,
+      "firm_id": "C",
+      "skill_type": "traditional",
+      "savings_months": 5,
+      "rights_prior": 0.25,
+      "status": "unemployed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W09",
+      "round": 7,
+      "firm_id": "D",
+      "skill_type": "traditional",
+      "savings_months": 3,
+      "rights_prior": 0.1,
+      "status": "employed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    },
+    {
+      "worker_id": "W10",
+      "round": 7,
+      "firm_id": null,
+      "skill_type": "traditional",
+      "savings_months": 4,
+      "rights_prior": 0.5,
+      "status": "unemployed",
+      "action": null,
+      "target": null,
+      "reasoning": "",
+      "hesitation": ""
+    }
+  ],
+  "flows": [
+    {
+      "from": "entrants",
+      "to": "A",
+      "count": 1,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "B",
+      "count": 8,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "B",
+      "count": 5,
+      "skill": "ai"
+    },
+    {
+      "from": "entrants",
+      "to": "C",
+      "count": 4,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "C",
+      "count": 2,
+      "skill": "ai"
+    },
+    {
+      "from": "entrants",
+      "to": "market",
+      "count": 23,
+      "skill": "traditional"
+    },
+    {
+      "from": "entrants",
+      "to": "market",
+      "count": 17,
+      "skill": "ai"
+    },
+    {
+      "from": "A",
+      "to": "D",
+      "count": 74,
+      "skill": "traditional"
+    },
+    {
+      "from": "A",
+      "to": "D",
+      "count": 11,
+      "skill": "ai"
+    },
+    {
+      "from": "C",
+      "to": "D",
+      "count": 22,
+      "skill": "traditional"
+    },
+    {
+      "from": "C",
+      "to": "D",
+      "count": 3,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "C",
+      "count": 12,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "C",
+      "count": 1,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "B",
+      "count": 28,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "unemployed",
+      "count": 55,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "exited",
+      "count": 35,
+      "skill": "traditional"
+    },
+    {
+      "from": "market",
+      "to": "unemployed",
+      "count": 11,
+      "skill": "ai"
+    },
+    {
+      "from": "market",
+      "to": "exited",
+      "count": 6,
+      "skill": "ai"
+    }
+  ],
+  "metrics": {
+    "employment_total": 8165,
+    "formal_layoff": 54,
+    "outsource_share": 0.1573,
+    "reemployment_rate": 0.277,
+    "hidden_unemployment": 199,
+    "skill_mismatch_gap": 14,
+    "unemployment_rate": 0.0549,
+    "kpi": {
+      "人社": 0.483,
+      "财政": 0.702,
+      "产业": 0.616,
+      "监管": 0.442
+    }
+  },
+  "sentiment_heat": 0.62,
+  "group_mood": 0.3,
+  "top_post": "有人仲裁赢了，补到 N+3，但他空窗了五个月"
+}
