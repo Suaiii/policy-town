@@ -1,0 +1,23 @@
+# ============================================================
+# 星河市 · 企业设定模板
+# 复制为 agents/firms.yaml。员工 yaml 中的 employer 必须与此处 name 匹配。
+# ============================================================
+
+firms:
+  - name: 星云科技
+    stage: 成熟期                 # 成熟期/增长期/转型期/制造型/金融型/地产型
+    salary_level: {A型: 35, B型: 22, C型: 18, D型: 12}
+    profit: 120                  # 万元
+    labor_cost: 80
+    skills_needed: {紧缺: 2, 一般: 1}
+    layoff_risk: 0.3
+    recruiting: 2
+
+  - name: 华芯半导体
+    stage: 增长期
+    salary_level: {A型: 38, B型: 24, C型: 16, D型: 11}
+    profit: 90
+    labor_cost: 60
+    skills_needed: {紧缺: 3, 一般: 0}
+    layoff_risk: 0.2
+    recruiting: 3
