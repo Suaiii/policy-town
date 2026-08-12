@@ -1,0 +1,33 @@
+<h2>关系网节点：头像表达方式</h2>
+<p class="subtitle">MiroFish 当前仓库没有人物头像资源。请选择原型中人物节点的视觉策略；机构节点始终使用线性图标与类型色。</p>
+
+<style>
+  .avatar-options { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:18px; margin-top:24px; }
+  .avatar-options .card { cursor:pointer; border:1px solid #dce3eb; border-radius:16px; overflow:hidden; background:#fff; box-shadow:0 8px 28px rgba(26,43,68,.08); transition:.18s ease; }
+  .avatar-options .card:hover { transform:translateY(-3px); border-color:#ff8172; box-shadow:0 15px 35px rgba(26,43,68,.16); }
+  .avatar-stage { height:190px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; background:radial-gradient(#dce6f2 1px, transparent 1px) 0 0/13px 13px,#f8fbff; }
+  .avatar-stage::before,.avatar-stage::after { content:''; position:absolute; border-top:1.5px dashed #a9c2dc; width:95px; top:97px; }
+  .avatar-stage::before { left:0; transform:rotate(-18deg); } .avatar-stage::after { right:0; transform:rotate(18deg); }
+  .portrait { width:76px; height:76px; border-radius:13px; background:linear-gradient(135deg,#fff,#dfe7f1); border:1px solid #8b9ab0; box-shadow:0 5px 12px rgba(22,38,62,.22); position:relative; display:flex; align-items:center; justify-content:center; font-size:44px; z-index:1; }
+  .portrait::after { content:''; position:absolute; inset:-6px; border:1.5px solid rgba(255,117,102,.75); border-radius:17px; }
+  .pixel { image-rendering:pixelated; font-family:monospace; font-size:39px; filter:contrast(1.12) saturate(.8); }
+  .flat { border-radius:50%; background:#20344f; color:#fff; font:700 25px/1 system-ui; } .flat::after{border-color:#6fd3ce}
+  .photo { background:linear-gradient(140deg,#f4dfd4 0 34%,#27374f 35% 60%,#e6c5b2 61%); font-size:0; } .photo::before { content:' '; width:29px; height:36px; background:#c78665; border-radius:45% 45% 42% 42%; box-shadow:0 -9px 0 #2a2830, 0 17px 0 6px #223751; }
+  .card-body { padding:17px 19px 19px; } .card-body h3{margin:0 0 7px;font-size:16px;color:#172b46}.card-body p{margin:0;color:#627188;font-size:13px;line-height:1.55}.tag{display:inline-block;margin-top:10px;padding:3px 8px;border-radius:999px;background:#fff0ed;color:#db5e4e;font-size:11px;font-weight:700}
+  @media(max-width:800px){.avatar-options{grid-template-columns:1fr}}
+</style>
+
+<div class="avatar-options">
+  <div class="card" data-choice="pixel-avatar" onclick="toggleSelect(this)">
+    <div class="avatar-stage"><div class="portrait pixel">👨🏻‍💼</div></div>
+    <div class="card-body"><h3>A. 像素人物肖像</h3><p>最贴近参考图 2 的“社会模拟”气质。原型用内置像素风人物图形；生产环境可替换为实体头像。</p><span class="tag">推荐</span></div>
+  </div>
+  <div class="card" data-choice="initial-avatar" onclick="toggleSelect(this)">
+    <div class="avatar-stage"><div class="portrait flat">张</div></div>
+    <div class="card-body"><h3>B. 首字/姓名缩写头像</h3><p>不依赖图片资产，能严格对应真实节点数据；视觉更克制，但人物感更弱。</p></div>
+  </div>
+  <div class="card" data-choice="illustrated-avatar" onclick="toggleSelect(this)">
+    <div class="avatar-stage"><div class="portrait photo"></div></div>
+    <div class="card-body"><h3>C. 半写实插画肖像</h3><p>更具质感，适合少量重点角色；需要为节点准备图像或生成素材，适配成本最高。</p></div>
+  </div>
+</div>
