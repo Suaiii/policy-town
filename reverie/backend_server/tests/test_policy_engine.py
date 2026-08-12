@@ -124,5 +124,52 @@ class TestSettlement(unittest.TestCase):
         r = settle_month(1, profiles, firms, policies, seed=3)
         self.assertEqual(r["metrics"]["segment_unemployment"]["D型"], 0.5)
 
+class TestActivate(unittest.TestCase):
+    def test_activate_shapes_library_entry(self):
+        from policy.policies import activate
+        a = activate("housing_subsidy", months_left=6)
+        self.assertEqual(a["months_left"], 6)
+        self.assertEqual(a["params"]["type"], "talent_cash")
+        self.assertIn("A型", a["params"]["target_segments"])
+        self.assertEqual(a["params"]["amount_wan"], 30)
+
+    def test_activate_default_months_from_params(self):
+        from policy.policies import activate
+        a = activate("housing_subsidy")
+        self.assertEqual(a["months_left"], 12)
+
+    def test_activated_policy_drives_inflow_in_settlement(self):
+        """真实路径：激活后的政策必须真的影响结算结果（回归 C1）"""
+        from policy.engine import settle_month
+        from policy.policies import activate
+        profiles = [
+            {"name": f"p{i}", "segment": "B型",
+             "employer": None if i % 2 == 0 else "华芯半导体",
+             "salary": 0 if i % 2 == 0 else 24,
+             "savings_months": 3, "risk_aversion": 0.5,
+             "family_tie": "外地", "job_searching": i % 2 == 0, "offer": None}
+            for i in range(4)
+        ]
+        firms = []
+        policies = {"housing_subsidy": activate("housing_subsidy")}
+        r = settle_month(1, profiles, firms, policies, seed=1)
+        # B型 housing_subsidy 外地流入系数 0.15 → 应产生流入
+        self.assertGreater(r["metrics"]["net_inflow"], 0)
+
+    def test_activated_regulation_affects_firm_hiring(self):
+        from policy.engine import settle_month
+        from policy.policies import activate
+        firms = [{"firm": "智联软件", "stage": "转型期",
+                  "headcount": {"A型": 0, "B型": 2, "C型": 1, "D型": 3},
+                  "salary_level": {"A型": 40, "B型": 25, "C型": 20, "D型": 12},
+                  "profit": 60, "labor_cost": 45,
+                  "skills_needed": {"紧缺": 1, "一般": 1},
+                  "layoff_risk": 0.3, "recruiting": 1,
+                  "expected_future_firing_cost": 0.0}]
+        no_policy = settle_month(1, [], [dict(f) for f in firms], {}, seed=7)["firms"]
+        with_policy = settle_month(1, [], [dict(f) for f in firms],
+                                   {"layoff_control": activate("layoff_control")}, seed=7)["firms"]
+        self.assertLessEqual(with_policy[0]["recruiting"], no_policy[0]["recruiting"])
+
 if __name__ == "__main__":
     unittest.main()

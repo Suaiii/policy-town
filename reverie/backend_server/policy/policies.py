@@ -61,6 +61,20 @@ POLICY_LIBRARY = {
     },
 }
 
+def activate(policy_id, months_left=None):
+    """把政策库条目转换为引擎消费形状（type/target_segments 并入 params）。
+
+    返回 {"months_left": int, "params": {...}}（settle_month 消费的形状）。
+    months_left 缺省取 params.duration_months。
+    """
+    entry = POLICY_LIBRARY[policy_id]
+    params = dict(entry["params"])
+    params["type"] = entry["type"]
+    params["target_segments"] = list(entry["target_segments"])
+    months = months_left if months_left is not None else params.get("duration_months", 12)
+    return {"months_left": months, "params": params}
+
+
 def get_policy(policy_id):
     """按 id 取政策；不存在返回 None。"""
     return POLICY_LIBRARY.get(policy_id)
