@@ -50,5 +50,37 @@ class TestElasticity(unittest.TestCase):
         self.assertEqual(et.effect("nonexistent", "A型", "跳槽意愿"), 0.0)
         self.assertEqual(et.effect("housing_subsidy", "X型", "跳槽意愿"), 0.0)
 
+class TestFirms(unittest.TestCase):
+    def test_firm_decision_deterministic(self):
+        from policy.firms import decide_firm_month
+        from policy.types import FirmLedger
+        f = FirmLedger(firm="星云科技", stage="成熟期",
+                       headcount={"A型": 3, "B型": 4, "C型": 2, "D型": 5},
+                       salary_level={"A型": 35, "B型": 22, "C型": 18, "D型": 12},
+                       profit=120, labor_cost=80,
+                       skills_needed={"紧缺": 2, "一般": 1},
+                       layoff_risk=0.3, recruiting=2)
+        policies = {}
+        r1 = decide_firm_month(f, policies, seed=42)
+        r2 = decide_firm_month(f, policies, seed=42)
+        self.assertEqual(r1, r2)  # 可复现
+        self.assertIn("recruiting", r1)
+        self.assertIn("layoffs", r1)
+
+    def test_regulation_reduces_hiring(self):
+        from policy.firms import decide_firm_month
+        from policy.types import FirmLedger
+        f = FirmLedger(firm="智联软件", stage="转型期",
+                       headcount={"A型": 0, "B型": 2, "C型": 1, "D型": 3},
+                       salary_level={"A型": 40, "B型": 25, "C型": 20, "D型": 12},
+                       profit=60, labor_cost=45,
+                       skills_needed={"紧缺": 1, "一般": 1},
+                       layoff_risk=0.3, recruiting=1,
+                       expected_future_firing_cost=0.0)
+        policies = {"layoff_control": {"params": {"enforcement": 0.8, "type": "regulation"}}}
+        base = decide_firm_month(f, {}, seed=7)["recruiting"]
+        reg = decide_firm_month(f, policies, seed=7)["recruiting"]
+        self.assertLessEqual(reg, base)  # 监管悖论：管制越严招聘越少
+
 if __name__ == "__main__":
     unittest.main()
