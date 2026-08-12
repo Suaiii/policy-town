@@ -82,5 +82,47 @@ class TestFirms(unittest.TestCase):
         reg = decide_firm_month(f, policies, seed=7)["recruiting"]
         self.assertLessEqual(reg, base)  # 监管悖论：管制越严招聘越少
 
+class TestSettlement(unittest.TestCase):
+    def test_full_month_settlement_deterministic(self):
+        from policy.engine import settle_month
+        profiles = [
+            {"name": "张三", "segment": "A型", "employer": "星云科技", "salary": 35,
+             "savings_months": 6, "risk_aversion": 0.4, "family_tie": "本地",
+             "job_searching": False, "offer": None},
+            {"name": "李四", "segment": "D型", "employer": None, "salary": 0,
+             "savings_months": 2, "risk_aversion": 0.6, "family_tie": "外地",
+             "job_searching": True, "offer": None},
+        ]
+        firms = [
+            {"firm": "星云科技", "stage": "成熟期",
+             "headcount": {"A型": 1, "B型": 0, "C型": 0, "D型": 0},
+             "salary_level": {"A型": 35, "B型": 22, "C型": 18, "D型": 12},
+             "profit": 100, "labor_cost": 50,
+             "skills_needed": {"紧缺": 1, "一般": 0},
+             "layoff_risk": 0.2, "recruiting": 1},
+        ]
+        policies = {}
+        r1 = settle_month(1, profiles, firms, policies, seed=1)
+        r2 = settle_month(1, profiles, firms, policies, seed=1)
+        self.assertEqual(r1["profiles"], r2["profiles"])  # 可复现
+        self.assertEqual(r1["metrics"]["month"], 1)
+        self.assertEqual(r1["profiles"][0]["employer"], "星云科技")
+        self.assertIn("employment_rate", r1["metrics"])
+
+    def test_segment_unemployment_metrics(self):
+        from policy.engine import settle_month
+        profiles = [
+            {"name": f"p{i}", "segment": "D型",
+             "employer": None if i % 2 == 0 else "星河重工",
+             "salary": 0 if i % 2 == 0 else 12,
+             "savings_months": 3, "risk_aversion": 0.5,
+             "family_tie": "本地", "job_searching": i % 2 == 0, "offer": None}
+            for i in range(4)
+        ]
+        firms = []
+        policies = {}
+        r = settle_month(1, profiles, firms, policies, seed=3)
+        self.assertEqual(r["metrics"]["segment_unemployment"]["D型"], 0.5)
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,8 @@
 """企业行为规则（确定性）"""
 import random
 
+from .types import FirmLedger
+
 
 def _clamp(v, lo, hi):
     return max(lo, min(hi, v))
@@ -9,8 +11,11 @@ def _clamp(v, lo, hi):
 def decide_firm_month(firm, active_policies, seed=0):
     """计算企业一个月的行为决策，返回可序列化 dict。
 
+    firm: FirmLedger 或等价的 dict。
     active_policies: {policy_id: {"params": {...}}}（引擎注入）
     """
+    if isinstance(firm, dict):
+        firm = FirmLedger.from_dict(firm)
     rng = random.Random(seed)
     market_shock = rng.uniform(-0.05, 0.05)
 
