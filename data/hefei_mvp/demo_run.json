@@ -183,6 +183,8 @@
           ],
           "evidence_ids": [
             "HF-S1-EVENT-01",
+            "observation:boe_6g_government_capital_commitment",
+            "observation:boe_6g_project_capital",
             "observation:boe_planned_capacity",
             "observation:boe_total_investment",
             "observation:hef_2007_fiscal_revenue_total",
@@ -240,6 +242,8 @@
           ],
           "evidence_ids": [
             "HF-S1-EVENT-01",
+            "observation:boe_6g_government_capital_commitment",
+            "observation:boe_6g_project_capital",
             "observation:boe_planned_capacity",
             "observation:boe_total_investment",
             "observation:hef_2007_fiscal_revenue_total",
@@ -897,6 +901,26 @@
           "confidence": 0.96
         },
         {
+          "evidence_id": "observation:boe_6g_government_capital_commitment",
+          "title": "proj_boe_6g.government_capital_commitment = 60.0亿元",
+          "as_of": "2008-09-13",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_6g_framework_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_6g_project_capital",
+          "title": "proj_boe_6g.project_capital_commitment = 90.0亿元",
+          "as_of": "2008-09-13",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_6g_framework_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
           "evidence_id": "observation:boe_planned_capacity",
           "title": "proj_boe_6g.planned_capacity = 90000.0片/月",
           "as_of": "2008-09-12",
@@ -1178,7 +1202,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -1197,7 +1221,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -1216,7 +1240,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -1235,7 +1259,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -1254,7 +1278,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -1273,7 +1297,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -1292,7 +1316,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -1311,7 +1335,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -1330,10 +1354,48 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
+          },
+          {
+            "observation_id": "boe_6g_government_capital_commitment",
+            "entity_id": "proj_boe_6g",
+            "indicator_id": "government_capital_commitment",
+            "domain": "project",
+            "value": 60.0,
+            "unit": "亿元",
+            "effective_date": "2008-09-12",
+            "information_available_date": "2008-09-13",
+            "source_id": "src_boe_hefei_6g_framework_2008",
+            "source_title": "京东方关于签署合肥6代线投资框架协议的公告",
+            "source_url": "https://vip.stock.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=362396",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_hefei_6g_framework_agreement.html",
+            "source_sha256": "77ece55b7fc528f0be538d03f0443ef94619dfefc0788f72dfb23ca42ab6018d",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "政府方注册资本金责任，不等同已支付现金"
+          },
+          {
+            "observation_id": "boe_6g_project_capital",
+            "entity_id": "proj_boe_6g",
+            "indicator_id": "project_capital_commitment",
+            "domain": "project",
+            "value": 90.0,
+            "unit": "亿元",
+            "effective_date": "2008-09-12",
+            "information_available_date": "2008-09-13",
+            "source_id": "src_boe_hefei_6g_framework_2008",
+            "source_title": "京东方关于签署合肥6代线投资框架协议的公告",
+            "source_url": "https://vip.stock.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=362396",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_hefei_6g_framework_agreement.html",
+            "source_sha256": "77ece55b7fc528f0be538d03f0443ef94619dfefc0788f72dfb23ca42ab6018d",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "协议项目资本金；其中政府方承担60亿元注册资本及其余30亿元资本金的筹集责任"
           }
         ],
         "policies": [],
@@ -1777,6 +1839,8 @@
             "observation:boe_2008_ocf",
             "observation:boe_2009_project_contribution",
             "observation:boe_2009_project_share",
+            "observation:boe_6g_government_capital_commitment",
+            "observation:boe_6g_project_capital",
             "observation:boe_planned_capacity",
             "observation:boe_total_investment",
             "observation:hef_2008_fund_expenditure",
@@ -2887,6 +2951,36 @@
           "confidence": 0.96
         },
         {
+          "evidence_id": "observation:boe_6g_government_capital_commitment",
+          "title": "proj_boe_6g.government_capital_commitment = 60.0亿元",
+          "as_of": "2008-09-13",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_6g_framework_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_6g_initial_registered_capital",
+          "title": "proj_boe_6g.registered_capital = 0.5亿元",
+          "as_of": "2008-10-17",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_6g_progress_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_6g_project_capital",
+          "title": "proj_boe_6g.project_capital_commitment = 90.0亿元",
+          "as_of": "2008-09-13",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_6g_framework_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
           "evidence_id": "observation:boe_planned_capacity",
           "title": "proj_boe_6g.planned_capacity = 90000.0片/月",
           "as_of": "2008-09-12",
@@ -3628,7 +3722,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3647,7 +3741,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3666,7 +3760,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3685,7 +3779,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3704,7 +3798,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3723,7 +3817,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3742,7 +3836,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3761,7 +3855,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -3780,10 +3874,67 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
+          },
+          {
+            "observation_id": "boe_6g_government_capital_commitment",
+            "entity_id": "proj_boe_6g",
+            "indicator_id": "government_capital_commitment",
+            "domain": "project",
+            "value": 60.0,
+            "unit": "亿元",
+            "effective_date": "2008-09-12",
+            "information_available_date": "2008-09-13",
+            "source_id": "src_boe_hefei_6g_framework_2008",
+            "source_title": "京东方关于签署合肥6代线投资框架协议的公告",
+            "source_url": "https://vip.stock.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=362396",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_hefei_6g_framework_agreement.html",
+            "source_sha256": "77ece55b7fc528f0be538d03f0443ef94619dfefc0788f72dfb23ca42ab6018d",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "政府方注册资本金责任，不等同已支付现金"
+          },
+          {
+            "observation_id": "boe_6g_project_capital",
+            "entity_id": "proj_boe_6g",
+            "indicator_id": "project_capital_commitment",
+            "domain": "project",
+            "value": 90.0,
+            "unit": "亿元",
+            "effective_date": "2008-09-12",
+            "information_available_date": "2008-09-13",
+            "source_id": "src_boe_hefei_6g_framework_2008",
+            "source_title": "京东方关于签署合肥6代线投资框架协议的公告",
+            "source_url": "https://vip.stock.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=362396",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_hefei_6g_framework_agreement.html",
+            "source_sha256": "77ece55b7fc528f0be538d03f0443ef94619dfefc0788f72dfb23ca42ab6018d",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "协议项目资本金；其中政府方承担60亿元注册资本及其余30亿元资本金的筹集责任"
+          },
+          {
+            "observation_id": "boe_6g_initial_registered_capital",
+            "entity_id": "proj_boe_6g",
+            "indicator_id": "registered_capital",
+            "domain": "company",
+            "value": 0.5,
+            "unit": "亿元",
+            "effective_date": "2008-10-16",
+            "information_available_date": "2008-10-17",
+            "source_id": "src_boe_hefei_6g_progress_2008",
+            "source_title": "京东方关于合肥6代线项目进展的公告",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2008-10-17/44280437.PDF",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_hefei_6g_progress_announcement.pdf",
+            "source_sha256": "333bf56a6286c27f3efb5de43b8bf2b0bbfb6e9b13725610800895fec1932a56",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "项目公司初始注册资本5000万元；政府平台4050万元、京东方950万元"
           },
           {
             "observation_id": "hef_2008_fiscal_expenditure",
@@ -3799,7 +3950,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3818,7 +3969,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3837,7 +3988,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3856,7 +4007,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3875,7 +4026,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3894,7 +4045,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3913,7 +4064,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3932,7 +4083,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3951,7 +4102,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -3970,7 +4121,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -3989,7 +4140,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -4008,7 +4159,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": "由总资产减所有者权益派生"
@@ -4027,7 +4178,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": "合并净利润"
@@ -4046,7 +4197,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -4065,7 +4216,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -4084,7 +4235,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": "截至年报出具日累计两次单方增资"
@@ -4103,7 +4254,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": "增资完成后京东方持股比例"
@@ -4160,7 +4311,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4179,7 +4330,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4198,7 +4349,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4217,7 +4368,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4236,7 +4387,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4255,7 +4406,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4274,7 +4425,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4293,7 +4444,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4312,7 +4463,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4331,7 +4482,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4464,7 +4615,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4483,7 +4634,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4502,7 +4653,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4521,7 +4672,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4540,7 +4691,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4559,7 +4710,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4578,7 +4729,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4597,7 +4748,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4616,7 +4767,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4635,7 +4786,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -4654,7 +4805,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -4673,7 +4824,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -4692,7 +4843,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -4711,7 +4862,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -4730,7 +4881,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -4749,7 +4900,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -5398,6 +5549,8 @@
             "observation:boe_2008_ocf",
             "observation:boe_2009_project_contribution",
             "observation:boe_2009_project_share",
+            "observation:boe_6g_government_capital_commitment",
+            "observation:boe_6g_project_capital",
             "observation:boe_planned_capacity",
             "observation:boe_total_investment",
             "observation:hef_2013_fiscal_revenue_total",
@@ -6565,6 +6718,66 @@
           "as_of": "2009-04-21",
           "value_type": "observed",
           "source_id": "src_boe_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_6g_government_capital_commitment",
+          "title": "proj_boe_6g.government_capital_commitment = 60.0亿元",
+          "as_of": "2008-09-13",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_6g_framework_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_6g_initial_registered_capital",
+          "title": "proj_boe_6g.registered_capital = 0.5亿元",
+          "as_of": "2008-10-17",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_6g_progress_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_6g_project_capital",
+          "title": "proj_boe_6g.project_capital_commitment = 90.0亿元",
+          "as_of": "2008-09-13",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_6g_framework_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_85g_government_capital_increase",
+          "title": "proj_boe_85g.government_capital_contribution = 43.55亿元",
+          "as_of": "2012-10-30",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_85g_capital_2012",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_85g_registered_capital",
+          "title": "proj_boe_85g.registered_capital = 170.0亿元",
+          "as_of": "2013-04-03",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_85g_investment_2013",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_85g_total_investment",
+          "title": "proj_boe_85g.total_investment = 285.0亿元",
+          "as_of": "2013-04-03",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_85g_investment_2013",
           "available_at_cutoff": true,
           "quality": "A",
           "confidence": 0.96
@@ -7741,7 +7954,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -7760,7 +7973,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -7779,7 +7992,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -7798,7 +8011,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -7817,7 +8030,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -7836,7 +8049,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -7855,7 +8068,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -7874,7 +8087,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -7893,10 +8106,67 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
+          },
+          {
+            "observation_id": "boe_6g_government_capital_commitment",
+            "entity_id": "proj_boe_6g",
+            "indicator_id": "government_capital_commitment",
+            "domain": "project",
+            "value": 60.0,
+            "unit": "亿元",
+            "effective_date": "2008-09-12",
+            "information_available_date": "2008-09-13",
+            "source_id": "src_boe_hefei_6g_framework_2008",
+            "source_title": "京东方关于签署合肥6代线投资框架协议的公告",
+            "source_url": "https://vip.stock.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=362396",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_hefei_6g_framework_agreement.html",
+            "source_sha256": "77ece55b7fc528f0be538d03f0443ef94619dfefc0788f72dfb23ca42ab6018d",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "政府方注册资本金责任，不等同已支付现金"
+          },
+          {
+            "observation_id": "boe_6g_project_capital",
+            "entity_id": "proj_boe_6g",
+            "indicator_id": "project_capital_commitment",
+            "domain": "project",
+            "value": 90.0,
+            "unit": "亿元",
+            "effective_date": "2008-09-12",
+            "information_available_date": "2008-09-13",
+            "source_id": "src_boe_hefei_6g_framework_2008",
+            "source_title": "京东方关于签署合肥6代线投资框架协议的公告",
+            "source_url": "https://vip.stock.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=362396",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_hefei_6g_framework_agreement.html",
+            "source_sha256": "77ece55b7fc528f0be538d03f0443ef94619dfefc0788f72dfb23ca42ab6018d",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "协议项目资本金；其中政府方承担60亿元注册资本及其余30亿元资本金的筹集责任"
+          },
+          {
+            "observation_id": "boe_6g_initial_registered_capital",
+            "entity_id": "proj_boe_6g",
+            "indicator_id": "registered_capital",
+            "domain": "company",
+            "value": 0.5,
+            "unit": "亿元",
+            "effective_date": "2008-10-16",
+            "information_available_date": "2008-10-17",
+            "source_id": "src_boe_hefei_6g_progress_2008",
+            "source_title": "京东方关于合肥6代线项目进展的公告",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2008-10-17/44280437.PDF",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_hefei_6g_progress_announcement.pdf",
+            "source_sha256": "333bf56a6286c27f3efb5de43b8bf2b0bbfb6e9b13725610800895fec1932a56",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "项目公司初始注册资本5000万元；政府平台4050万元、京东方950万元"
           },
           {
             "observation_id": "hef_2008_fiscal_expenditure",
@@ -7912,7 +8182,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -7931,7 +8201,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -7950,7 +8220,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -7969,7 +8239,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -7988,7 +8258,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8007,7 +8277,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8026,7 +8296,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8045,7 +8315,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8064,7 +8334,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8083,7 +8353,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -8102,7 +8372,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -8121,7 +8391,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": "由总资产减所有者权益派生"
@@ -8140,7 +8410,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": "合并净利润"
@@ -8159,7 +8429,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -8178,7 +8448,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -8197,7 +8467,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": "截至年报出具日累计两次单方增资"
@@ -8216,7 +8486,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": "增资完成后京东方持股比例"
@@ -8273,7 +8543,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8292,7 +8562,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8311,7 +8581,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8330,7 +8600,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8349,7 +8619,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8368,7 +8638,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8387,7 +8657,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8406,7 +8676,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8425,7 +8695,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8444,7 +8714,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8577,7 +8847,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8596,7 +8866,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8615,7 +8885,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8634,7 +8904,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8653,7 +8923,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8672,7 +8942,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8691,7 +8961,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8710,7 +8980,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8729,7 +8999,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8748,7 +9018,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -8767,7 +9037,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -8786,7 +9056,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -8805,7 +9075,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -8824,7 +9094,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -8843,7 +9113,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -8862,7 +9132,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -8881,7 +9151,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年区划调整，跨年比较需处理口径断点"
@@ -8900,7 +9170,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年区划调整，跨年比较需处理口径断点"
@@ -8919,7 +9189,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年区划调整，跨年比较需处理口径断点"
@@ -8938,7 +9208,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年区划调整，跨年比较需处理口径断点"
@@ -8957,7 +9227,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年行政区划调整形成跨年口径断点"
@@ -8976,7 +9246,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年行政区划调整形成跨年口径断点"
@@ -8995,7 +9265,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年行政区划调整形成跨年口径断点"
@@ -9014,7 +9284,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年行政区划调整形成跨年口径断点"
@@ -9033,10 +9303,29 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年行政区划调整形成跨年口径断点"
+          },
+          {
+            "observation_id": "boe_85g_government_capital_increase",
+            "entity_id": "proj_boe_85g",
+            "indicator_id": "government_capital_contribution",
+            "domain": "project",
+            "value": 43.55,
+            "unit": "亿元",
+            "effective_date": "2012-10-29",
+            "information_available_date": "2012-10-30",
+            "source_id": "src_boe_hefei_85g_capital_2012",
+            "source_title": "京东方关于合肥8.5代线项目国资平台增资的公告",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2012-10-30/61732389.PDF",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2012_boe_hefei_85g_capital_increase.pdf",
+            "source_sha256": "55ee933f8354c90e6b6e83705a37784841e348c7b6a527273d1bc743df1fb9eb",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "国资平台拟向鑫晟光电单方增资；公告为拟增资安排，不等同最终实缴"
           },
           {
             "observation_id": "home_2012_four_products",
@@ -9229,6 +9518,44 @@
             "notes": null
           },
           {
+            "observation_id": "boe_85g_registered_capital",
+            "entity_id": "proj_boe_85g",
+            "indicator_id": "registered_capital",
+            "domain": "company",
+            "value": 170.0,
+            "unit": "亿元",
+            "effective_date": "2012-08-14",
+            "information_available_date": "2013-04-03",
+            "source_id": "src_boe_hefei_85g_investment_2013",
+            "source_title": "京东方关于投资建设合肥8.5代线项目的公告",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2013-04-03/62320672.PDF",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2013_boe_hefei_85g_investment.pdf",
+            "source_sha256": "083a9d513d1e880262bc5e86c42cba588aef240e7f26a213713ab320042a4a88",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "项目公司注册资本/项目资本金口径"
+          },
+          {
+            "observation_id": "boe_85g_total_investment",
+            "entity_id": "proj_boe_85g",
+            "indicator_id": "total_investment",
+            "domain": "project",
+            "value": 285.0,
+            "unit": "亿元",
+            "effective_date": "2012-08-14",
+            "information_available_date": "2013-04-03",
+            "source_id": "src_boe_hefei_85g_investment_2013",
+            "source_title": "京东方关于投资建设合肥8.5代线项目的公告",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2013-04-03/62320672.PDF",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2013_boe_hefei_85g_investment.pdf",
+            "source_sha256": "083a9d513d1e880262bc5e86c42cba588aef240e7f26a213713ab320042a4a88",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "公告回溯披露的项目总投资；信息可用日按公告日期"
+          },
+          {
             "observation_id": "hef_2011_fund_expenditure",
             "entity_id": "hefei",
             "indicator_id": "government_fund_expenditure",
@@ -9242,7 +9569,7 @@
             "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/6fd3b7c6c1cde6bc2f2da3da00f4b5ce.pdf",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2013_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "98f77559c846cad18fcc20c02907d1e31b065254ee007c50c44936dd7c916019",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -9261,7 +9588,7 @@
             "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/6fd3b7c6c1cde6bc2f2da3da00f4b5ce.pdf",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2013_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "98f77559c846cad18fcc20c02907d1e31b065254ee007c50c44936dd7c916019",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -9280,7 +9607,7 @@
             "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/6fd3b7c6c1cde6bc2f2da3da00f4b5ce.pdf",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2013_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "98f77559c846cad18fcc20c02907d1e31b065254ee007c50c44936dd7c916019",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -9299,7 +9626,7 @@
             "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/6fd3b7c6c1cde6bc2f2da3da00f4b5ce.pdf",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2013_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "98f77559c846cad18fcc20c02907d1e31b065254ee007c50c44936dd7c916019",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -9508,7 +9835,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -9527,7 +9854,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -9546,7 +9873,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -9565,7 +9892,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -9584,7 +9911,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -10435,6 +10762,8 @@
             "observation:boe_2008_ocf",
             "observation:boe_2009_project_contribution",
             "observation:boe_2009_project_share",
+            "observation:boe_6g_government_capital_commitment",
+            "observation:boe_6g_project_capital",
             "observation:boe_planned_capacity",
             "observation:boe_total_investment",
             "observation:hef_2015_direct_government_debt_balance",
@@ -11567,6 +11896,36 @@
           "confidence": 0.96
         },
         {
+          "evidence_id": "observation:boe_105g_government_capital_commitment",
+          "title": "proj_boe_105g.government_capital_commitment = 180.0亿元",
+          "as_of": "2015-04-21",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_105g_investment_2015",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_105g_registered_capital",
+          "title": "proj_boe_105g.registered_capital = 220.0亿元",
+          "as_of": "2015-04-21",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_105g_investment_2015",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_105g_total_investment",
+          "title": "proj_boe_105g.total_investment = 400.0亿元",
+          "as_of": "2015-04-21",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_105g_investment_2015",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
           "evidence_id": "observation:boe_2008_assets",
           "title": "boe.assets = 139.41120322亿元",
           "as_of": "2009-04-21",
@@ -11642,6 +12001,66 @@
           "as_of": "2009-04-21",
           "value_type": "observed",
           "source_id": "src_boe_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_6g_government_capital_commitment",
+          "title": "proj_boe_6g.government_capital_commitment = 60.0亿元",
+          "as_of": "2008-09-13",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_6g_framework_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_6g_initial_registered_capital",
+          "title": "proj_boe_6g.registered_capital = 0.5亿元",
+          "as_of": "2008-10-17",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_6g_progress_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_6g_project_capital",
+          "title": "proj_boe_6g.project_capital_commitment = 90.0亿元",
+          "as_of": "2008-09-13",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_6g_framework_2008",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_85g_government_capital_increase",
+          "title": "proj_boe_85g.government_capital_contribution = 43.55亿元",
+          "as_of": "2012-10-30",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_85g_capital_2012",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_85g_registered_capital",
+          "title": "proj_boe_85g.registered_capital = 170.0亿元",
+          "as_of": "2013-04-03",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_85g_investment_2013",
+          "available_at_cutoff": true,
+          "quality": "A",
+          "confidence": 0.96
+        },
+        {
+          "evidence_id": "observation:boe_85g_total_investment",
+          "title": "proj_boe_85g.total_investment = 285.0亿元",
+          "as_of": "2013-04-03",
+          "value_type": "observed",
+          "source_id": "src_boe_hefei_85g_investment_2013",
           "available_at_cutoff": true,
           "quality": "A",
           "confidence": 0.96
@@ -13168,7 +13587,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13187,7 +13606,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13206,7 +13625,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13225,7 +13644,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13244,7 +13663,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13263,7 +13682,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13282,7 +13701,7 @@
             "source_url": "https://www.055110.com/law/2/4499.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2007_hefei_statistical_communique.html",
             "source_sha256": "c49c59932e286f0804eae6e895dea3d43ae77c053a1493883a8c753e332d8eda",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13301,7 +13720,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -13320,10 +13739,67 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
+          },
+          {
+            "observation_id": "boe_6g_government_capital_commitment",
+            "entity_id": "proj_boe_6g",
+            "indicator_id": "government_capital_commitment",
+            "domain": "project",
+            "value": 60.0,
+            "unit": "亿元",
+            "effective_date": "2008-09-12",
+            "information_available_date": "2008-09-13",
+            "source_id": "src_boe_hefei_6g_framework_2008",
+            "source_title": "京东方关于签署合肥6代线投资框架协议的公告",
+            "source_url": "https://vip.stock.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=362396",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_hefei_6g_framework_agreement.html",
+            "source_sha256": "77ece55b7fc528f0be538d03f0443ef94619dfefc0788f72dfb23ca42ab6018d",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "政府方注册资本金责任，不等同已支付现金"
+          },
+          {
+            "observation_id": "boe_6g_project_capital",
+            "entity_id": "proj_boe_6g",
+            "indicator_id": "project_capital_commitment",
+            "domain": "project",
+            "value": 90.0,
+            "unit": "亿元",
+            "effective_date": "2008-09-12",
+            "information_available_date": "2008-09-13",
+            "source_id": "src_boe_hefei_6g_framework_2008",
+            "source_title": "京东方关于签署合肥6代线投资框架协议的公告",
+            "source_url": "https://vip.stock.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=362396",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_hefei_6g_framework_agreement.html",
+            "source_sha256": "77ece55b7fc528f0be538d03f0443ef94619dfefc0788f72dfb23ca42ab6018d",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "协议项目资本金；其中政府方承担60亿元注册资本及其余30亿元资本金的筹集责任"
+          },
+          {
+            "observation_id": "boe_6g_initial_registered_capital",
+            "entity_id": "proj_boe_6g",
+            "indicator_id": "registered_capital",
+            "domain": "company",
+            "value": 0.5,
+            "unit": "亿元",
+            "effective_date": "2008-10-16",
+            "information_available_date": "2008-10-17",
+            "source_id": "src_boe_hefei_6g_progress_2008",
+            "source_title": "京东方关于合肥6代线项目进展的公告",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2008-10-17/44280437.PDF",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_hefei_6g_progress_announcement.pdf",
+            "source_sha256": "333bf56a6286c27f3efb5de43b8bf2b0bbfb6e9b13725610800895fec1932a56",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "项目公司初始注册资本5000万元；政府平台4050万元、京东方950万元"
           },
           {
             "observation_id": "hef_2008_fiscal_expenditure",
@@ -13339,7 +13815,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13358,7 +13834,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13377,7 +13853,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13396,7 +13872,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13415,7 +13891,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13434,7 +13910,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13453,7 +13929,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13472,7 +13948,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13491,7 +13967,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201001/18299.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13510,7 +13986,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -13529,7 +14005,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -13548,7 +14024,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": "由总资产减所有者权益派生"
@@ -13567,7 +14043,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": "合并净利润"
@@ -13586,7 +14062,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -13605,7 +14081,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": null
@@ -13624,7 +14100,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": "截至年报出具日累计两次单方增资"
@@ -13643,7 +14119,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2008_boe_annual_report.pdf",
             "source_sha256": "39b1dd938b9547503aac0b4e0d2ce3cda40e50e219d6b69a6d00842dae1a6b9e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "A",
             "verification_status": "verified",
             "notes": "增资完成后京东方持股比例"
@@ -13700,7 +14176,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13719,7 +14195,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13738,7 +14214,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13757,7 +14233,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13776,7 +14252,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13795,7 +14271,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13814,7 +14290,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13833,7 +14309,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13852,7 +14328,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -13871,7 +14347,7 @@
             "source_url": "https://www.055110.com/law/2/3493.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2009_hefei_statistical_communique.html",
             "source_sha256": "efd251466f69f4192eaa510080395924bef8158bda21f9f95bc07509790db3c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14004,7 +14480,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14023,7 +14499,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14042,7 +14518,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14061,7 +14537,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14080,7 +14556,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14099,7 +14575,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14118,7 +14594,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14137,7 +14613,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14156,7 +14632,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14175,7 +14651,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201103/30546.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14194,7 +14670,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -14213,7 +14689,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -14232,7 +14708,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -14251,7 +14727,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -14270,7 +14746,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -14289,7 +14765,7 @@
             "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201612020147767466_1.pdf?1485106017000.pdf=",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2011_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "75981de8b0d01794eea1d404c12a587227445d1f236e99f9406a1b26208ee5a0",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -14308,7 +14784,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年区划调整，跨年比较需处理口径断点"
@@ -14327,7 +14803,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年区划调整，跨年比较需处理口径断点"
@@ -14346,7 +14822,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年区划调整，跨年比较需处理口径断点"
@@ -14365,7 +14841,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年区划调整，跨年比较需处理口径断点"
@@ -14384,7 +14860,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年行政区划调整形成跨年口径断点"
@@ -14403,7 +14879,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年行政区划调整形成跨年口径断点"
@@ -14422,7 +14898,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年行政区划调整形成跨年口径断点"
@@ -14441,7 +14917,7 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年行政区划调整形成跨年口径断点"
@@ -14460,10 +14936,29 @@
             "source_url": "https://web.xiaze.org/tjgb/201204/28284.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": "2011年行政区划调整形成跨年口径断点"
+          },
+          {
+            "observation_id": "boe_85g_government_capital_increase",
+            "entity_id": "proj_boe_85g",
+            "indicator_id": "government_capital_contribution",
+            "domain": "project",
+            "value": 43.55,
+            "unit": "亿元",
+            "effective_date": "2012-10-29",
+            "information_available_date": "2012-10-30",
+            "source_id": "src_boe_hefei_85g_capital_2012",
+            "source_title": "京东方关于合肥8.5代线项目国资平台增资的公告",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2012-10-30/61732389.PDF",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2012_boe_hefei_85g_capital_increase.pdf",
+            "source_sha256": "55ee933f8354c90e6b6e83705a37784841e348c7b6a527273d1bc743df1fb9eb",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "国资平台拟向鑫晟光电单方增资；公告为拟增资安排，不等同最终实缴"
           },
           {
             "observation_id": "home_2012_four_products",
@@ -14656,6 +15151,44 @@
             "notes": null
           },
           {
+            "observation_id": "boe_85g_registered_capital",
+            "entity_id": "proj_boe_85g",
+            "indicator_id": "registered_capital",
+            "domain": "company",
+            "value": 170.0,
+            "unit": "亿元",
+            "effective_date": "2012-08-14",
+            "information_available_date": "2013-04-03",
+            "source_id": "src_boe_hefei_85g_investment_2013",
+            "source_title": "京东方关于投资建设合肥8.5代线项目的公告",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2013-04-03/62320672.PDF",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2013_boe_hefei_85g_investment.pdf",
+            "source_sha256": "083a9d513d1e880262bc5e86c42cba588aef240e7f26a213713ab320042a4a88",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "项目公司注册资本/项目资本金口径"
+          },
+          {
+            "observation_id": "boe_85g_total_investment",
+            "entity_id": "proj_boe_85g",
+            "indicator_id": "total_investment",
+            "domain": "project",
+            "value": 285.0,
+            "unit": "亿元",
+            "effective_date": "2012-08-14",
+            "information_available_date": "2013-04-03",
+            "source_id": "src_boe_hefei_85g_investment_2013",
+            "source_title": "京东方关于投资建设合肥8.5代线项目的公告",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2013-04-03/62320672.PDF",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2013_boe_hefei_85g_investment.pdf",
+            "source_sha256": "083a9d513d1e880262bc5e86c42cba588aef240e7f26a213713ab320042a4a88",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "公告回溯披露的项目总投资；信息可用日按公告日期"
+          },
+          {
             "observation_id": "hef_2011_fund_expenditure",
             "entity_id": "hefei",
             "indicator_id": "government_fund_expenditure",
@@ -14669,7 +15202,7 @@
             "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/6fd3b7c6c1cde6bc2f2da3da00f4b5ce.pdf",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2013_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "98f77559c846cad18fcc20c02907d1e31b065254ee007c50c44936dd7c916019",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -14688,7 +15221,7 @@
             "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/6fd3b7c6c1cde6bc2f2da3da00f4b5ce.pdf",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2013_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "98f77559c846cad18fcc20c02907d1e31b065254ee007c50c44936dd7c916019",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -14707,7 +15240,7 @@
             "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/6fd3b7c6c1cde6bc2f2da3da00f4b5ce.pdf",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2013_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "98f77559c846cad18fcc20c02907d1e31b065254ee007c50c44936dd7c916019",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -14726,7 +15259,7 @@
             "source_url": "https://qxb-pdf-osscache.qixin.com/AnBaseinfo/6fd3b7c6c1cde6bc2f2da3da00f4b5ce.pdf",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2013_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "98f77559c846cad18fcc20c02907d1e31b065254ee007c50c44936dd7c916019",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -14935,7 +15468,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14954,7 +15487,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14973,7 +15506,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -14992,7 +15525,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15011,7 +15544,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15087,7 +15620,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15106,7 +15639,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15125,7 +15658,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15144,10 +15677,67 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/28238.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
+          },
+          {
+            "observation_id": "boe_105g_government_capital_commitment",
+            "entity_id": "proj_boe_105g",
+            "indicator_id": "government_capital_commitment",
+            "domain": "project",
+            "value": 180.0,
+            "unit": "亿元",
+            "effective_date": "2015-04-19",
+            "information_available_date": "2015-04-21",
+            "source_id": "src_boe_hefei_105g_investment_2015",
+            "source_title": "京东方关于投资建设合肥10.5代线项目的公告",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2015-04-21/1200875921.PDF",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2015_boe_hefei_105g_investment.pdf",
+            "source_sha256": "54199d9a14aec96f8a221bc227abe893b6831d1d37413d66568eba9b84b22444",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "政府方拟筹集的注册资本金承诺，不等同已支付现金"
+          },
+          {
+            "observation_id": "boe_105g_registered_capital",
+            "entity_id": "proj_boe_105g",
+            "indicator_id": "registered_capital",
+            "domain": "company",
+            "value": 220.0,
+            "unit": "亿元",
+            "effective_date": "2015-04-19",
+            "information_available_date": "2015-04-21",
+            "source_id": "src_boe_hefei_105g_investment_2015",
+            "source_title": "京东方关于投资建设合肥10.5代线项目的公告",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2015-04-21/1200875921.PDF",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2015_boe_hefei_105g_investment.pdf",
+            "source_sha256": "54199d9a14aec96f8a221bc227abe893b6831d1d37413d66568eba9b84b22444",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "项目公司注册资本；政府方拟筹集180亿元、公司自筹40亿元"
+          },
+          {
+            "observation_id": "boe_105g_total_investment",
+            "entity_id": "proj_boe_105g",
+            "indicator_id": "total_investment",
+            "domain": "project",
+            "value": 400.0,
+            "unit": "亿元",
+            "effective_date": "2015-04-19",
+            "information_available_date": "2015-04-21",
+            "source_id": "src_boe_hefei_105g_investment_2015",
+            "source_title": "京东方关于投资建设合肥10.5代线项目的公告",
+            "source_url": "https://static.cninfo.com.cn/finalpage/2015-04-21/1200875921.PDF",
+            "source_archived_path": "data\\source_archive\\hefei_fiscal\\2015_boe_hefei_105g_investment.pdf",
+            "source_sha256": "54199d9a14aec96f8a221bc227abe893b6831d1d37413d66568eba9b84b22444",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
+            "quality": "A",
+            "verification_status": "verified",
+            "notes": "项目总投资"
           },
           {
             "observation_id": "hef_2013_fund_expenditure",
@@ -15163,7 +15753,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2015-06-30/1201222580.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2015_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "5ea51548eb84017f12e482dafd3aa4af16a0d1dcb1e4dfc52c176bf74c7e063e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -15182,7 +15772,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2015-06-30/1201222580.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2015_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "5ea51548eb84017f12e482dafd3aa4af16a0d1dcb1e4dfc52c176bf74c7e063e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -15201,7 +15791,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2015-06-30/1201222580.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2015_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "5ea51548eb84017f12e482dafd3aa4af16a0d1dcb1e4dfc52c176bf74c7e063e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -15220,7 +15810,7 @@
             "source_url": "https://static.cninfo.com.cn/finalpage/2015-06-30/1201222580.PDF",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2015_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "5ea51548eb84017f12e482dafd3aa4af16a0d1dcb1e4dfc52c176bf74c7e063e",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -15239,7 +15829,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/32676.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15258,7 +15848,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/32676.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15277,7 +15867,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/32676.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15296,7 +15886,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/32676.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15315,7 +15905,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/32676.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15334,7 +15924,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/32676.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15353,7 +15943,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/32676.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15372,7 +15962,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/32676.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15391,7 +15981,7 @@
             "source_url": "https://www.tjcn.org/tjgb/12ah/32676.html",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\转载网页摘录与数据快照.md",
             "source_sha256": "46bd6f05ccc04659d24f38b07afb782ab096acd2eaf522db6587bd0937f410c3",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "verified",
             "notes": null
@@ -15410,7 +16000,7 @@
             "source_url": "https://static.sse.com.cn/disclosure/bond/announcement/corporate/c/2645294196290266.pdf",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2016_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "1dfb74eeee2a967484fdf9b16157e4c5cbf5bafbdb62b6bd27b9431d5a3274d8",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；历史直接债务/担保债务分类"
@@ -15429,7 +16019,7 @@
             "source_url": "https://static.sse.com.cn/disclosure/bond/announcement/corporate/c/2645294196290266.pdf",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2016_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "1dfb74eeee2a967484fdf9b16157e4c5cbf5bafbdb62b6bd27b9431d5a3274d8",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -15448,7 +16038,7 @@
             "source_url": "https://static.sse.com.cn/disclosure/bond/announcement/corporate/c/2645294196290266.pdf",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2016_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "1dfb74eeee2a967484fdf9b16157e4c5cbf5bafbdb62b6bd27b9431d5a3274d8",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；滚动评级报告财政表格"
@@ -15467,7 +16057,7 @@
             "source_url": "https://static.sse.com.cn/disclosure/bond/announcement/corporate/c/2645294196290266.pdf",
             "source_archived_path": "data\\source_archive\\hefei_fiscal\\2016_hefei_construction_investment_rating_report.pdf",
             "source_sha256": "1dfb74eeee2a967484fdf9b16157e4c5cbf5bafbdb62b6bd27b9431d5a3274d8",
-            "source_retrieved_at": "2026-08-12T19:43:58+00:00",
+            "source_retrieved_at": "2026-08-12T20:45:30+00:00",
             "quality": "B",
             "verification_status": "provisional",
             "notes": "全市口径；历史直接债务/担保债务分类"
