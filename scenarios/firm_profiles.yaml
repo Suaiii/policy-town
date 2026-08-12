@@ -1,0 +1,13 @@
+profiles:
+  - firm_id: A
+    archetype: platform_product_company
+    calibration_case: tencent_docs_2026_regional_adjustment
+    identity: anonymized
+    affected_workers: 1200
+    ai_transition_pressure: 0.8
+    internal_transfer_capacity: 700
+    skill_match_rate: 0.46
+    relocation_acceptance: 0.52
+    outsource_capacity: 180
+    government_bridge_capacity: 160
+    numeric_provenance: scenario_assumption

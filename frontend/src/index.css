@@ -71,7 +71,7 @@ body {
 
 .day-night-toggle {
   position: absolute;
-  top: max(18px, env(safe-area-inset-top));
+  top: max(82px, env(safe-area-inset-top));
   right: max(18px, env(safe-area-inset-right));
   display: inline-flex;
   align-items: center;
@@ -90,6 +90,27 @@ body {
   cursor: pointer;
   transition: transform 120ms ease, background 240ms ease, border-color 240ms ease;
 }
+
+.policy-topbar { position:absolute; inset:0 0 auto; min-height:64px; display:flex; align-items:center; gap:24px; padding:0 22px; color:#f8f1d7; background:#101a2df2; border-bottom:3px solid #c8a85b; box-shadow:0 6px 20px #050a14aa; z-index:10; }
+.policy-brand { font-family:'Upheaval Pro',sans-serif; font-size:24px; letter-spacing:1px; color:#ffd777; white-space:nowrap; }
+.policy-brand small { display:block; font:10px 'VCR OSD Mono'; color:#94a5bb; letter-spacing:0; }
+.run-switch { display:flex; background:#080f1e; border:2px solid #465570; border-radius:6px; overflow:hidden; }
+.run-switch button { border:0; padding:9px 14px; color:#9cabc0; background:transparent; font:12px 'VCR OSD Mono'; cursor:pointer; }
+.run-switch button.active { color:#101927; background:#ffd269; }
+.headline-metrics { margin-left:auto; display:flex; gap:22px; font-size:12px; }
+.headline-metrics span { color:#93a3bb; }.headline-metrics b { display:block; margin-top:3px; color:white; font-size:18px; }
+.impact-ribbon{position:absolute;z-index:9;top:72px;left:50%;transform:translateX(-50%);display:flex;align-items:stretch;width:min(870px,calc(100vw - 430px));min-height:78px;color:#edf3f8;background:#2f1722f2;border:2px solid #e96a65;box-shadow:0 5px 0 #090d16,0 12px 28px #03060baa}.impact-ribbon.reference{background:#13253cee;border-color:#62b7d1}.impact-story{display:flex;flex-direction:column;justify-content:center;min-width:300px;padding:10px 18px;border-right:1px solid #72414a}.impact-story span{color:#f1ba61;font-size:10px}.impact-story strong{margin:3px 0;color:#fff;font-size:18px}.impact-story small{color:#b9c2ce}.impact-number{display:flex;flex:1;min-width:115px;flex-direction:column;justify-content:center;padding:8px 13px}.impact-number span{color:#9eacbd;font-size:10px}.impact-number b{font-size:20px}.impact-number small{color:#aab5c3;font-size:9px}.impact-number.bad small{color:#ff8f8a}.impact-number.warn small{color:#ffd06c}
+.round-panel { position:absolute; left:20px; bottom:22px; width:min(520px,calc(100vw - 40px)); padding:14px 18px; color:#f7edd1; background:#121d31ee; border:2px solid #806d3e; box-shadow:0 5px 0 #080d18; z-index:8; }
+.round-panel>div:first-child { display:flex; justify-content:space-between; }.round-panel span { color:#f3bd57; font-size:12px; }.round-panel input { width:100%; accent-color:#f1c45c; }
+.round-ticks { display:flex; justify-content:space-between; }.round-ticks button { width:28px; border:0; color:#8797ad; background:transparent; cursor:pointer; }.round-ticks button.active { color:#ffd36b; font-weight:bold; }
+.building-panel { position:absolute; top:82px; left:18px; display:grid; gap:7px; width:172px; z-index:7; }
+.b-shutdown-callout{position:absolute;z-index:8;left:31%;top:32%;display:flex;flex-direction:column;padding:10px 14px;color:#fff;background:#431c24ef;border:2px solid #f06a64;box-shadow:0 4px 0 #16090d;animation:shutdownPulse 1.4s ease-in-out infinite}.b-shutdown-callout b{color:#ff9d91}.b-shutdown-callout span{font-size:10px;margin-top:3px}@keyframes shutdownPulse{50%{transform:scale(1.04);box-shadow:0 4px 0 #16090d,0 0 22px #f05f5577}}
+.building-card { position:relative; display:grid; grid-template-columns:1fr auto; gap:3px 8px; padding:9px 10px; color:#eaf4ff; background:#132337e8; border-left:4px solid #58c987; box-shadow:0 3px 0 #07101b; font-size:11px; }.building-card strong{font-size:14px}.building-card b{text-align:right}.building-card em{grid-column:1/-1;color:#ffc85c;font-style:normal}.building-card.light-off{border-left-color:#68707d;color:#9ba2ad;filter:saturate(.4)}.building-card.stress-2{background:#3b1c26eb;border-left-color:#e76262}.building-card.stress-1{border-left-color:#e4b34f}
+.event-stack { position:absolute; top:82px; left:50%; transform:translateX(-50%); display:grid; gap:6px; width:min(480px,50vw); z-index:7; }.town-event{padding:8px 12px;color:#f5edd8;background:#142239e8;border:1px solid #596b83;text-align:center;font-size:12px}.town-event.lightOff,.town-event.queue19{border-color:#e8655d;background:#3a1a25ee}.town-event.blocked{border-color:#e5b957}
+.actor-strip { position:absolute; right:18px; bottom:22px; display:grid; grid-template-columns:repeat(2,58px); gap:5px; z-index:7; }.actor-strip button{padding:7px 4px;border:1px solid #526a82;color:#dcecff;background:#14253be8;font:11px 'VCR OSD Mono';cursor:pointer}.actor-strip small{display:block;color:#77c9e9;margin-top:3px}
+.trace-drawer { position:absolute; z-index:20; inset:0 0 0 auto; width:min(410px,92vw); padding:82px 28px 30px; color:#e7edf4; background:#101a2df7; border-left:3px solid #d0af59; box-shadow:-18px 0 40px #050810aa; }.drawer-close{position:absolute;right:20px;top:78px;border:0;color:#fff;background:transparent;font-size:30px;cursor:pointer}.trace-drawer .eyebrow{color:#e5bd62;font-size:11px}.trace-drawer h2{font-size:22px;color:#fff}.cohort-number{margin:8px 0;padding:9px;background:#1b2a40;color:#91d9f1}.trace-drawer hr{border:0;border-top:1px solid #43526a;margin:22px 0}.trace-drawer blockquote{margin:18px 0;padding:16px;color:#fff6d7;background:#243044;border-left:4px solid #edc761;line-height:1.7}.measure-note{color:#8391a6;font-size:11px;line-height:1.6}
+@media(max-width:1050px){.impact-ribbon{width:calc(100vw - 240px)}.impact-story{min-width:230px}.impact-number{min-width:85px}}
+@media(max-width:820px){.headline-metrics{gap:8px}.headline-metrics span{font-size:9px}.headline-metrics b{font-size:13px}.policy-brand small{display:none}.event-stack{display:none}.building-panel{top:165px}.actor-strip{display:none}.day-night-toggle{display:none}.impact-ribbon{top:67px;width:calc(100vw - 18px)}.impact-story{min-width:180px}.impact-story strong{font-size:13px}.impact-number{padding:6px}.impact-number b{font-size:15px}.b-shutdown-callout{display:none}}
 
 .day-night-toggle:hover {
   transform: translateY(-1px);

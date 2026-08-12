@@ -1,0 +1,246 @@
+[
+  {
+    "round": 1,
+    "event": "announce_internal_mobility",
+    "intent": {
+      "strategy_priority": "ai_reorganization",
+      "layoff_direction": "maintain",
+      "internal_transfer_direction": "expand",
+      "relocation_direction": "offer",
+      "outsource_direction": "moderate",
+      "magnitude": "moderate",
+      "reasoning_summary": "AI 产品协同目标保持不变，先以内部转岗吸收，再处理无法匹配或无法迁移的岗位。",
+      "worry": "传统技能与 AI 岗位不匹配，且跨城迁移会降低内部转岗接受率。"
+    },
+    "settlement": {
+      "scenario_id": "A1",
+      "affected_workers": 1200,
+      "transfer_eligible": 322,
+      "internal_transfer_accepted": 167,
+      "relocation_declined": 155,
+      "channel_outsource": 180,
+      "government_bridged": 0,
+      "layoff_formal": 853,
+      "net_unemployment": 853,
+      "evidence_chain": [
+        {
+          "id": "fact:internal_mobility_offer",
+          "provenance": "public_fact",
+          "confidence": "L2"
+        },
+        {
+          "id": "mechanism:internal_mobility_buffer",
+          "provenance": "mechanism",
+          "confidence": "L2"
+        },
+        {
+          "id": "assumption:A1",
+          "provenance": "scenario_assumption",
+          "confidence": "L3"
+        },
+        {
+          "id": "rule:firm_settlement_v1:A1",
+          "provenance": "rule_result",
+          "confidence": "L3"
+        }
+      ]
+    },
+    "belief_snapshot": {
+      "ai_strategy_urgency": 0.82,
+      "internal_transfer_can_absorb": 0.4062,
+      "relocation_acceptance": 0.5195,
+      "government_consultation_effect": 0.25,
+      "future_hiring_cost": 0.45,
+      "public_reputation_risk": 0.48
+    },
+    "evidence_refs": [
+      "fact:internal_mobility_offer",
+      "mechanism:internal_mobility_buffer",
+      "assumption:A1",
+      "rule:firm_settlement_v1:A1"
+    ]
+  },
+  {
+    "round": 2,
+    "event": "observe_relocation_declines",
+    "intent": {
+      "strategy_priority": "ai_reorganization",
+      "layoff_direction": "maintain",
+      "internal_transfer_direction": "expand",
+      "relocation_direction": "offer",
+      "outsource_direction": "moderate",
+      "magnitude": "moderate",
+      "reasoning_summary": "AI 产品协同目标保持不变，先以内部转岗吸收，再处理无法匹配或无法迁移的岗位。",
+      "worry": "传统技能与 AI 岗位不匹配，且跨城迁移会降低内部转岗接受率。"
+    },
+    "settlement": {
+      "scenario_id": "A1",
+      "affected_workers": 1200,
+      "transfer_eligible": 322,
+      "internal_transfer_accepted": 167,
+      "relocation_declined": 155,
+      "channel_outsource": 180,
+      "government_bridged": 0,
+      "layoff_formal": 853,
+      "net_unemployment": 853,
+      "evidence_chain": [
+        {
+          "id": "fact:internal_mobility_offer",
+          "provenance": "public_fact",
+          "confidence": "L2"
+        },
+        {
+          "id": "mechanism:internal_mobility_buffer",
+          "provenance": "mechanism",
+          "confidence": "L2"
+        },
+        {
+          "id": "assumption:A1",
+          "provenance": "scenario_assumption",
+          "confidence": "L3"
+        },
+        {
+          "id": "rule:firm_settlement_v1:A1",
+          "provenance": "rule_result",
+          "confidence": "L3"
+        }
+      ]
+    },
+    "belief_snapshot": {
+      "ai_strategy_urgency": 0.82,
+      "internal_transfer_can_absorb": 0.3127,
+      "relocation_acceptance": 0.5192,
+      "government_consultation_effect": 0.25,
+      "future_hiring_cost": 0.45,
+      "public_reputation_risk": 0.48
+    },
+    "evidence_refs": [
+      "fact:internal_mobility_offer",
+      "mechanism:internal_mobility_buffer",
+      "assumption:A1",
+      "rule:firm_settlement_v1:A1"
+    ]
+  },
+  {
+    "round": 3,
+    "event": "add_relocation_support",
+    "intent": {
+      "strategy_priority": "ai_reorganization",
+      "layoff_direction": "maintain",
+      "internal_transfer_direction": "expand",
+      "relocation_direction": "offer",
+      "outsource_direction": "moderate",
+      "magnitude": "moderate",
+      "reasoning_summary": "AI 产品协同目标保持不变，先以内部转岗吸收，再处理无法匹配或无法迁移的岗位。",
+      "worry": "传统技能与 AI 岗位不匹配，且跨城迁移会降低内部转岗接受率。"
+    },
+    "settlement": {
+      "scenario_id": "A2",
+      "affected_workers": 1200,
+      "transfer_eligible": 322,
+      "internal_transfer_accepted": 225,
+      "relocation_declined": 97,
+      "channel_outsource": 180,
+      "government_bridged": 0,
+      "layoff_formal": 795,
+      "net_unemployment": 795,
+      "evidence_chain": [
+        {
+          "id": "fact:internal_mobility_offer",
+          "provenance": "public_fact",
+          "confidence": "L2"
+        },
+        {
+          "id": "mechanism:internal_mobility_buffer",
+          "provenance": "mechanism",
+          "confidence": "L2"
+        },
+        {
+          "id": "assumption:A2",
+          "provenance": "scenario_assumption",
+          "confidence": "L3"
+        },
+        {
+          "id": "rule:firm_settlement_v1:A2",
+          "provenance": "rule_result",
+          "confidence": "L3"
+        }
+      ]
+    },
+    "belief_snapshot": {
+      "ai_strategy_urgency": 0.82,
+      "internal_transfer_can_absorb": 0.2689,
+      "relocation_acceptance": 0.582,
+      "government_consultation_effect": 0.25,
+      "future_hiring_cost": 0.45,
+      "public_reputation_risk": 0.48
+    },
+    "evidence_refs": [
+      "fact:internal_mobility_offer",
+      "mechanism:internal_mobility_buffer",
+      "assumption:A2",
+      "rule:firm_settlement_v1:A2"
+    ]
+  },
+  {
+    "round": 4,
+    "event": "add_training_and_government_bridge",
+    "intent": {
+      "strategy_priority": "ai_reorganization",
+      "layoff_direction": "maintain",
+      "internal_transfer_direction": "expand",
+      "relocation_direction": "offer",
+      "outsource_direction": "moderate",
+      "magnitude": "moderate",
+      "reasoning_summary": "AI 产品协同目标保持不变，先以内部转岗吸收，再处理无法匹配或无法迁移的岗位。",
+      "worry": "传统技能与 AI 岗位不匹配，且跨城迁移会降低内部转岗接受率。"
+    },
+    "settlement": {
+      "scenario_id": "A3",
+      "affected_workers": 1200,
+      "transfer_eligible": 406,
+      "internal_transfer_accepted": 284,
+      "relocation_declined": 122,
+      "channel_outsource": 180,
+      "government_bridged": 240,
+      "layoff_formal": 496,
+      "net_unemployment": 496,
+      "evidence_chain": [
+        {
+          "id": "fact:internal_mobility_offer",
+          "provenance": "public_fact",
+          "confidence": "L2"
+        },
+        {
+          "id": "mechanism:internal_mobility_buffer",
+          "provenance": "mechanism",
+          "confidence": "L2"
+        },
+        {
+          "id": "assumption:A3",
+          "provenance": "scenario_assumption",
+          "confidence": "L3"
+        },
+        {
+          "id": "rule:firm_settlement_v1:A3",
+          "provenance": "rule_result",
+          "confidence": "L3"
+        }
+      ]
+    },
+    "belief_snapshot": {
+      "ai_strategy_urgency": 0.82,
+      "internal_transfer_can_absorb": 0.2576,
+      "relocation_acceptance": 0.6231,
+      "government_consultation_effect": 0.2325,
+      "future_hiring_cost": 0.45,
+      "public_reputation_risk": 0.48
+    },
+    "evidence_refs": [
+      "fact:internal_mobility_offer",
+      "mechanism:internal_mobility_buffer",
+      "assumption:A3",
+      "rule:firm_settlement_v1:A3"
+    ]
+  }
+]

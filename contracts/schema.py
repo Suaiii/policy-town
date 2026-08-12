@@ -17,7 +17,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
-CONTRACT_VERSION = "1.0"
+CONTRACT_VERSION = "1.2"
 
 # ---------------------------------------------------------------- 枚举
 
@@ -129,6 +129,13 @@ class WorkerAction(BaseModel):
     skill_type: SkillType
     savings_months: int = Field(..., description="存款能撑几个月，决定议价能力")
     rights_prior: float = Field(..., ge=0.0, le=1.0, description="相信维权能赢的概率")
+
+    cohort_weight: int = Field(1, description="该 agent 代表的人群规模，10 个之和 = 8500")
+    cohort_label: str = Field("", description="人群名称，如『A厂传统岗 · 无缓冲』")
+    cohort_share: float = Field(
+        0.0, ge=0.0, le=1.0,
+        description="本轮该人群中真正走了这条路的比例，由宏观 flows 反推",
+    )
 
     status: WorkerStatus = "employed"
     action: Optional[WorkerAction_] = Field(None, description="本轮无事发生则为 None")

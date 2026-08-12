@@ -1,14 +1,16 @@
 import { Graphics } from '@pixi/react';
 import { Graphics as PixiGraphics } from 'pixi.js';
 import { BUILDINGS, STREET_LIGHT_POSITIONS } from '../../city/v3/runtime.ts';
+import type { RoundFeed } from '../../city/v3/policyFeed.ts';
 
-const drawLights = (graphics: PixiGraphics) => {
+const drawLights = (graphics: PixiGraphics, feed?: RoundFeed) => {
   graphics.clear();
   BUILDINGS.forEach((building) => {
     const left = building.x - building.width / 2;
     const top = building.baseline - building.height;
     building.windows.forEach((window) => {
-      if (!window.active) return;
+      const hiringOn = feed?.buildings.find((item) => item.id === building.id)?.hiringLightOn ?? true;
+      if (!window.active || !hiringOn) return;
       graphics.beginFill(window.color, 0.95);
       graphics.drawRect(
         left + window.xRatio * building.width,
@@ -59,6 +61,6 @@ const drawLights = (graphics: PixiGraphics) => {
   });
 };
 
-export function LightingLayer() {
-  return <Graphics draw={drawLights} />;
+export function LightingLayer({ feed }: { feed?: RoundFeed }) {
+  return <Graphics draw={(graphics) => drawLights(graphics, feed)} />;
 }
