@@ -187,6 +187,31 @@ class ReverieServer:
       persona.save(save_folder)
 
 
+  def settle_policy_month(self):
+    """月度结算钩子：写入 policy/metrics.json（确定性）。"""
+    from policy.engine import settle_month
+    sim_folder = f"{fs_storage}/{self.sim_code}"  # 与 start_server 中一致的局部变量
+    policy_dir = f"{sim_folder}/policy"
+    os.makedirs(policy_dir, exist_ok=True)
+    state_file = f"{policy_dir}/state.json"
+    if os.path.exists(state_file):
+        with open(state_file) as f:
+            state = json.load(f)
+    else:
+        state = {"profiles": [], "firms": [], "policies": {}, "month": 0}
+    state["month"] += 1
+    result = settle_month(state["month"], state["profiles"], state["firms"],
+                          state["policies"], seed=self.step)
+    with open(state_file, "w") as f:
+        json.dump({"profiles": result["profiles"],
+                   "firms": result["firms"],
+                   "policies": state["policies"],
+                   "month": state["month"]}, f, ensure_ascii=False, indent=2)
+    with open(f"{policy_dir}/metrics_{state['month']}.json", "w") as f:
+        json.dump(result["metrics"], f, ensure_ascii=False, indent=2)
+    return result
+
+
   def start_path_tester_server(self): 
     """
     Starts the path tester server. This is for generating the spatial memory
@@ -405,6 +430,11 @@ class ReverieServer:
           # current time moves by <sec_per_step> amount. 
           self.step += 1
           self.curr_time += datetime.timedelta(seconds=self.sec_per_step)
+
+          # 跨天且处于深夜（00:00-06:00）时触发月度结算
+          if (self.curr_time.hour < 6 and self.step > 0
+                  and (self.step // 8640) != ((self.step - 1) // 8640)):
+              self.settle_policy_month()
 
           int_counter -= 1
           
