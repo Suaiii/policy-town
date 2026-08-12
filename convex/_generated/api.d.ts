@@ -29,6 +29,7 @@ import type * as aiTown_player from "../aiTown/player.js";
 import type * as aiTown_playerDescription from "../aiTown/playerDescription.js";
 import type * as aiTown_world from "../aiTown/world.js";
 import type * as aiTown_worldMap from "../aiTown/worldMap.js";
+import type * as announce from "../announce.js";
 import type * as cognitive_adapter from "../cognitive/adapter.js";
 import type * as cognitive_admin from "../cognitive/admin.js";
 import type * as cognitive_associativeMemory from "../cognitive/associativeMemory.js";
@@ -114,6 +115,7 @@ declare const fullApi: ApiFromModules<{
   "aiTown/playerDescription": typeof aiTown_playerDescription;
   "aiTown/world": typeof aiTown_world;
   "aiTown/worldMap": typeof aiTown_worldMap;
+  announce: typeof announce;
   "cognitive/adapter": typeof cognitive_adapter;
   "cognitive/admin": typeof cognitive_admin;
   "cognitive/associativeMemory": typeof cognitive_associativeMemory;

@@ -122,6 +122,135 @@ body {
   line-height: 1;
 }
 
+/* 政府大楼上方的「发布公告」入口，与昼夜切换同像素风 */
+.gov-announce-entry {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 14px));
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 40px;
+  padding: 0 14px 2px 12px;
+  border: 3px solid #d8c37b;
+  border-radius: 7px;
+  color: #fff4d6;
+  background: #182331e8;
+  box-shadow: 0 4px 0 #0a101d, 0 8px 18px #07101c66;
+  font-family: 'VCR OSD Mono', monospace;
+  font-size: 15px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  animation: gov-announce-bob 2.4s ease-in-out infinite;
+  transition: background 240ms ease, border-color 240ms ease;
+  z-index: 5;
+}
+
+.gov-announce-entry:hover {
+  background: #25334aee;
+}
+
+.gov-announce-entry:active {
+  animation: none;
+  transform: translate(-50%, calc(-100% - 11px));
+  box-shadow: 0 1px 0 #0a101d;
+}
+
+.gov-announce-entry:focus-visible {
+  outline: 3px solid #76e1ff;
+  outline-offset: 3px;
+}
+
+/* 大楼与按钮之间的引导小三角 */
+.gov-announce-entry::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #d8c37b;
+}
+
+@keyframes gov-announce-bob {
+  0%, 100% { transform: translate(-50%, calc(-100% - 14px)); }
+  50% { transform: translate(-50%, calc(-100% - 20px)); }
+}
+
+/* 发布公告悬浮窗 */
+.announce-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #05080fd9;
+  z-index: 20;
+}
+
+.announce-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(960px, 92vw);
+  height: min(680px, 86vh);
+  border: 3px solid #d8c37b;
+  border-radius: 7px;
+  background: #101a2c;
+  box-shadow: 0 6px 0 #0a101d, 0 24px 48px #050a14cc;
+  overflow: hidden;
+}
+
+.announce-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 48px;
+  padding: 0 8px 0 14px;
+  border-bottom: 3px solid #d8c37b;
+  background: #182331;
+  color: #fff4d6;
+  font-family: 'VCR OSD Mono', monospace;
+  font-size: 15px;
+  flex: none;
+}
+
+.announce-modal-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.announce-modal-close {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid #d8c37b;
+  border-radius: 5px;
+  color: #fff4d6;
+  background: #25334a;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.announce-modal-close:hover {
+  background: #31435f;
+}
+
+.announce-modal-close:focus-visible {
+  outline: 3px solid #76e1ff;
+  outline-offset: 2px;
+}
+
+.announce-modal-frame {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: #fff;
+}
+
 .game-background {
   background: linear-gradient(rgba(41, 41, 41, 0.8), rgba(41, 41, 41, 0.8)),
     url(../assets/background.webp);
