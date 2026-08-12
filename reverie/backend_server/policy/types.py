@@ -36,6 +36,7 @@ class FirmLedger:
     skills_needed: Dict[str, int] = field(default_factory=dict)
     layoff_risk: float = 0.0
     recruiting: int = 0
+    expected_future_firing_cost: float = 0.0
 
     def to_dict(self):
         return asdict(self)

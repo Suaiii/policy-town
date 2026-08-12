@@ -19,7 +19,8 @@ class TestTypes(unittest.TestCase):
                        salary_level={"A型": 35, "B型": 22, "C型": 18, "D型": 12},
                        profit=120, labor_cost=80,
                        skills_needed={"紧缺": 2, "一般": 1},
-                       layoff_risk=0.3, recruiting=2)
+                       layoff_risk=0.3, recruiting=2,
+                       expected_future_firing_cost=0.2)
         self.assertEqual(f, FirmLedger.from_dict(f.to_dict()))
 
     def test_city_metrics(self):
