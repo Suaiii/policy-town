@@ -40,5 +40,14 @@ class TestPolicies(unittest.TestCase):
             self.assertIn("type", p)
             self.assertIn("target_segments", p)
 
+class TestElasticity(unittest.TestCase):
+    def test_elasticity_lookup(self):
+        from policy.elasticity import ElasticityTable
+        et = ElasticityTable()
+        val = et.effect("housing_subsidy", "A型", "跳槽意愿")
+        self.assertIsInstance(val, float)
+        self.assertEqual(et.effect("nonexistent", "A型", "跳槽意愿"), 0.0)
+        self.assertEqual(et.effect("housing_subsidy", "X型", "跳槽意愿"), 0.0)
+
 if __name__ == "__main__":
     unittest.main()
