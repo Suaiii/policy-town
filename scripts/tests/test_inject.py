@@ -38,5 +38,55 @@ family_tie: 外地
         self.assertEqual(p["segment"], "B型")
         self.assertEqual(p["employer"], "华芯半导体")
 
+class TestGen(unittest.TestCase):
+    def test_gen_scratch_includes_talent_fields(self):
+        from inject_agents import gen_scratch
+        p = parse_persona("""
+name: 李四
+age: 30
+education_tier: 普通
+major_type: 紧缺
+innate: 踏实
+learned: 背景故事
+lifestyle: 早睡早起
+daily_plan_req: 上班
+employer: 华芯半导体
+salary: 24
+savings_months: 4
+risk_aversion: 0.5
+family_tie: 外地
+""")
+        scratch = gen_scratch(p)
+        self.assertEqual(scratch["name"], "李四")
+        self.assertEqual(scratch["segment"], "B型")
+        self.assertEqual(scratch["employer"], "华芯半导体")
+        self.assertEqual(scratch["salary"], 24)
+
+    def test_gen_memory_nodes(self):
+        from inject_agents import gen_memory_files
+        p = parse_persona("""
+name: 王五
+age: 25
+education_tier: 名校
+major_type: 一般
+innate: 开朗
+learned: 背景
+lifestyle: 正常
+daily_plan_req: 上班
+employer: 恒信银行
+salary: 18
+savings_months: 6
+risk_aversion: 0.5
+family_tie: 本地
+initial_memories:
+  - "去年拿了年终奖"
+  - "想买房"
+""")
+        nodes, embeddings, kw = gen_memory_files(p, seed=1)
+        self.assertEqual(len(nodes), 2)
+        self.assertIn("node_2", nodes)
+        self.assertEqual(nodes["node_1"]["subject"], "王五")
+        self.assertIn("王五", nodes["node_1"]["description"])
+
 if __name__ == "__main__":
     unittest.main()

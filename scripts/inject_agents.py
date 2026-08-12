@@ -100,3 +100,112 @@ def load_personas(directory=PERSONAS_DIR):
         with open(os.path.join(directory, fn), encoding="utf-8") as f:
             out.append(parse_persona(f.read()))
     return out
+
+
+def gen_scratch(p):
+    name = p["name"]
+    words = name.split()
+    first_name = words[0]
+    last_name = " ".join(words[1:]) if len(words) > 1 else ""
+    employer = p.get("employer") or "待业"
+    return {
+        "vision_r": 8,
+        "att_bandwidth": 8,
+        "retention": 8,
+        "curr_time": None,
+        "curr_tile": None,
+        "daily_plan_req": p["daily_plan_req"],
+        "name": name,
+        "first_name": first_name,
+        "last_name": last_name,
+        "age": p["age"],
+        "innate": p["innate"],
+        "learned": p["learned"],
+        "currently": f"{name} 正在 {employer} 工作/生活。",
+        "lifestyle": p["lifestyle"],
+        "living_area": p.get("living_area", "星河市:市民广场:中央广场:长椅"),
+        "concept_forget": 100,
+        "daily_reflection_time": 180,
+        "daily_reflection_size": 5,
+        "overlap_reflect_th": 4,
+        "kw_strg_event_reflect_th": 10,
+        "kw_strg_thought_reflect_th": 9,
+        "recency_w": 1,
+        "relevance_w": 1,
+        "importance_w": 1,
+        "recency_decay": 0.995,
+        "importance_trigger_max": 150,
+        "importance_trigger_curr": 150,
+        "importance_ele_n": 0,
+        "thought_count": 5,
+        "daily_req": [],
+        "f_daily_schedule": [],
+        "f_daily_schedule_hourly_org": [],
+        "act_address": None,
+        "act_start_time": None,
+        "act_duration": None,
+        "act_description": None,
+        "act_pronunciatio": None,
+        "act_event": None,
+        "act_obj_description": None,
+        "act_obj_pronunciatio": None,
+        "act_obj_event": None,
+        "chatting_with": None,
+        "chat": None,
+        "chatting_with_buffer": None,
+        "chatting_end_time": None,
+        "act_path_set": False,
+        "planned_path": [],
+        "segment": p["segment"],
+        "education_tier": p["education_tier"],
+        "major_type": p["major_type"],
+        "employer": p.get("employer"),
+        "salary": p["salary"],
+        "savings_months": p["savings_months"],
+        "risk_aversion": p["risk_aversion"],
+        "family_tie": p["family_tie"],
+        "job_searching": p.get("job_searching", False),
+        "offer": None,
+    }
+
+
+def _embedding(name, i, seed):
+    out = []
+    for j in range(128):
+        h = hashlib.sha256(f"{seed+i}:{j}".encode()).digest()
+        v = (h[j % 32] + h[(j * 7 + 3) % 32]) / 512.0
+        out.append(round(v, 6))
+    return out
+
+
+def gen_memory_files(p, seed=0):
+    name = p["name"]
+    memories = p.get("initial_memories") or []
+    nodes = {}
+    embeddings = {}
+    kw_events = {}
+    for i, desc in enumerate(memories, start=1):
+        key = f"{name}_{i}"
+        embeddings[key] = _embedding(name, i, seed)
+        nodes[f"node_{i}"] = {
+            "node_count": i,
+            "type_count": i,
+            "type": "event",
+            "depth": 0,
+            "created": "2026-01-01 00:00:00",
+            "expiration": None,
+            "subject": name,
+            "predicate": "记得",
+            "object": desc,
+            "description": f"{name} 记得：{desc}",
+            "embedding_key": key,
+            "poignancy": 5,
+            "keywords": [desc[:4]],
+            "filling": None,
+        }
+        kw_events[desc[:4]] = kw_events.get(desc[:4], 0) + 1
+    kw_strength = {
+        "kw_strength_event": kw_events,
+        "kw_strength_thought": {},
+    }
+    return nodes, embeddings, kw_strength
