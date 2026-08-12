@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 """Convert policy-town city-v3 manifest into Stanford reverie maze data."""
-import csv
 import json
 import os
 import sys
 
-MANIFEST = "city-v3-manifest.json"   # 完整路径由 --manifest 传入
-OUT_DIR = "maze_out"                 # 输出目录，由 --out 传入
 TILE = 32
 COLLISION_ID = "32125"
 WALKABLE = "0"
