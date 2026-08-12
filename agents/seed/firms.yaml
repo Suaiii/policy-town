@@ -1,0 +1,49 @@
+firms:
+  - name: 星云科技
+    stage: 成熟期
+    salary_level: {A型: 35, B型: 22, C型: 18, D型: 12}
+    profit: 120
+    labor_cost: 80
+    skills_needed: {紧缺: 2, 一般: 1}
+    layoff_risk: 0.3
+    recruiting: 2
+  - name: 华芯半导体
+    stage: 增长期
+    salary_level: {A型: 38, B型: 24, C型: 16, D型: 11}
+    profit: 90
+    labor_cost: 60
+    skills_needed: {紧缺: 3, 一般: 0}
+    layoff_risk: 0.2
+    recruiting: 3
+  - name: 智联软件
+    stage: 转型期
+    salary_level: {A型: 40, B型: 25, C型: 20, D型: 12}
+    profit: 60
+    labor_cost: 45
+    skills_needed: {紧缺: 1, 一般: 1}
+    layoff_risk: 0.5
+    recruiting: 1
+  - name: 星河重工
+    stage: 制造型
+    salary_level: {A型: 30, B型: 20, C型: 15, D型: 12}
+    profit: 70
+    labor_cost: 55
+    skills_needed: {紧缺: 1, 一般: 2}
+    layoff_risk: 0.4
+    recruiting: 1
+  - name: 恒信银行
+    stage: 金融型
+    salary_level: {A型: 32, B型: 20, C型: 16, D型: 11}
+    profit: 110
+    labor_cost: 65
+    skills_needed: {紧缺: 0, 一般: 1}
+    layoff_risk: 0.2
+    recruiting: 1
+  - name: 阳光地产
+    stage: 地产型
+    salary_level: {A型: 28, B型: 18, C型: 14, D型: 10}
+    profit: 50
+    labor_cost: 40
+    skills_needed: {紧缺: 0, 一般: 2}
+    layoff_risk: 0.6
+    recruiting: 1

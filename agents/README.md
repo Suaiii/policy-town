@@ -2,6 +2,24 @@
 
 本目录存放星河市所有智能体（persona）与企业（firm）的 YAML 设定，是"Agent 设定文档注入管线"（P0）的输入源。
 
+## 快速开始（30 秒跑通）
+
+```bash
+# 1. 用预置的 6 企业 + 4 角色初始化（可先浏览再复制）
+cp agents/seed/firms.yaml agents/firms.yaml
+mkdir -p agents/personas
+cp agents/seed/personas/*.yaml agents/personas/
+
+# 2. 注入（--dry-run 先看解析结果）
+python3 scripts/inject_agents.py --dry-run
+python3 scripts/inject_agents.py
+
+# 3. 启动模拟（reverie 交互：run <步数> 推进，fin 结束）
+cd reverie/backend_server && python3 reverie.py
+```
+
+> agents/personas/ 与 agents/firms.yaml 是"你的世界配置"（可自由增删改）；agents/seed/ 是预置样例（只读参考）。
+
 ## 管线工作流
 
 ```bash
@@ -31,8 +49,8 @@ cd reverie && python3 reverie.py
 | `learned` | 是 | 背景故事 |
 | `lifestyle` | 是 | 作息 |
 | `daily_plan_req` | 是 | 每日计划要求 |
-| `initial_memories` | 否 | 初始记忆流，写入 associative_memory，最多 10 条 |
-| `employer` | 是 | 企业名（必须存在于 firms.yaml），`null` 表示待业 |
+| `initial_memories` | 否 | 初始记忆流，写入 associative_memory，建议不超过 10 条 |
+| `employer` | 是 | 企业名（不在 firms.yaml 时给出警告，视为镇内既有雇主），`null` 表示待业 |
 | `salary` | 是 | 年薪（万元） |
 | `savings_months` | 是 | 储蓄月数 |
 | `risk_aversion` | 是 | 0-1，1=极度保守 |
@@ -52,7 +70,7 @@ cd reverie && python3 reverie.py
 
 ## 常见问题
 
-- **employer 必须匹配 firms.yaml**：persona 中的 `employer` 名称必须与 `agents/firms.yaml` 中某个 `firms[].name` 完全一致，否则注入脚本报错；待业写 `null`。
-- **initial_memories 最多 10 条**：超出部分会被截断。
-- **注入是追加不覆盖**：已存在同名 persona 时，脚本只追加/更新设定，不会清空其已有记忆与社交关系。
+- **employer 不匹配只警告不报错**：persona 中的 `employer` 名称若与 `agents/firms.yaml` 中某个 `firms[].name` 不一致，脚本给出警告，视为镇内既有雇主（不纳入政策引擎台账）；待业写 `null`。
+- **initial_memories 建议不超过 10 条**：实现不截断，超出会全部写入。
+- **bootstrap 文件为覆盖写**：同名 persona 的 scratch / spatial / associative 记忆文件会被覆盖；`meta.json` 的 `persona_names` 追加不重复。
 - **运行后如何启动模拟**：`cd reverie && python3 reverie.py`，在交互界面使用 `run` 推进模拟、`fin` 结束并保存。
