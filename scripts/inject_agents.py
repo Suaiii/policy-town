@@ -209,3 +209,81 @@ def gen_memory_files(p, seed=0):
         "kw_strength_thought": {},
     }
     return nodes, embeddings, kw_strength
+
+
+def _write_json(path, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def inject_persona(p, sim, idx):
+    nodes, embeddings, kw = gen_memory_files(p)
+    pdir = os.path.join(sim, "personas", p["name"], "bootstrap_memory")
+    _write_json(os.path.join(pdir, "scratch.json"), gen_scratch(p))
+    _write_json(os.path.join(pdir, "spatial_memory.json"), {"星河市": TREE})
+    _write_json(os.path.join(pdir, "associative_memory", "nodes.json"), nodes)
+    _write_json(os.path.join(pdir, "associative_memory", "embeddings.json"), embeddings)
+    _write_json(os.path.join(pdir, "associative_memory", "kw_strength.json"), kw)
+
+
+def inject_all(personas, firms, sim, start_step=0):
+    firm_names = {f["name"] for f in firms}
+    for p in personas:
+        if p.get("employer") is not None and p["employer"] not in firm_names:
+            raise ValueError(f"persona {p['name']} 的 employer '{p['employer']}' 不在 firms 中")
+
+    for idx, p in enumerate(personas):
+        inject_persona(p, sim, idx)
+
+    meta_path = os.path.join(sim, "reverie", "meta.json")
+    meta = json.load(open(meta_path, encoding="utf-8"))
+    names = meta.setdefault("persona_names", [])
+    for p in personas:
+        if p["name"] not in names:
+            names.append(p["name"])
+    _write_json(meta_path, meta)
+
+    env_path = os.path.join(sim, "environment", f"{start_step}.json")
+    env = json.load(open(env_path, encoding="utf-8"))
+    for idx, p in enumerate(personas):
+        x, y = SPAWN_POOL[(start_step + idx) % len(SPAWN_POOL)]
+        env[p["name"]] = {"x": x, "y": y}
+    _write_json(env_path, env)
+
+    st_path = os.path.join(sim, "policy", "state.json")
+    st = json.load(open(st_path, encoding="utf-8"))
+    st_profiles = st.setdefault("profiles", [])
+    for p in personas:
+        st_profiles.append({
+            "name": p["name"],
+            "segment": p["segment"],
+            "employer": p.get("employer"),
+            "salary": p["salary"],
+            "savings_months": p["savings_months"],
+            "risk_aversion": p["risk_aversion"],
+            "family_tie": p["family_tie"],
+            "job_searching": p.get("job_searching", False),
+            "offer": None,
+        })
+    st_firms = st.setdefault("firms", [])
+    for f in firms:
+        entry = {
+            "firm": f["name"],
+            "stage": f.get("stage"),
+            "headcount": {},
+            "salary_level": f.get("salary_level", {}),
+            "profit": f.get("profit", 0),
+            "labor_cost": f.get("labor_cost", 0),
+            "skills_needed": f.get("skills_needed", {}),
+            "layoff_risk": f.get("layoff_risk", 0.0),
+            "recruiting": f.get("recruiting", 0),
+            "expected_future_firing_cost": 0.0,
+        }
+        existing = next((e for e in st_firms if e["firm"] == entry["firm"]), None)
+        if existing:
+            existing.update(entry)
+        else:
+            st_firms.append(entry)
+    _write_json(st_path, st)
+    return {"personas": len(personas), "firms": len(firms)}

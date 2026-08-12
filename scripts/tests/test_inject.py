@@ -88,5 +88,55 @@ initial_memories:
         self.assertEqual(nodes["node_1"]["subject"], "王五")
         self.assertIn("王五", nodes["node_1"]["description"])
 
+class TestInject(unittest.TestCase):
+    def test_inject_writes_all_targets(self):
+        from inject_agents import inject_all, TREE
+        import tempfile, json, os
+        with tempfile.TemporaryDirectory() as tmp:
+            sim = os.path.join(tmp, "sim")
+            os.makedirs(os.path.join(sim, "personas"))
+            os.makedirs(os.path.join(sim, "environment"))
+            os.makedirs(os.path.join(sim, "reverie"))
+            os.makedirs(os.path.join(sim, "policy"))
+            with open(os.path.join(sim, "reverie", "meta.json"), "w") as f:
+                json.dump({"persona_names": [], "step": 0}, f)
+            with open(os.path.join(sim, "environment", "0.json"), "w") as f:
+                json.dump({}, f)
+            with open(os.path.join(sim, "policy", "state.json"), "w") as f:
+                json.dump({"profiles": [], "firms": [], "policies": {}, "month": 0}, f)
+            p = parse_persona("""
+name: 赵六
+age: 26
+education_tier: 普通
+major_type: 一般
+innate: 稳重
+learned: 背景
+lifestyle: 正常
+daily_plan_req: 上班
+employer: 星河重工
+salary: 12
+savings_months: 3
+risk_aversion: 0.6
+family_tie: 外地
+""")
+            firms = [{"name": "星河重工", "stage": "制造型",
+                      "salary_level": {"A型": 30, "B型": 20, "C型": 15, "D型": 12},
+                      "profit": 60, "labor_cost": 40,
+                      "skills_needed": {"紧缺": 1, "一般": 2},
+                      "layoff_risk": 0.4, "recruiting": 1}]
+            inject_all([p], firms, sim, start_step=0)
+            meta = json.load(open(os.path.join(sim, "reverie", "meta.json")))
+            self.assertIn("赵六", meta["persona_names"])
+            env = json.load(open(os.path.join(sim, "environment", "0.json")))
+            self.assertIn("赵六", env)
+            st = json.load(open(os.path.join(sim, "policy", "state.json")))
+            self.assertEqual(st["profiles"][0]["name"], "赵六")
+            self.assertEqual(st["firms"][0]["firm"], "星河重工")
+            # persona 三件套存在
+            pdir = os.path.join(sim, "personas", "赵六", "bootstrap_memory")
+            self.assertTrue(os.path.exists(os.path.join(pdir, "scratch.json")))
+            self.assertTrue(os.path.exists(os.path.join(pdir, "spatial_memory.json")))
+            self.assertTrue(os.path.exists(os.path.join(pdir, "associative_memory", "nodes.json")))
+
 if __name__ == "__main__":
     unittest.main()
