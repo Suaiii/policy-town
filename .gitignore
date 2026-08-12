@@ -3,6 +3,9 @@ frontend_server/settings/local.py
 storage/*
 static_dirs/*
 
+# 前后端运行时信号文件（reverie 每次实例化都会覆写）
+environment/frontend_server/temp_storage/*.json
+
 !storage/base_the_ville_isabella_maria_klaus/*
 !storage/base_the_ville_n25/*
 
