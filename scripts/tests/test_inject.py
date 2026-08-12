@@ -138,5 +138,41 @@ family_tie: 外地
             self.assertTrue(os.path.exists(os.path.join(pdir, "spatial_memory.json")))
             self.assertTrue(os.path.exists(os.path.join(pdir, "associative_memory", "nodes.json")))
 
+    def test_inject_employer_not_in_firms_is_warning(self):
+        from inject_agents import inject_all
+        import tempfile, json, os
+        with tempfile.TemporaryDirectory() as tmp:
+            sim = os.path.join(tmp, "sim")
+            os.makedirs(os.path.join(sim, "personas"))
+            os.makedirs(os.path.join(sim, "environment"))
+            os.makedirs(os.path.join(sim, "reverie"))
+            os.makedirs(os.path.join(sim, "policy"))
+            with open(os.path.join(sim, "reverie", "meta.json"), "w") as f:
+                json.dump({"persona_names": [], "step": 0}, f)
+            with open(os.path.join(sim, "environment", "0.json"), "w") as f:
+                json.dump({}, f)
+            with open(os.path.join(sim, "policy", "state.json"), "w") as f:
+                json.dump({"profiles": [], "firms": [], "policies": {}, "month": 0}, f)
+            p = parse_persona("""
+name: 集成测试
+age: 29
+education_tier: 普通
+major_type: 紧缺
+innate: 坚韧
+learned: 背景
+lifestyle: 正常
+daily_plan_req: 上班
+employer: 华芯半导体
+salary: 24
+savings_months: 8
+risk_aversion: 0.6
+family_tie: 外地
+""")
+            firms = [{"name": "星云科技", "stage": "成熟期"}]
+            result = inject_all([p], firms, sim, start_step=0)
+            self.assertEqual(result["personas"], 1)
+            st = json.load(open(os.path.join(sim, "policy", "state.json")))
+            self.assertEqual(st["profiles"][0]["employer"], "华芯半导体")
+
 if __name__ == "__main__":
     unittest.main()

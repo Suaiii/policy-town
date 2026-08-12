@@ -231,7 +231,8 @@ def inject_all(personas, firms, sim, start_step=0):
     firm_names = {f["name"] for f in firms}
     for p in personas:
         if p.get("employer") is not None and p["employer"] not in firm_names:
-            raise ValueError(f"persona {p['name']} 的 employer '{p['employer']}' 不在 firms 中")
+            print(f"警告: persona {p['name']} 的 employer '{p['employer']}' 不在 firms.yaml 中"
+                  f"（视为镇内既有雇主，不纳入政策引擎台账）")
 
     for idx, p in enumerate(personas):
         inject_persona(p, sim, idx)
