@@ -18,7 +18,7 @@ def build_applicant_pool(profiles):
 
 
 def match_market(profiles, firms, rng, policy_multipliers=None):
-    """撮合：企业按名额选人（优先本地、低风险），人才按期望薪资接受。
+    """撮合：企业按名额选人（按风险偏好排序），人才按期望薪资接受。
 
     返回 (更新后的 profiles, 更新后的 firms)
     """

@@ -1,4 +1,5 @@
 """月度结算主流程 —— 确定性：同输入同输出（seed 固定）"""
+import copy
 import random
 
 from .firms import decide_firm_month
@@ -14,6 +15,8 @@ def settle_month(month, profiles, firms, policies, seed=0):
            "events": [...]}  全部可 JSON 序列化。
     """
     rng = random.Random(seed)
+    profiles = copy.deepcopy(profiles)
+    firms = copy.deepcopy(firms)
     et = load_table()
     events = []
 
