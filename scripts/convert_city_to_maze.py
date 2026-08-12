@@ -107,6 +107,21 @@ def building_tiles(manifest):
     return result
 
 
+def plaza_tiles(manifest, tiles):
+    """civic-zone（kind=public）内、未被建筑 rect 覆盖的 tile；中央广场（无 rect）"""
+    zone = next((z for z in manifest.get("zones", []) if z.get("kind") == "public"), None)
+    if zone is None:
+        return set()
+    x0 = tile_floor(zone["x"]); y0 = tile_floor(zone["y"])
+    x1 = tile_floor(zone["x"] + zone["width"]); y1 = tile_floor(zone["y"] + zone["height"])
+    occupied = set()
+    for owner, cells in tiles.items():
+        if owner in OWNER_MAP:      # 建筑优先：只剔除语义建筑（长椅等广场设施保留）
+            occupied |= cells
+    return {(x, y) for x in range(x0, min(x1, 60)) for y in range(y0, min(y1, 34))
+            if (x, y) not in occupied}
+
+
 def write_semantic_layers(manifest, out_dir, meta):
     tiles = building_tiles(manifest)
     h, w = meta["maze_height"], meta["maze_width"]
@@ -124,6 +139,11 @@ def write_semantic_layers(manifest, out_dir, meta):
         for (x, y) in cells:
             sector[y][x] = sid
             arena[y][x] = aid
+
+    # 中央广场（开放区域无 rect）：sector 33003 + arena 33106
+    for (x, y) in plaza_tiles(manifest, tiles):
+        sector[y][x] = SECTORS["GOV"][0]
+        arena[y][x] = ARENAS["PLAZA"][0]
 
     # 出生点：每栋楼门口（portal 坐标）与广场中心
     for portal in manifest["portals"]:
