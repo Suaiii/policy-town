@@ -25,12 +25,16 @@ import { internal } from '../_generated/api';
 import { HistoricalObject } from '../engine/historicalObject';
 import { AgentDescription, serializedAgentDescription } from './agentDescription';
 import { parseMap, serializeMap } from '../util/object';
+import { DEFAULT_GAME_MINUTES_PER_REAL_SECOND } from '../constants';
 
 const gameState = v.object({
   world: v.object(serializedWorld),
   playerDescriptions: v.array(v.object(serializedPlayerDescription)),
   agentDescriptions: v.array(v.object(serializedAgentDescription)),
   worldMap: v.object(serializedWorldMap),
+  // Cognitive brain configuration for this world (see convex/cognitive).
+  cognitiveEnabled: v.boolean(),
+  gameMinutesPerRealSecond: v.optional(v.number()),
 });
 type GameState = Infer<typeof gameState>;
 
@@ -62,6 +66,10 @@ export class Game extends AbstractGame {
 
   numPathfinds: number;
 
+  // When true, agents in this world use the cognitive brain.
+  cognitiveEnabled: boolean;
+  gameMinutesPerRealSecond: number;
+
   constructor(
     engine: Doc<'engines'>,
     public worldId: Id<'worlds'>,
@@ -84,6 +92,9 @@ export class Game extends AbstractGame {
     this.historicalLocations = new Map();
 
     this.numPathfinds = 0;
+
+    this.cognitiveEnabled = state.cognitiveEnabled;
+    this.gameMinutesPerRealSecond = state.gameMinutesPerRealSecond ?? DEFAULT_GAME_MINUTES_PER_REAL_SECOND;
   }
 
   static async load(
@@ -140,6 +151,9 @@ export class Game extends AbstractGame {
         playerDescriptions,
         agentDescriptions,
         worldMap,
+        cognitiveEnabled: worldStatus.cognitiveEnabled,
+        gameMinutesPerRealSecond:
+          worldStatus.cognitiveGameMinutesPerRealSecond ?? DEFAULT_GAME_MINUTES_PER_REAL_SECOND,
       },
     };
   }

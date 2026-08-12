@@ -72,6 +72,17 @@ export const ACTIVITIES = [
 
 export const ENGINE_ACTION_DURATION = 30000;
 
+// How many game-minutes pass per real second for the cognitive module's game
+// clock (see convex/cognitive/time.ts).
+export const DEFAULT_GAME_MINUTES_PER_REAL_SECOND = 2;
+
+// How often a cognitive agent runs a full perceive->retrieve->plan->execute
+// step (in real ms). Kept well above 1s since each step makes LLM calls.
+export const COGNITIVE_WAKEUP_INTERVAL = 10_000;
+
+// Vision radius (in tiles) for the cognitive perceive module.
+export const COGNITIVE_VISION_RADIUS = 6;
+
 // Bound the number of pathfinding searches we do per game step.
 export const MAX_PATHFINDS_PER_STEP = 16;
 

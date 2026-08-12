@@ -1,4 +1,5 @@
-export default {
+module.exports = {
+  ignorePatterns: ['dist/', 'node_modules/'],
   parser: '@typescript-eslint/parser', // Specifies the ESLint parser
   plugins: ['@typescript-eslint'],
   extends: [
@@ -6,7 +7,8 @@ export default {
     'plugin:@typescript-eslint/recommended-type-checked',
   ],
   parserOptions: {
-    project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
+    project: '../tsconfig.json',
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
     sourceType: 'module', // Allows for the use of imports
   },

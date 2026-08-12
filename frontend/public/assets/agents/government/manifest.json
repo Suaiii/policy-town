@@ -1,0 +1,25 @@
+{
+  "agents": [
+    {
+      "id": "yan-guoqiang",
+      "name": "严国强",
+      "role": "江州省南山县委书记",
+      "faction": "激进改革派",
+      "portrait": "/assets/agents/government/yan-guoqiang.png"
+    },
+    {
+      "id": "chen-shirong",
+      "name": "陈世荣",
+      "role": "南山县委副书记、县长",
+      "faction": "本土稳健派",
+      "portrait": "/assets/agents/government/chen-shirong.png"
+    },
+    {
+      "id": "song-pingan",
+      "name": "宋平安",
+      "role": "南山县发改局兼财政局局长",
+      "faction": "绝对避责派",
+      "portrait": "/assets/agents/government/song-pingan.png"
+    }
+  ]
+}

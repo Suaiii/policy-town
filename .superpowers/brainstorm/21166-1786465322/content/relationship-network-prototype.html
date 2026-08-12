@@ -346,6 +346,22 @@
       text-anchor: middle;
       dominant-baseline: central;
     }
+    .node .portrait {
+      clip-path: inset(0 round 5px);
+      pointer-events: none;
+    }
+    .drawer-portrait {
+      width: 80px;
+      height: 80px;
+      display: block;
+      margin: 0 auto 14px;
+      border: 1px solid #ff806f;
+      border-radius: 17px;
+      object-fit: cover;
+      object-position: 50% 18%;
+      image-rendering: pixelated;
+      box-shadow: 0 0 0 5px #ff7c6b21, 0 8px 18px #aebdce;
+    }
     .node .person-label {
       font-size: 11px;
       font-weight: 700;
@@ -641,6 +657,7 @@
       summary,
       attributes = {},
       icon = "👨🏻‍💼",
+      portrait = null,
     ) => ({
       uuid,
       name,
@@ -650,6 +667,7 @@
       summary,
       attributes,
       icon,
+      portrait,
     });
     const nodes = [
       N(
@@ -671,6 +689,7 @@
         "产业政策研究员，长期关注集成电路产业。",
         { 职位: "产业研究员" },
         "👨🏻‍💼",
+        "agent-portraits/zhang-hua.png",
       ),
       N(
         "m2",
@@ -681,6 +700,7 @@
         "半导体行业分析师。",
         { 职位: "行业分析师" },
         "👨🏻",
+        "agent-portraits/li-chen.png",
       ),
       N(
         "m3",
@@ -691,6 +711,7 @@
         "供应链战略负责人。",
         { 职位: "战略负责人" },
         "👩🏻‍💼",
+        "agent-portraits/wang-shan.png",
       ),
       N(
         "m4",
@@ -1097,17 +1118,31 @@
             fill: type(n) === "Person" ? "#fff" : C[type(n)] + "18",
           }),
         );
-        g.append(
-          el(
-            "text",
-            {
-              x: 0,
-              y: n.uuid === "smic" ? 0 : 0,
-              class: type(n) === "Person" ? "face" : "org-icon",
-            },
-            n.icon,
-          ),
-        );
+        if (n.portrait) {
+          g.append(
+            el("image", {
+              x: -16,
+              y: -16,
+              width: 32,
+              height: 32,
+              href: n.portrait,
+              preserveAspectRatio: "xMidYMin slice",
+              class: "portrait",
+            }),
+          );
+        } else {
+          g.append(
+            el(
+              "text",
+              {
+                x: 0,
+                y: 0,
+                class: type(n) === "Person" ? "face" : "org-icon",
+              },
+              n.icon,
+            ),
+          );
+        }
         g.append(
           el("rect", {
             x: n.uuid === "smic" ? -40 : -35,
@@ -1192,7 +1227,7 @@
         })
         .join("");
       $("#content").innerHTML =
-        `<div class="${type(n) === "Person" ? "avatar-big" : "avatar-big org-big"}">${n.icon}</div><div class="drawer-name">${n.name}<span class="kind" style="background:${C[type(n)]}">${typeLabel(type(n))}</span></div><p class="drawer-summary">${n.summary}</p><div class="section"><b>实体基础信息</b><div class="props">${Object.entries(
+        `${n.portrait ? `<img class="drawer-portrait" src="${n.portrait}" alt="${n.name}的像素角色头像">` : `<div class="${type(n) === "Person" ? "avatar-big" : "avatar-big org-big"}">${n.icon}</div>`}<div class="drawer-name">${n.name}<span class="kind" style="background:${C[type(n)]}">${typeLabel(type(n))}</span></div><p class="drawer-summary">${n.summary}</p><div class="section"><b>实体基础信息</b><div class="props">${Object.entries(
           n.attributes,
         )
           .map(

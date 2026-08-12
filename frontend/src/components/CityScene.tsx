@@ -1,15 +1,28 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Container, Graphics, Stage, useTick } from '@pixi/react';
 import { Container as PixiContainer, Graphics as PixiGraphics } from 'pixi.js';
 import { useElementSize } from 'usehooks-ts';
 import { SceneMode } from '../city/v3/types.ts';
 import { CITY_LOGICAL_WIDTH, CITY_VISIBLE_HEIGHT, computeSceneTransform } from '../city/v3/layout.ts';
+import { BUILDINGS } from '../city/v3/runtime.ts';
 import { BackgroundLayer, GroundLayer, StaticWorldObjects } from './city/StaticLayers.tsx';
 import { MotionLayers } from './city/MotionLayers.tsx';
 import { LightingLayer } from './city/LightingLayer.tsx';
 import { MapDebugLayer } from './city/MapDebugLayer.tsx';
 
 const TRANSITION_SECONDS = 1.6;
+
+// 公告发布动效页面：随前端一同构建的静态资源，DeepSeek 生成接口走 Convex Site
+const ANNOUNCE_URL = (() => {
+  const pageUrl = '/policy-town/announce/index.html';
+  // Convex HTTP action 部署在 *.convex.site（客户端用的是 *.convex.cloud）
+  const siteUrl =
+    (import.meta.env.VITE_CONVEX_SITE_URL as string | undefined) ??
+    (import.meta.env.VITE_CONVEX_URL as string | undefined)?.replace('.convex.cloud', '.convex.site');
+  return siteUrl ? `${pageUrl}?api=${encodeURIComponent(siteUrl)}` : pageUrl;
+})();
+
+const GOV_BUILDING = BUILDINGS.find((building) => building.id === 'GOV');
 
 const smoothstep = (start: number, end: number, value: number) => {
   const ratio = Math.max(0, Math.min(1, (value - start) / (end - start)));
@@ -81,12 +94,31 @@ function SceneRuntime({ mode, debug }: { mode: SceneMode; debug: boolean }) {
 export default function CityScene() {
   const [wrapperRef, { width, height }] = useElementSize();
   const [mode, setMode] = useState<SceneMode>('day');
+  const [announceOpen, setAnnounceOpen] = useState(false);
   const debug = useMemo(() => new URLSearchParams(window.location.search).get('debugMap') === '1', []);
   const stageWidth = Math.max(1, width);
   const stageHeight = Math.max(1, height);
   const transform = useMemo(() => {
     return computeSceneTransform(stageWidth, stageHeight);
   }, [stageHeight, stageWidth]);
+
+  // 政府大楼楼顶中心的屏幕坐标（大楼 anchor 为底部中心，x=0.5, y=1）
+  const govAnchor = useMemo(() => {
+    if (!GOV_BUILDING) return null;
+    return {
+      left: transform.x + GOV_BUILDING.x * transform.scale,
+      top: transform.y + (GOV_BUILDING.baseline - GOV_BUILDING.height) * transform.scale,
+    };
+  }, [transform]);
+
+  useEffect(() => {
+    if (!announceOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setAnnounceOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [announceOpen]);
 
   return (
     <div ref={wrapperRef} className="city-scene">
@@ -99,6 +131,59 @@ export default function CityScene() {
           <SceneRuntime mode={mode} debug={debug} />
         </Container>
       </Stage>
+      {govAnchor && (
+        <button
+          type="button"
+          className="gov-announce-entry"
+          style={{ left: govAnchor.left, top: govAnchor.top }}
+          aria-label="在政府大楼发布公告"
+          onClick={() => setAnnounceOpen(true)}
+        >
+          <span aria-hidden="true" className="day-night-icon">✉</span>
+          <span>发布公告</span>
+        </button>
+      )}
+      {announceOpen && (
+        <div
+          className="announce-modal-backdrop"
+          role="presentation"
+          onClick={() => setAnnounceOpen(false)}
+        >
+          <div
+            className="announce-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="发布公告"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="announce-modal-header">
+              <span aria-hidden="true" className="day-night-icon">✉</span>
+              <span className="announce-modal-title">发布公告 · {GOV_BUILDING?.name ?? '政府'}</span>
+              <button
+                type="button"
+                className="announce-modal-close"
+                aria-label="关闭"
+                onClick={() => setAnnounceOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <iframe
+              className="announce-modal-frame"
+              src={ANNOUNCE_URL}
+              title="发布公告"
+            />
+          </div>
+        </div>
+      )}
+      <a
+        className="day-night-toggle relationship-entry"
+        href="#/relationship"
+        aria-label="打开人物关系网络"
+      >
+        <span aria-hidden="true" className="day-night-icon">♦</span>
+        <span>关系网</span>
+      </a>
       <button
         type="button"
         className="day-night-toggle"
