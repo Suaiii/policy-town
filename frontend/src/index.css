@@ -106,6 +106,12 @@ body {
   outline-offset: 3px;
 }
 
+/* 人物关系网入口：与昼夜切换同风格，位于其左侧 */
+.relationship-entry {
+  right: calc(max(18px, env(safe-area-inset-right)) + 124px);
+  text-decoration: none;
+}
+
 .day-night-icon {
   display: inline-grid;
   place-items: center;
@@ -250,6 +256,56 @@ body {
 p[contenteditable='true']:empty::before {
   content: attr(placeholder);
   color: #aaa;
+}
+
+@keyframes drawer-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.drawer-enter {
+  animation: drawer-enter 0.18s ease-out;
+}
+
+/* 关系图：点击节点时的扩散涟漪 */
+@keyframes ripple-expand {
+  from {
+    transform: scale(0.15);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.ripple-circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ripple-expand 0.6s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+/* 关系图：悬停预览卡浮出 */
+@keyframes preview-pop {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.preview-pop {
+  animation: preview-pop 0.15s ease-out;
 }
 
 .shape-top-left-corner {

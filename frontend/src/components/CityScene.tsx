@@ -99,6 +99,14 @@ export default function CityScene() {
           <SceneRuntime mode={mode} debug={debug} />
         </Container>
       </Stage>
+      <a
+        className="day-night-toggle relationship-entry"
+        href="#/relationship"
+        aria-label="打开人物关系网络"
+      >
+        <span aria-hidden="true" className="day-night-icon">♦</span>
+        <span>关系网</span>
+      </a>
       <button
         type="button"
         className="day-night-toggle"

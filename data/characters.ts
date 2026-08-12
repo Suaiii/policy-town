@@ -6,8 +6,11 @@ import { data as f5SpritesheetData } from './spritesheets/f5';
 import { data as f6SpritesheetData } from './spritesheets/f6';
 import { data as f7SpritesheetData } from './spritesheets/f7';
 import { data as f8SpritesheetData } from './spritesheets/f8';
+import { CustomDescriptions } from './customCharacters';
 
-export const Descriptions = [
+// 优先使用 scripts/parse_agent_doc.mjs 从 Agent 设定文档生成的自定义角色；
+// 未生成时（CustomDescriptions === null）使用下面的默认 demo 角色。
+export const Descriptions = CustomDescriptions ?? [
   // {
   //   name: 'Alex',
   //   character: 'f5',

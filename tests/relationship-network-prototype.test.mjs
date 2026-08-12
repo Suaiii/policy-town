@@ -8,3 +8,6 @@ assert.match(html, /基础 System Prompt/);
 assert.match(html, /推演增量信息/);
 assert.match(html, /长期记忆/);
 assert.match(html, /事件与立场更新/);
+assert.match(html, /agent-portraits\/zhang-hua\.png/);
+assert.match(html, /agent-portraits\/li-chen\.png/);
+assert.match(html, /agent-portraits\/wang-shan\.png/);

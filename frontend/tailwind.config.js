@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  // vite/构建脚本均从仓库根目录运行，content 需相对根目录解析
+  content: ['./frontend/index.html', './frontend/src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     fontFamily: {
       display: ['var(--font-display)', 'sans-serif'],

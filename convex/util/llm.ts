@@ -43,6 +43,12 @@ export interface LLMConfig {
   apiKey: string | undefined;
 }
 
+export interface EmbeddingConfig {
+  url: string;
+  model: string;
+  apiKey: string | undefined;
+}
+
 export function getLLMConfig(): LLMConfig {
   let provider = process.env.LLM_PROVIDER;
   if (provider ? provider === 'openai' : process.env.OPENAI_API_KEY) {
@@ -109,12 +115,34 @@ export function getLLMConfig(): LLMConfig {
   };
 }
 
+/**
+ * Embeddings may come from a different OpenAI-compatible provider than chat.
+ * This keeps an existing chat provider intact while allowing, for example,
+ * SiliconFlow BAAI/bge-m3 to power associative memory.
+ */
+export function getEmbeddingConfig(): EmbeddingConfig {
+  if (process.env.EMBEDDING_API_URL) {
+    const model = process.env.EMBEDDING_MODEL;
+    if (!model) throw new Error('EMBEDDING_MODEL is required when EMBEDDING_API_URL is set');
+    return {
+      url: process.env.EMBEDDING_API_URL,
+      model,
+      apiKey: process.env.EMBEDDING_API_KEY,
+    };
+  }
+  const llm = getLLMConfig();
+  return { url: llm.url, model: llm.embeddingModel, apiKey: llm.apiKey };
+}
+
 const AuthHeaders = (): Record<string, string> =>
   getLLMConfig().apiKey
     ? {
         Authorization: 'Bearer ' + getLLMConfig().apiKey,
       }
     : {};
+
+const authHeadersFor = (apiKey: string | undefined): Record<string, string> =>
+  apiKey ? { Authorization: 'Bearer ' + apiKey } : {};
 
 // Overload for non-streaming
 export async function chatCompletion(
@@ -212,20 +240,24 @@ export async function fetchEmbeddingBatch(texts: string[]) {
       ),
     };
   }
+  const embeddingConfig = getEmbeddingConfig();
   const {
     result: json,
     retries,
     ms,
   } = await retryWithBackoff(async () => {
-    const result = await fetch(config.url + '/v1/embeddings', {
+    const endpoint = process.env.EMBEDDING_API_URL
+      ? embeddingConfig.url + '/embeddings'
+      : embeddingConfig.url + '/v1/embeddings';
+    const result = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...AuthHeaders(),
+        ...authHeadersFor(embeddingConfig.apiKey),
       },
 
       body: JSON.stringify({
-        model: config.embeddingModel,
+        model: embeddingConfig.model,
         input: texts.map((text) => text.replace(/\n/g, ' ')),
       }),
     });
