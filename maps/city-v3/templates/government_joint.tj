@@ -1,0 +1,88 @@
+{
+  "type": "template",
+  "object": {
+    "id": 1,
+    "name": "government_joint",
+    "type": "building",
+    "width": 475,
+    "height": 386,
+    "visible": true,
+    "properties": [
+      {
+        "name": "kind",
+        "type": "string",
+        "value": "building"
+      },
+      {
+        "name": "assetId",
+        "type": "string",
+        "value": "GOV"
+      },
+      {
+        "name": "dayImage",
+        "type": "string",
+        "value": "/policy-town/assets/city-v3/buildings/government-day-v3.png"
+      },
+      {
+        "name": "nightImage",
+        "type": "string",
+        "value": "/policy-town/assets/city-v3/buildings/government-night-v3.png"
+      },
+      {
+        "name": "width",
+        "type": "float",
+        "value": 475
+      },
+      {
+        "name": "height",
+        "type": "float",
+        "value": 386
+      },
+      {
+        "name": "anchorX",
+        "type": "float",
+        "value": 0.5
+      },
+      {
+        "name": "anchorY",
+        "type": "float",
+        "value": 1
+      },
+      {
+        "name": "zone",
+        "type": "string",
+        "value": "civic"
+      },
+      {
+        "name": "zIndex",
+        "type": "float",
+        "value": 10
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "value": "#f0cb72"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "value": "城市协同政府"
+      },
+      {
+        "name": "collision",
+        "type": "string",
+        "value": "[-178,-30,356,44]"
+      },
+      {
+        "name": "vehicleExclusion",
+        "type": "string",
+        "value": "[-215,-98,430,113]"
+      },
+      {
+        "name": "entranceOffset",
+        "type": "string",
+        "value": "[0,12]"
+      }
+    ]
+  }
+}

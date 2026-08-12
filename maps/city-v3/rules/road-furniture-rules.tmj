@@ -1,0 +1,81 @@
+{
+  "type": "map",
+  "version": "1.10",
+  "tiledversion": "1.10.2",
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "width": 5,
+  "height": 5,
+  "tilewidth": 32,
+  "tileheight": 32,
+  "infinite": false,
+  "nextlayerid": 3,
+  "nextobjectid": 2,
+  "layers": [
+    {
+      "id": 1,
+      "name": "input_bgtiles",
+      "type": "tilelayer",
+      "width": 5,
+      "height": 5,
+      "x": 0,
+      "y": 0,
+      "visible": true,
+      "opacity": 1,
+      "data": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 2,
+      "name": "output_props",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {
+          "id": 1,
+          "name": "auto-street-light",
+          "template": "../templates/street_light.tj",
+          "x": 80,
+          "y": 80,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true
+        }
+      ]
+    }
+  ],
+  "tilesets": [
+    {
+      "firstgid": 1,
+      "source": "../city-v3.tsj"
+    }
+  ]
+}

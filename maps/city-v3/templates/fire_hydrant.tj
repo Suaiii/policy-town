@@ -1,0 +1,38 @@
+{
+  "type": "template",
+  "object": {
+    "id": 1,
+    "name": "fire_hydrant",
+    "type": "prop",
+    "width": 34,
+    "height": 34,
+    "visible": true,
+    "properties": [
+      {
+        "name": "kind",
+        "type": "string",
+        "value": "prop"
+      },
+      {
+        "name": "dayImage",
+        "type": "string",
+        "value": "/policy-town/assets/city-v3/third-party/fire-hydrant-day-v3.png"
+      },
+      {
+        "name": "nightImage",
+        "type": "string",
+        "value": "/policy-town/assets/city-v3/third-party/fire-hydrant-night-v3.png"
+      },
+      {
+        "name": "width",
+        "type": "float",
+        "value": 34
+      },
+      {
+        "name": "height",
+        "type": "float",
+        "value": 34
+      }
+    ]
+  }
+}

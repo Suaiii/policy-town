@@ -1,0 +1,68 @@
+{
+  "type": "template",
+  "object": {
+    "id": 1,
+    "name": "plaza_forecourt",
+    "type": "living",
+    "width": 235,
+    "height": 198,
+    "visible": true,
+    "properties": [
+      {
+        "name": "kind",
+        "type": "string",
+        "value": "living"
+      },
+      {
+        "name": "assetId",
+        "type": "string",
+        "value": "park"
+      },
+      {
+        "name": "dayImage",
+        "type": "string",
+        "value": "/policy-town/assets/city-v3/living/social-park-day-v3.png"
+      },
+      {
+        "name": "nightImage",
+        "type": "string",
+        "value": "/policy-town/assets/city-v3/living/social-park-night-v3.png"
+      },
+      {
+        "name": "width",
+        "type": "float",
+        "value": 235
+      },
+      {
+        "name": "height",
+        "type": "float",
+        "value": 198
+      },
+      {
+        "name": "anchorX",
+        "type": "float",
+        "value": 0.5
+      },
+      {
+        "name": "anchorY",
+        "type": "float",
+        "value": 1
+      },
+      {
+        "name": "zone",
+        "type": "string",
+        "value": "civic"
+      },
+      {
+        "name": "zIndex",
+        "type": "float",
+        "value": 75
+      },
+      {
+        "name": "collision",
+        "type": "string",
+        "value": "[]"
+      }
+    ]
+  }
+}

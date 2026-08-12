@@ -1,0 +1,33 @@
+{
+  "type": "template",
+  "object": {
+    "id": 1,
+    "name": "government_hr_node",
+    "type": "portal",
+    "width": 32,
+    "height": 32,
+    "visible": true,
+    "properties": [
+      {
+        "name": "kind",
+        "type": "string",
+        "value": "portal"
+      },
+      {
+        "name": "department",
+        "type": "string",
+        "value": "hr"
+      },
+      {
+        "name": "width",
+        "type": "float",
+        "value": 32
+      },
+      {
+        "name": "height",
+        "type": "float",
+        "value": 32
+      }
+    ]
+  }
+}

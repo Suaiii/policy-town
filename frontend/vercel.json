@@ -1,0 +1,9 @@
+{
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/policy-town/:match*",
+      "destination": "/:match*"
+    }
+  ]
+}

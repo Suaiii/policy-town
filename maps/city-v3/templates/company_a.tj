@@ -1,0 +1,88 @@
+{
+  "type": "template",
+  "object": {
+    "id": 1,
+    "name": "company_a",
+    "type": "building",
+    "width": 265,
+    "height": 418,
+    "visible": true,
+    "properties": [
+      {
+        "name": "kind",
+        "type": "string",
+        "value": "building"
+      },
+      {
+        "name": "assetId",
+        "type": "string",
+        "value": "A"
+      },
+      {
+        "name": "dayImage",
+        "type": "string",
+        "value": "/policy-town/assets/city-v3/buildings/company-a-day-v3.png"
+      },
+      {
+        "name": "nightImage",
+        "type": "string",
+        "value": "/policy-town/assets/city-v3/buildings/company-a-night-v3.png"
+      },
+      {
+        "name": "width",
+        "type": "float",
+        "value": 265
+      },
+      {
+        "name": "height",
+        "type": "float",
+        "value": 418
+      },
+      {
+        "name": "anchorX",
+        "type": "float",
+        "value": 0.5
+      },
+      {
+        "name": "anchorY",
+        "type": "float",
+        "value": 1
+      },
+      {
+        "name": "zone",
+        "type": "string",
+        "value": "west"
+      },
+      {
+        "name": "zIndex",
+        "type": "float",
+        "value": 20
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "value": "#d9a766"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "value": "成熟期总部"
+      },
+      {
+        "name": "collision",
+        "type": "string",
+        "value": "[-100,-28,200,42]"
+      },
+      {
+        "name": "vehicleExclusion",
+        "type": "string",
+        "value": "[-126,-118,252,132]"
+      },
+      {
+        "name": "entranceOffset",
+        "type": "string",
+        "value": "[0,12]"
+      }
+    ]
+  }
+}

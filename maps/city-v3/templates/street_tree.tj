@@ -1,0 +1,38 @@
+{
+  "type": "template",
+  "object": {
+    "id": 1,
+    "name": "street_tree",
+    "type": "prop",
+    "width": 72,
+    "height": 144,
+    "visible": true,
+    "properties": [
+      {
+        "name": "kind",
+        "type": "string",
+        "value": "prop"
+      },
+      {
+        "name": "atlasIndex",
+        "type": "float",
+        "value": 0
+      },
+      {
+        "name": "width",
+        "type": "float",
+        "value": 72
+      },
+      {
+        "name": "height",
+        "type": "float",
+        "value": 144
+      },
+      {
+        "name": "collision",
+        "type": "string",
+        "value": "[-12,-12,24,18]"
+      }
+    ]
+  }
+}

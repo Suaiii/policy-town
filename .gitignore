@@ -14,3 +14,14 @@ venv/
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+tsconfig.tsbuildinfo
+
+# IDE / Superpowers temp files
+.superpowers/

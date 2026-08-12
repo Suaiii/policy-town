@@ -1,0 +1,38 @@
+{
+  "type": "template",
+  "object": {
+    "id": 1,
+    "name": "bus_stop",
+    "type": "prop",
+    "width": 44,
+    "height": 106,
+    "visible": true,
+    "properties": [
+      {
+        "name": "kind",
+        "type": "string",
+        "value": "prop"
+      },
+      {
+        "name": "atlasIndex",
+        "type": "float",
+        "value": 7
+      },
+      {
+        "name": "width",
+        "type": "float",
+        "value": 44
+      },
+      {
+        "name": "height",
+        "type": "float",
+        "value": 106
+      },
+      {
+        "name": "collision",
+        "type": "string",
+        "value": "[-9,-12,18,12]"
+      }
+    ]
+  }
+}

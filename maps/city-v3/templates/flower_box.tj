@@ -1,0 +1,38 @@
+{
+  "type": "template",
+  "object": {
+    "id": 1,
+    "name": "flower_box",
+    "type": "prop",
+    "width": 54,
+    "height": 38,
+    "visible": true,
+    "properties": [
+      {
+        "name": "kind",
+        "type": "string",
+        "value": "prop"
+      },
+      {
+        "name": "dayImage",
+        "type": "string",
+        "value": "/policy-town/assets/city-v3/third-party/flower-box-day-v3.png"
+      },
+      {
+        "name": "nightImage",
+        "type": "string",
+        "value": "/policy-town/assets/city-v3/third-party/flower-box-night-v3.png"
+      },
+      {
+        "name": "width",
+        "type": "float",
+        "value": 54
+      },
+      {
+        "name": "height",
+        "type": "float",
+        "value": 38
+      }
+    ]
+  }
+}

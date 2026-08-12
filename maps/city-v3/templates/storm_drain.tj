@@ -1,0 +1,48 @@
+{
+  "type": "template",
+  "object": {
+    "id": 1,
+    "name": "storm_drain",
+    "type": "decal",
+    "width": 32,
+    "height": 32,
+    "visible": true,
+    "properties": [
+      {
+        "name": "kind",
+        "type": "string",
+        "value": "decal"
+      },
+      {
+        "name": "dayImage",
+        "type": "string",
+        "value": "/policy-town/assets/city-v3/third-party/storm-drain-day-v3.png"
+      },
+      {
+        "name": "nightImage",
+        "type": "string",
+        "value": "/policy-town/assets/city-v3/third-party/storm-drain-night-v3.png"
+      },
+      {
+        "name": "width",
+        "type": "float",
+        "value": 32
+      },
+      {
+        "name": "height",
+        "type": "float",
+        "value": 32
+      },
+      {
+        "name": "sortY",
+        "type": "float",
+        "value": 1
+      },
+      {
+        "name": "opacity",
+        "type": "float",
+        "value": 0.58
+      }
+    ]
+  }
+}
