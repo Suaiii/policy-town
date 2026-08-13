@@ -6,14 +6,8 @@ export type BackendCompany = {
   archetype: string;
   capital_request: number;
   status: string;
-  financial_health: number;
-  execution_ability: number;
-  technology_readiness: number;
-  customer_order_strength: number;
   construction_progress: number;
-  production_ramp: number;
-  project_cashflow: number;
-  supply_pressure: number;
+  employment?: number;
 };
 
 export type BackendStage = {
@@ -57,12 +51,24 @@ export type Deliberation = {
     critical_question: string;
     recommendation_rationale: string;
     proposals: PolicyPackage[];
-    challenges: Array<{ from_department: string; to_department: string; question: string; response: string; stance_before: string; stance_after: string }>;
   };
   verification_question: { question: string; critical_proposition: string };
   enterprise_disclosure: { response_type: string; statement: string };
-  department_review_updates: Array<{ department: string; recommendation_before: string; recommendation_after: string; reason: string }>;
-  model_runtime: { provider: string; all_departments_model_generated: boolean; enterprise_model_generated: boolean };
+  department_review_updates: Array<{
+    department: string;
+    recommendation_before: string;
+    recommendation_after: string;
+    reason: string;
+    key_page: string;
+    independent_view: string;
+    confidence: number;
+    generation_mode: 'model' | 'deterministic_fallback';
+  }>;
+  model_runtime: {
+    provider: string;
+    all_departments_model_generated: boolean;
+    enterprise_model_generated: boolean;
+  };
 };
 
 export type BackendResult = {
@@ -71,9 +77,10 @@ export type BackendResult = {
   city_metrics: Record<string, number>;
   companies: BackendCompany[];
   company_actions: Array<{ company_id: string; action: string; milestone_target: string; risk_response: string }>;
-  state_deltas: Array<{ entity_id: string; metric_id: string; before: number; delta: number; after: number; reason_code: string }>;
   events: Array<{ description: string }>;
   commitment_updates: Array<{ company_id: string; promise: string; condition: string; status: string }>;
+  settlement_trace: Array<{ step: string; label: string; detail: string }>;
+  comparison_available_at: string;
 };
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -88,11 +95,23 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export const fetchBackendHealth = () => request<{ status: string; agent_provider: string; agent_required: boolean }>('/api/health');
-export const createBackendRun = () => request<BackendStage>('/api/runs', { method: 'POST', body: JSON.stringify({ company_ids: ['company_a', 'company_d'] }) });
-export const resumeBackendRun = (runId: string) => request<BackendStage>(`/api/runs/${runId}`);
-export const fetchDeliberation = (run: BackendStage, companyId: string) => request<Deliberation>(`/api/runs/${run.run_id}/stages/${run.stage_id}/companies/${companyId}/deliberation`);
-export const selectPolicyPackage = (run: BackendStage, companyId: string, proposalId: string) => request<BackendResult>(`/api/runs/${run.run_id}/select-proposal`, {
+export const createBackendRun = () => request<BackendStage>('/api/runs', {
   method: 'POST',
-  body: JSON.stringify({ stage_id: run.stage_id, company_id: companyId, proposal_id: proposalId, idempotency_key: crypto.randomUUID() }),
+  body: JSON.stringify({ company_ids: ['company_a', 'company_d'] }),
 });
+
+export const fetchDeliberation = (run: BackendStage, companyId: string) =>
+  request<Deliberation>(`/api/runs/${run.run_id}/stages/${run.stage_id}/companies/${companyId}/deliberation`);
+
+export const selectPolicyPackage = (run: BackendStage, companyId: string, proposalId: string) =>
+  request<BackendResult>(`/api/runs/${run.run_id}/select-proposal`, {
+    method: 'POST',
+    body: JSON.stringify({
+      stage_id: run.stage_id,
+      company_id: companyId,
+      proposal_id: proposalId,
+      idempotency_key: crypto.randomUUID(),
+    }),
+  });
+
+export const resumeBackendRun = (runId: string) => request<BackendStage>(`/api/runs/${runId}`);
