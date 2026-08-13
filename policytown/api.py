@@ -51,6 +51,8 @@ def _load_local_env() -> None:
 
 _load_local_env()
 
+_ENGINE: InvestmentEngine | None = None
+
 
 class CreateRunRequest(BaseModel):
     seed: int | None = None
@@ -95,7 +97,10 @@ class CompareProposalsRequest(BaseModel):
 
 
 def _engine() -> InvestmentEngine:
-    return InvestmentEngine(use_agent_api=None)
+    global _ENGINE
+    if _ENGINE is None:
+        _ENGINE = InvestmentEngine(use_agent_api=None)
+    return _ENGINE
 
 
 def _result_path(run_id: str, stage_id: StageId) -> Path:
@@ -200,53 +205,31 @@ def _counterfactual_summary(result, company_id: str, proposal) -> dict:
     }
 
 
-@app.post("/api/runs/{run_id}/compare-proposals")
-def compare_proposals(run_id: str, request: CompareProposalsRequest) -> dict:
-    """Settle two packages against one frozen world without advancing the run."""
-    engine = _engine()
-    try:
-        state = engine.resume_run(run_id)
-        preview, _ = engine.preview_deliberation(
-            state, request.stage_id, request.company_id,
-        )
-    except KeyError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
-    except ValueError as exc:
-        raise HTTPException(status_code=422, detail=str(exc)) from exc
-    proposals = {item.proposal_id: item for item in preview.meeting.proposals}
-    if not set(request.proposal_ids) <= set(proposals):
-        raise HTTPException(status_code=422, detail="comparison proposal does not exist")
-
+def _compare_from_state(engine, state, stage_id, company_id, proposal_list) -> dict:
     branches = []
-    for proposal_id in request.proposal_ids:
-        proposal = proposals[proposal_id]
-        branch_state = state.model_copy(deep=True, update={
-            "run_id": f"{state.run_id}:counterfactual:{proposal_id}",
-        })
-        try:
-            result = engine.run_stage(
-                branch_state,
-                StageInput(
+    for proposal in proposal_list:
+        branch_state = state.model_copy(deep=True)
+        result = engine.run_stage(
+            branch_state,
+            StageInput(
                     run_id=branch_state.run_id,
-                    stage_id=request.stage_id,
+                    stage_id=stage_id,
                     seed=state.seed,
                     context_mode="player",
                     actions=[PlayerAction(
-                        company_id=request.company_id,
+                        company_id=company_id,
                         action="invest",
                         capital_points=proposal.capital_points,
                     )],
                     negotiations=[NegotiationChoice(
-                        company_id=request.company_id,
+                        company_id=company_id,
                         proposal_id=proposal.proposal_id,
                         resolution="accept",
                     )],
-                ),
-                persist=False,
-            )
-        except ValueError as exc:
-            raise HTTPException(status_code=422, detail=str(exc)) from exc
-        branches.append(_counterfactual_summary(result, request.company_id, proposal))
+            ),
+            persist=False,
+        )
+        branches.append(_counterfactual_summary(result, company_id, proposal))
 
     left, right = branches
     comparison_fields = (
@@ -273,6 +256,84 @@ def compare_proposals(run_id: str, request: CompareProposalsRequest) -> dict:
     }
 
 
+def _historical_alignment(engine, company_id: str, proposal_list) -> dict | None:
+    """Reveal the history-like branch only after the player has decided."""
+    case_id = engine.loader.raw_company_config(company_id).get("historical_case_id")
+    baseline = engine.replay_baselines.for_case(case_id) if case_id else None
+    if baseline is None:
+        return None
+    components = set(baseline.government_action.components)
+    has_milestone_conditions = any(
+        item.category in {"company_setup", "construction", "production"}
+        for item in baseline.conditions
+    )
+
+    def score(proposal) -> float:
+        package = proposal.package_parameters
+        weighted = 0.0
+        weight = 0.0
+        if "commit_registered_capital" in components:
+            weighted += package.funding_points * .35
+            weight += .35
+        if "arrange_syndicated_loan" in components:
+            weighted += package.financing_support * .25
+            weight += .25
+        if "provide_industrial_support" in components:
+            weighted += ((package.land_support + package.energy_support) / 2) * .25
+            weight += .25
+        if has_milestone_conditions:
+            weighted += package.milestone_strictness * .15
+            weight += .15
+        return round(weighted / weight, 3) if weight else 0.0
+
+    scores = {proposal.proposal_id: score(proposal) for proposal in proposal_list}
+    history_like = max(proposal_list, key=lambda item: scores[item.proposal_id])
+    alternative = next(item for item in proposal_list if item.proposal_id != history_like.proposal_id)
+    return {
+        "baseline_id": baseline.baseline_id,
+        "case_id": baseline.case_id,
+        "revealed_after_decision": True,
+        "history_like_proposal_id": history_like.proposal_id,
+        "alternative_proposal_id": alternative.proposal_id,
+        "mechanism_similarity_scores": scores,
+        "comparison_basis": [
+            "government capital commitment",
+            "syndicated financing",
+            "land/energy/infrastructure support",
+            "implementation milestones",
+        ],
+        "limitation": "场景点数不与现实亿元作数值换算，仅比较政策机制组合。",
+    }
+
+
+@app.post("/api/runs/{run_id}/compare-proposals")
+def compare_proposals(run_id: str, request: CompareProposalsRequest) -> dict:
+    """Settle two packages against one frozen world without advancing the run."""
+    engine = _engine()
+    try:
+        state = engine.resume_run(run_id)
+        preview, _ = engine.preview_deliberation(
+            state, request.stage_id, request.company_id,
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    proposals = {item.proposal_id: item for item in preview.meeting.proposals}
+    if not set(request.proposal_ids) <= set(proposals):
+        raise HTTPException(status_code=422, detail="comparison proposal does not exist")
+    try:
+        return _compare_from_state(
+            engine,
+            state,
+            request.stage_id,
+            request.company_id,
+            [proposals[item] for item in request.proposal_ids],
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
 @app.post("/api/runs/{run_id}/select-proposal")
 def select_proposal(run_id: str, request: SelectProposalRequest) -> dict:
     path = _result_path(run_id, request.stage_id)
@@ -295,6 +356,13 @@ def select_proposal(run_id: str, request: SelectProposalRequest) -> dict:
     if proposal is None:
         raise HTTPException(status_code=422, detail="proposal does not exist in the compiled meeting result")
     try:
+        comparison = _compare_from_state(
+            engine,
+            state,
+            request.stage_id,
+            request.company_id,
+            preview.meeting.proposals,
+        )
         result = engine.run_stage(state, StageInput(
             run_id=run_id,
             stage_id=request.stage_id,
@@ -314,6 +382,10 @@ def select_proposal(run_id: str, request: SelectProposalRequest) -> dict:
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     payload = result.model_dump(mode="json")
+    comparison["historical_alignment"] = _historical_alignment(
+        engine, request.company_id, preview.meeting.proposals,
+    )
+    payload["policy_package_comparison"] = comparison
     path.write_text(json.dumps({
         "idempotency_key": request.idempotency_key, "result": payload,
     }, ensure_ascii=False, indent=2), encoding="utf-8")

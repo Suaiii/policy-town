@@ -2,11 +2,14 @@ import unittest
 
 from fastapi.testclient import TestClient
 
+import policytown.api as api_module
 from policytown.api import app
+from policytown.investment import InvestmentEngine
 
 
 class TestInvestmentApi(unittest.TestCase):
     def setUp(self):
+        api_module._ENGINE = InvestmentEngine(use_agent_api=False)
         self.client = TestClient(app)
 
     def test_create_settle_and_resume(self):
@@ -102,6 +105,13 @@ class TestInvestmentApi(unittest.TestCase):
         self.assertEqual(result["budget"]["spent"], proposal["capital_points"])
         selected = next(item for item in result["deliberations"] if item["company_id"] == company_id)
         self.assertEqual(selected["selected_proposal_id"], proposal["proposal_id"])
+        comparison = result["policy_package_comparison"]
+        self.assertEqual(2, len(comparison["branches"]))
+        self.assertTrue(comparison["historical_alignment"]["revealed_after_decision"])
+        self.assertIn(
+            comparison["historical_alignment"]["history_like_proposal_id"],
+            [item["proposal_id"] for item in comparison["branches"]],
+        )
 
     def test_two_policy_packages_form_a_controlled_ablation(self):
         stage = self.client.post("/api/runs", json={"seed": 9}).json()
