@@ -276,6 +276,46 @@ def verification_response(company: dict, private_state, question: dict, ctx: dic
             "evidence_ids": [], "confidence": 0.4}
 
 
+def counter_proposal(company: dict, private_state, conditions: dict, stage_id: str) -> dict:
+    """企业一次性反提案（文档 4.6）。
+
+    扩张惯性高 → 要求提高投入/延后里程碑；风险偏好高 → 拒绝退出条款并以分期替代。
+    不修改任何数值；提案只表达意图。
+    """
+    ps = private_state.to_dict() if private_state is not None else {}
+    appetite = ps.get("expansion_appetite", 0.5)
+    risk = ps.get("risk_preference", 0.5)
+    current = float(conditions.get("capital_points", 0))
+    milestone = conditions.get("milestone_due") or ""
+    accepts: list = []
+    requests: list = []
+    rejects: list = []
+    if appetite >= 0.7:
+        requests.append({"key": "capital_points", "current": current,
+                         "requested": round(current * 1.25, 1),
+                         "reason": "重资产项目首期资金需求高于初始方案"})
+        if len(milestone) == 2 and milestone[0] == "S" and milestone[1:].isdigit():
+            requests.append({"key": "milestone_due", "current": milestone,
+                             "requested": "S%d" % (int(milestone[1:]) + 1),
+                             "reason": "量产爬坡周期长于政府预期"})
+    if "exit_clause" in conditions.get("risk_conditions", []) and risk >= 0.6:
+        rejects.append("exit_clause")
+        accepts.append({"item": "tranches", "note": "接受分期拨付以替代退出条款"})
+    else:
+        accepts.append({"item": "risk_conditions", "note": "接受其余风险条件"})
+    summary = ("接受政府条件单，无附加要求" if not requests and not rejects
+               else "接受多数条件，请求调整资金规模与里程碑")
+    alternative = None
+    if rejects:
+        milestone_req = next((r for r in requests if r["key"] == "milestone_due"), None)
+        alternative = {"milestone_due": milestone_req["requested"] if milestone_req else None,
+                       "note": "以分期拨付替代退出条款"}
+    return {"proposal_id": "CP-%s-%s" % (company["company_id"], stage_id),
+            "company_id": company["company_id"], "summary": summary,
+            "accepts": accepts, "requests": requests, "rejects": rejects,
+            "alternative": alternative}
+
+
 def _dir(score: float) -> str:
     if score >= 55:
         return "positive"

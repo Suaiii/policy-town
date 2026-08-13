@@ -21,6 +21,26 @@ _VERIFY_REQUIRED = ["company_id", "question_id", "response_type", "statement",
 _VERIFY_TYPES = ("full_disclosure", "partial_disclosure", "range",
                  "refusal", "condition_offer")
 
+_COUNTER_REQUIRED = ["proposal_id", "company_id", "summary", "accepts",
+                     "requests", "rejects", "alternative"]
+_COUNTER_ITEMS = ("capital_points", "support_focus", "milestone_due",
+                  "risk_conditions", "exit_clause", "tranches")
+
+
+def validate_counter_proposal(out: dict) -> None:
+    missing = [k for k in _COUNTER_REQUIRED if k not in out]
+    if missing:
+        raise ValueError("counter proposal missing keys: %s" % missing)
+    for r in out.get("requests", []):
+        if r.get("key") not in _COUNTER_ITEMS:
+            raise ValueError("invalid request key: %r" % r.get("key"))
+    for item in out.get("rejects", []):
+        if item not in _COUNTER_ITEMS:
+            raise ValueError("invalid reject item: %r" % item)
+    for a in out.get("accepts", []):
+        if a.get("item") not in _COUNTER_ITEMS:
+            raise ValueError("invalid accept item: %r" % a.get("item"))
+
 
 def validate_verification_response(out: dict) -> None:
     missing = [k for k in _VERIFY_REQUIRED if k not in out]
@@ -80,6 +100,23 @@ class CompanyAgent(BaseAgent):
             lambda: deterministic.verification_response(company_view, self.private_state,
                                                         question, ctx),
             validator=validate_verification_response)
+
+    def make_counter_proposal(self, conditions: dict, company_view: dict,
+                              ctx: dict, stage_id: str):
+        """一次性反提案：同一阶段只允许一次（文档 4.6）。"""
+        if self._counter_made.get(stage_id):
+            return None
+        self._counter_made[stage_id] = True
+        slim = slim_context(ctx, "company_plan", company_view["company_id"])
+        payload = {"conditions": conditions, "company": company_view, "ctx": slim,
+                   "private_state": self.private_state.to_dict()
+                   if self.private_state is not None else None,
+                   "memory": self.memory.to_dict()}
+        return self.run(
+            payload,
+            lambda: deterministic.counter_proposal(company_view, self.private_state,
+                                                   conditions, stage_id),
+            validator=validate_counter_proposal)
 
     def build_prompt(self, payload: dict) -> str:
         if not self.enterprise:

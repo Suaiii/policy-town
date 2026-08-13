@@ -80,3 +80,62 @@ class TestVerificationResponse(unittest.TestCase):
         resp["response_type"] = "nonsense"
         with self.assertRaises(ValueError):
             validate_verification_response(resp)
+
+
+class TestCounterProposal(unittest.TestCase):
+    def test_high_appetite_requests_more(self):
+        agent = _agent({"cash_reserve": 30, "financing_capacity": 55, "parent_support": 55},
+                       appetite=0.8, risk=0.5)
+        prop = agent.make_counter_proposal(
+            {"capital_points": 40, "milestone_due": "S2", "risk_conditions": ["tranches"]},
+            _view(), {}, "S1")
+        self.assertIsNotNone(prop)
+        req = {r["key"]: r for r in prop["requests"]}
+        self.assertIn("capital_points", req)
+        self.assertEqual(req["capital_points"]["requested"], 50.0)
+        self.assertEqual(prop["accepts"][0]["item"], "risk_conditions")
+
+    def test_high_risk_rejects_exit_clause(self):
+        agent = _agent({"cash_reserve": 30, "financing_capacity": 55, "parent_support": 55},
+                       appetite=0.4, risk=0.8)
+        prop = agent.make_counter_proposal(
+            {"capital_points": 40, "milestone_due": "S2",
+             "risk_conditions": ["exit_clause"]},
+            _view(), {}, "S1")
+        self.assertIn("exit_clause", prop["rejects"])
+        self.assertIn({"item": "tranches", "note": "接受分期拨付以替代退出条款"},
+                      prop["accepts"])
+
+    def test_low_appetite_accepts(self):
+        agent = _agent({"cash_reserve": 30, "financing_capacity": 55, "parent_support": 55},
+                       appetite=0.3, risk=0.3)
+        prop = agent.make_counter_proposal(
+            {"capital_points": 40, "milestone_due": "S2", "risk_conditions": ["exit_clause"]},
+            _view(), {}, "S1")
+        self.assertEqual(prop["requests"], [])
+        self.assertEqual(prop["rejects"], [])
+
+    def test_one_time_per_stage(self):
+        agent = _agent({"cash_reserve": 30, "financing_capacity": 55, "parent_support": 55},
+                       appetite=0.8, risk=0.5)
+        first = agent.make_counter_proposal({"capital_points": 40, "risk_conditions": []},
+                                            _view(), {}, "S1")
+        second = agent.make_counter_proposal({"capital_points": 40, "risk_conditions": []},
+                                             _view(), {}, "S1")
+        self.assertIsNotNone(first)
+        self.assertIsNone(second, "同一阶段反提案只能出现一次")
+        third = agent.make_counter_proposal({"capital_points": 40, "risk_conditions": []},
+                                            _view(), {}, "S2")
+        self.assertIsNotNone(third, "下一阶段允许新的反提案")
+
+    def test_proposal_schema_valid(self):
+        from ..agents.company import validate_counter_proposal
+        agent = _agent({"cash_reserve": 30, "financing_capacity": 55, "parent_support": 55},
+                       appetite=0.8, risk=0.8)
+        prop = agent.make_counter_proposal(
+            {"capital_points": 40, "milestone_due": "S2", "risk_conditions": ["exit_clause"]},
+            _view(), {}, "S1")
+        validate_counter_proposal(prop)
+        prop["rejects"] = ["nonsense"]
+        with self.assertRaises(ValueError):
+            validate_counter_proposal(prop)

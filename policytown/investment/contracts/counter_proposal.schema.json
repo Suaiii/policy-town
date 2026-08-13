@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "investment_simulation/v0.2/counter_proposal",
+  "title": "CounterProposal v0.2 — 企业一次性反提案",
+  "description": "文档 4.6：每阶段只出现一次；可要求提高投入、降低条件、延后里程碑、增加城市配套或拒绝方案。",
+  "type": "object",
+  "required": ["proposal_id", "company_id", "summary", "accepts", "requests",
+               "rejects", "alternative"],
+  "properties": {
+    "proposal_id": {"type": "string"},
+    "company_id": {"type": "string"},
+    "summary": {"type": "string"},
+    "accepts": {
+      "type": "array",
+      "description": "接受的条件单条目",
+      "items": {
+        "type": "object",
+        "required": ["item", "note"],
+        "properties": {
+          "item": {"type": "string",
+                   "enum": ["capital_points", "support_focus", "milestone_due",
+                            "risk_conditions", "exit_clause", "tranches"]},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "requests": {
+      "type": "array",
+      "description": "要求调整的条目",
+      "items": {
+        "type": "object",
+        "required": ["key", "current", "requested", "reason"],
+        "properties": {
+          "key": {"type": "string",
+                  "enum": ["capital_points", "support_focus", "milestone_due",
+                           "risk_conditions", "exit_clause", "tranches"]},
+          "current": {},
+          "requested": {},
+          "reason": {"type": "string"}
+        }
+      }
+    },
+    "rejects": {"type": "array",
+                "items": {"type": "string",
+                          "enum": ["capital_points", "support_focus", "milestone_due",
+                                   "risk_conditions", "exit_clause", "tranches"]}},
+    "alternative": {
+      "type": ["object", "null"],
+      "description": "替代条款：延后里程碑 / 以分期替代退出等",
+      "properties": {
+        "milestone_due": {"type": ["string", "null"]},
+        "note": {"type": "string"}
+      }
+    }
+  }
+}
