@@ -10,14 +10,14 @@ import { ResourceGauge } from './components/ResourceGauge';
 import { StageContextPanel } from './components/StageContextPanel';
 import { ActionButton, FrameCorners, FramedCard, FramedPanel, PanelHeading, SectionLabel } from './components/ui/ParlorUI';
 import { ENTERPRISE_ARCHETYPES, simulationToMapSnapshot } from './integration/mapAdapter';
-import { appendSandboxEvent, fetchAgentHealth, fetchFirmRequests, fetchFirmResponses, fetchGovReview, type AgentHealth } from './integration/agentApi';
+import { appendSandboxEvent, fetchFirmRequests, fetchFirmResponses, fetchGovReview, type AgentHealth } from './integration/agentApi';
 import { relationshipEventsForTransition } from './integration/relationshipEvents';
 import { createDecisionReviewExport } from './game/exportRun';
 import { restoreSimulationState } from './game/persistence';
 import { MOCK_EVENT_FEED, type MockEventItem } from './game/mockEventFeed';
 import { stageContexts } from './game/stageContext';
 import { TableMapSurface } from './map/TableMapSurface';
-import openingBackgroundUrl from '/assets/opening-background.svg?url';
+const openingBackgroundUrl = '/assets/hefei-strategy-room-v1.png';
 import {
   agentLabels,
   agentReports,
@@ -46,6 +46,8 @@ import {
 } from './game/simulation';
 import type { CameraMode, EnterpriseId, SimulationState, SupportTool } from './game/types';
 import { enterpriseThemeStyle } from './theme/enterpriseTheme';
+import { BackendDecisionFlow, backendToEnterprise } from './components/BackendDecisionFlow';
+import { createBackendRun, fetchBackendHealth, resumeBackendRun, type BackendResult, type BackendStage } from './integration/investmentBackend';
 
 const phaseLabels = {
   setup: '开场选局',
@@ -559,6 +561,8 @@ function App() {
   const [introActive, setIntroActive] = useState(true);
   const [formalUiEntering, setFormalUiEntering] = useState(false);
   const [agentHealth, setAgentHealth] = useState<AgentHealth | null>(null);
+  const [backendRun, setBackendRun] = useState<BackendStage | null>(null);
+  const [backendCompanyId, setBackendCompanyId] = useState('company_a');
   const [mapCanvas, setMapCanvas] = useState<HTMLCanvasElement | null>(null);
   const [negotiationRecords, setNegotiationRecords] = useState<Record<string, NegotiationRecord>>(() => {
     try {
@@ -582,11 +586,12 @@ function App() {
     window.localStorage.setItem('hefei-sandbox-run-v1', JSON.stringify(state));
   }, [state]);
   useEffect(() => {
+    if (backendRun) return;
     const before = previousRelationshipState.current;
     previousRelationshipState.current = state;
     const events = relationshipEventsForTransition(before, state, 'sandbox-state-updated');
     if (events.length > 0) void Promise.all(events.map(appendSandboxEvent));
-  }, [state]);
+  }, [state, backendRun]);
   useEffect(() => {
     window.localStorage.setItem('hefei-negotiation-drafts-v1', JSON.stringify(negotiationRecords));
   }, [negotiationRecords]);
@@ -597,18 +602,25 @@ function App() {
   }, [formalUiEntering]);
   useEffect(() => {
     let cancelled = false;
-    fetchAgentHealth().then((health) => {
-      if (!cancelled) setAgentHealth(health);
-    });
+    const refreshHealth = () => fetchBackendHealth().then((health) => {
+      if (!cancelled) setAgentHealth({ bridge: 'up', agent: { ready: true, stub: health.agent_provider !== 'opencode-go', port: 8000 } });
+    }).catch(() => { if (!cancelled) setAgentHealth({ bridge: 'down', error: '投资推演后端不可达' }); });
+    void refreshHealth();
     const timer = window.setInterval(() => {
-      fetchAgentHealth().then((health) => {
-        if (!cancelled) setAgentHealth(health);
-      });
+      void refreshHealth();
     }, 15_000);
     return () => {
       cancelled = true;
       window.clearInterval(timer);
     };
+  }, []);
+  useEffect(() => {
+    const runId = window.localStorage.getItem('hefei-investment-run-id');
+    if (!runId) return;
+    resumeBackendRun(runId).then((run) => {
+      setBackendRun(run);
+      setBackendCompanyId(run.companies[0].company_id);
+    }).catch(() => window.localStorage.removeItem('hefei-investment-run-id'));
   }, []);
   const receiveMapCanvas = useCallback((canvas: HTMLCanvasElement) => setMapCanvas(canvas), []);
   const selected = state.enterprises.find((enterprise) => enterprise.id === state.selectedEnterpriseId)!;
@@ -706,6 +718,8 @@ function App() {
     setNegotiationRecords({});
     window.localStorage.removeItem('hefei-sandbox-run-v1');
     window.localStorage.removeItem('hefei-negotiation-drafts-v1');
+    window.localStorage.removeItem('hefei-investment-run-id');
+    setBackendRun(null);
     setState(initialState);
     setIntroActive(true);
   };
@@ -726,10 +740,27 @@ function App() {
       setState={setState}
       mapCanvas={mapCanvas}
       onMapCanvas={receiveMapCanvas}
-      onNewRun={() => setNegotiationRecords({})}
+      onNewRun={() => {
+        setNegotiationRecords({});
+        void createBackendRun().then((run) => {
+          setBackendRun(run);
+          setBackendCompanyId(run.companies[0].company_id);
+          window.localStorage.setItem('hefei-investment-run-id', run.run_id);
+          setState((current) => ({
+            ...current,
+            runId: run.run_id,
+            setupEnterpriseIds: ['enterprise-a', 'enterprise-b'],
+            enterprises: current.enterprises.filter((enterprise) => ['enterprise-a', 'enterprise-b'].includes(enterprise.id)),
+            selectedEnterpriseId: 'enterprise-a',
+            roundFiscalStart: run.available_budget,
+            resources: { ...current.resources, fiscal: run.available_budget },
+          }));
+        });
+      }}
       onComplete={() => {
         setIntroActive(false);
         setFormalUiEntering(true);
+        if (backendRun) setState((current) => ({ ...current, phase: 'applications' }));
       }}
     />;
   }
@@ -818,7 +849,7 @@ function App() {
         <AgentStatusBadge health={agentHealth} />
       </FramedPanel>
 
-      {meetingOpen && <NegotiationOverlay
+      {meetingOpen && !backendRun && <NegotiationOverlay
         enterprise={selected}
         phase={state.phase}
         stageLabel={stages[state.stageIndex].date}
@@ -846,11 +877,40 @@ function App() {
             onMouseLeave={scheduleContextClose}
           />
         </div>
-        <EventIntelligenceRail state={state} />
+        {!backendRun && <EventIntelligenceRail state={state} />}
       </>}
 
       <FramedPanel as="aside" className="decision-panel layout-operation-panel enterprise-ui-theme" style={enterpriseThemeStyle(selected.id)}>
-        <PanelContent state={state} setState={setState} onRestart={restart} onStartMeeting={chooseEnterprise} onExport={exportRun} />
+        {backendRun ? <BackendDecisionFlow
+          key={`${backendRun.run_id}:${backendRun.stage_id}`}
+          run={backendRun}
+          selectedCompanyId={backendCompanyId}
+          onSelectedCompany={(companyId) => {
+            setBackendCompanyId(companyId);
+            setState((current) => selectEnterprise(current, backendToEnterprise(companyId)));
+          }}
+          onResult={(result: BackendResult) => {
+            setState((current) => ({
+              ...current,
+              phase: 'feedback',
+              resources: { ...current.resources, fiscal: result.budget.after },
+            }));
+          }}
+          onPhase={(phase) => setState((current) => ({ ...current, phase }))}
+          onNextStage={async () => {
+            const next = await resumeBackendRun(backendRun.run_id);
+            setBackendRun(next);
+            setBackendCompanyId(next.companies[0].company_id);
+            setState((current) => ({
+              ...current,
+              phase: 'applications',
+              stageIndex: Math.max(0, ['S1', 'S2', 'S3', 'S4'].indexOf(next.stage_id)),
+              roundFiscalStart: next.available_budget,
+              resources: { ...current.resources, fiscal: next.available_budget },
+              selectedEnterpriseId: backendToEnterprise(next.companies[0].company_id),
+            }));
+          }}
+        /> : <PanelContent state={state} setState={setState} onRestart={restart} onStartMeeting={chooseEnterprise} onExport={exportRun} />}
       </FramedPanel>
 
       <FramedPanel as="footer" className="resource-bar layout-data-bar">

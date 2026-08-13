@@ -103,7 +103,6 @@ export function randomEnterpriseIds(seed: number): EnterpriseId[] {
   }
   const count = (seed >>> 0) % 2 === 0 ? 3 : 2;
   if (count === 3) return sortEnterpriseIdsBySeat(ids);
-
   const male = ids.find((id) => ENTERPRISE_REPRESENTATIVE_CONFIG[id].gender === 'male');
   const female = ids.find((id) => ENTERPRISE_REPRESENTATIVE_CONFIG[id].gender === 'female');
   if (!male || !female) return sortEnterpriseIdsBySeat(ids.slice(0, 2));

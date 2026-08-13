@@ -874,6 +874,14 @@ input[type='range']::-moz-range-thumb { width: 12px; height: 12px; border-radius
 }
 .department-details[open] summary { color: #d3b98f; border-color: rgba(196,154,103,.3); }
 .department-details .agent-list { margin: 8px 0 0; }
+
+.backend-company-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:8px 0 12px; }
+.backend-company-tabs button { padding:12px; border:1px solid rgba(255,255,255,.14); background:rgba(12,20,31,.72); color:inherit; text-align:left; transition:border-color 160ms cubic-bezier(.23,1,.32,1), transform 140ms cubic-bezier(.23,1,.32,1); }
+.backend-company-tabs button:active,.department-view-toggle:active,.backend-policy-packages .inline-meeting-action:active { transform:scale(.97); }
+.backend-company-tabs button.active { border-color:#d3b98f; background:rgba(211,185,143,.09); }
+.backend-company-tabs b,.backend-company-tabs span { display:block; }.backend-company-tabs span { margin-top:4px; color:var(--text-muted); font-size:11px; }
+.backend-agent-list { display:grid; gap:7px; margin:8px 0; }.backend-agent-list article { align-items:flex-start; }.department-view-toggle { margin-top:6px; padding:5px 8px; border:1px solid rgba(211,185,143,.25); background:transparent; color:#d3b98f; font-size:11px; transition:transform 140ms cubic-bezier(.23,1,.32,1), background-color 160ms ease; }.department-independent-view { margin-top:8px!important; padding:8px; border-left:2px solid rgba(211,185,143,.45); background:rgba(211,185,143,.06); color:#d9d7d0!important; }
+.backend-policy-packages { grid-template-columns:1fr; }.backend-policy-packages .framed-card { display:block; }.policy-parameter-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; margin:9px 0; }.policy-parameter-grid span { display:flex; justify-content:space-between; padding:5px 7px; background:rgba(255,255,255,.04); color:var(--text-muted); font-size:10px; }.policy-parameter-grid b { color:var(--text-primary); font-size:11px; }
 .inline-meeting-action {
   width: 100%;
   margin: 0 0 9px;
