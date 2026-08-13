@@ -1,0 +1,56 @@
+baseline_id: ldk_hefei_pv_s2_v1
+case_id: CASE-04
+stage_id: S2
+decision_date: '2010-08-30'
+information_cutoff: '2010-08-30'
+decision_publication_date: '2016-08-09'
+availability_note: >-
+  合肥高新区国资平台2010年向安徽赛维提供的10亿元委托贷款及其后续债务重组，
+  由通威股份2016年重大资产重组补充法律意见书回溯披露。未来盲推演的 Context
+  在2010-08-30截止，不得读取该披露；真实回放基线可读取。
+
+government_action:
+  action: invest
+  agreement_type: joint_venture_and_entrusted_loan
+  components:
+    - establish_project_company
+    - provide_entrusted_loan
+    - provide_industrial_support
+  project_total_investment:
+    value: 20
+    unit: 亿元
+  project_capital:
+    value: 10
+    unit: 亿元
+  government_registered_capital_commitment:
+    value: 10
+    unit: 亿元
+  initial_registered_capital:
+    value: 10
+    unit: 亿元
+  initial_government_cash_commitment:
+    value: 10
+    unit: 亿元
+  source_ids:
+    - src_tongwei_ldk_legal_2016
+
+conditions:
+  - condition_id: entrusted_loan_10yi
+    category: financing
+    description: 合肥高新创业园管理有限公司委托浦发银行向安徽赛维提供10亿元委托贷款，为债权融资而非政府股权出资。
+    source_ids: [src_tongwei_ldk_legal_2016]
+
+milestones:
+  - date: '2010-12-31'
+    milestone_type: capital_structure_update
+    description: 合肥高新区国资平台2010年内通过委托贷款向安徽赛维注入10亿元资金（债权口径，非股权）。
+    information_available_date: '2016-08-09'
+    source_ids: [src_tongwei_ldk_legal_2016]
+    metrics:
+      government_platform_entrusted_loan:
+        value: 10
+        unit: 亿元
+
+sources:
+  - source_id: src_tongwei_ldk_legal_2016
+    supports: [government_action, conditions, decision_date]

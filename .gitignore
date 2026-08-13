@@ -1,25 +1,49 @@
+# --- Python / 数据管线（来自 main） ---
+.incoming-policy-town-H0/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# --- 前端依赖与构建 ---
 node_modules/
 dist/
 dist-map/
-
+build/
+tsconfig.tsbuildinfo
 *.tsbuildinfo
 vite.config.js
 vite.config.d.ts
 
-.DS_Store
-**/.DS_Store
+# --- 生成产物（Hefei 模拟运行数据） ---
+data/hefei_industry_simulation.sqlite3
+data/hefei_mvp_runs/
+data/hefei_mvp/real_backend_run.json
+data/source_archive/
 
-# Product and planning documents kept locally.
+# --- IDE / Superpowers 临时文件 ---
+.superpowers/
+
+# --- 本地文档与启动脚本 ---
 /*.md
-
-# Local macOS launcher (not part of the frontend source).
 /*.command
 
-# Local LLM credentials (never commit).
+# --- 本地 LLM 凭据（禁止提交） ---
 sim/agent_config.json
 
-# Local event-log database (SQLite).
+# --- 本地事件日志数据库（SQLite） ---
 bridge/data/
 
-# Agent memory persistence (runtime).
+# --- Agent 记忆持久化（运行时） ---
 sim/memories.json

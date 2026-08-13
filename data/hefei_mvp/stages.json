@@ -1,0 +1,127 @@
+{
+  "S1": {
+    "cutoff_at": "2008-09-12",
+    "budget_assumption": {
+      "assumption_id": "fiscal-gameplay-s1-v1",
+      "new_fiscal_capacity": 100,
+      "value_type": "scenario_assumption",
+      "data_attempt_status": "insufficient",
+      "calibration_status": "uncalibrated",
+      "fallback_reason": "已取得宏观财政收入与支出，但缺少可投资产业基金余额、财政结余、政府性基金、国有资本经营预算和项目政府出资，无法计算真实可投资额度。",
+      "missing_fields": ["产业基金可用余额", "财政结余与跨期结转", "政府性基金及土地出让收入", "国有资本经营预算", "政府债务与融资约束", "项目实际政府出资与后续承诺"],
+      "data_gap_ids": ["GAP-P0-FISCAL"],
+      "attempted_source_ids": ["src_hefei_2007", "src_hefei_2008", "src_mof_hefei_2008_fiscal"],
+      "replacement_key": "hefei.fiscal.investable_capacity.S1",
+      "gameplay_rationale": "以100点建立首轮选择空间，并作为后续结转机制的初始玩法基准。",
+      "source_ids": [],
+      "capacity_evidence": [
+        {"observation_id": "boe_6g_government_capital_commitment", "value": 60, "unit": "亿元", "interpretation": "2008-09-13公开的政府方注册资本金责任；不是已支付现金，也不是全市可自由支配余额"},
+        {"observation_id": "boe_6g_project_capital", "value": 90, "unit": "亿元", "interpretation": "项目资本金总额；包含政府方与共同融资责任，不能直接当作财政新增额度"}
+      ]
+    },
+    "city_metrics": {
+      "industrial_base": 45,
+      "talent_supply": 52,
+      "infrastructure_capacity": 46,
+      "supply_chain_strength": 40,
+      "policy_support": 58,
+      "market_cycle": -25,
+      "employment_index": 45,
+      "portfolio_public_value": 35
+    },
+    "event": {
+      "event_id": "E2008_DEMAND_SLOWDOWN",
+      "description": "2008年上半年面板价格见顶回落，外部需求转弱信号已出现",
+      "affected_archetypes": ["all"],
+      "direction": "negative",
+      "magnitude": 18,
+      "evidence_ids": ["HF-S1-EVENT-01"]
+    }
+  },
+  "S2": {
+    "cutoff_at": "2011-06-30",
+    "budget_assumption": {
+      "assumption_id": "fiscal-gameplay-s2-v1",
+      "new_fiscal_capacity": 60,
+      "value_type": "scenario_assumption",
+      "data_attempt_status": "insufficient",
+      "calibration_status": "uncalibrated",
+      "fallback_reason": "公开宏观财政数据只能描述财政环境，不能识别本阶段可用于产业投资的真实新增额度。",
+      "missing_fields": ["产业基金可用余额", "财政结余与跨期结转", "政府性基金及土地出让收入", "国有资本经营预算", "政府债务与融资约束", "项目实际政府出资与后续承诺"],
+      "data_gap_ids": ["GAP-P0-FISCAL"],
+      "attempted_source_ids": ["src_hefei_2009", "src_hefei_2010", "src_hefei_2011", "src_mof_hefei_budget_reform_2012"],
+      "replacement_key": "hefei.fiscal.investable_capacity.S2",
+      "gameplay_rationale": "提供一次明显但有限的追加窗口，使首轮节余和早期承诺同时影响第二阶段。",
+      "source_ids": [],
+      "capacity_evidence": [
+        {"observation_id": "boe_85g_government_capital_increase", "value": 43.55, "unit": "亿元", "interpretation": "2012-10-30公开的国资平台拟增资安排；不等同最终实缴或可自由支配预算"},
+        {"observation_id": "boe_85g_registered_capital", "value": 170, "unit": "亿元", "interpretation": "2013-04-03公开的项目公司注册资本；不能替代政府年度可投资余额"}
+      ]
+    },
+    "event": {
+      "event_id": "E2011_EXPANSION",
+      "description": "扩产窗口与新增项目并存，财政追加压力上升",
+      "affected_archetypes": ["display_lcd", "display_pdp", "photovoltaic", "heavy_manufacturing"],
+      "direction": "neutral",
+      "magnitude": 12,
+      "evidence_ids": ["HF-S2-EVENT-01"]
+    }
+  },
+  "S3": {
+    "cutoff_at": "2014-06-30",
+    "budget_assumption": {
+      "assumption_id": "fiscal-gameplay-s3-v1",
+      "new_fiscal_capacity": 45,
+      "value_type": "scenario_assumption",
+      "data_attempt_status": "insufficient",
+      "calibration_status": "uncalibrated",
+      "fallback_reason": "公开宏观财政数据不能拆出周期下行阶段的产业投资专项可用额度。",
+      "missing_fields": ["产业基金可用余额", "财政结余与跨期结转", "政府性基金及土地出让收入", "国有资本经营预算", "政府债务与融资约束", "项目实际政府出资与后续承诺"],
+      "data_gap_ids": ["GAP-P0-FISCAL"],
+      "attempted_source_ids": ["src_hefei_2012_pdf", "src_hefei_2013_pdf", "src_hefei_2014", "src_policy_ic_2014"],
+      "replacement_key": "hefei.fiscal.investable_capacity.S3",
+      "gameplay_rationale": "缩小新增额度，迫使玩家在止损、重组和新技术窗口之间做取舍。",
+      "source_ids": [],
+      "capacity_evidence": [
+        {"observation_id": "boe_85g_government_capital_increase", "value": 43.55, "unit": "亿元", "interpretation": "公开项目级国资增资证据，可作为阶段资本约束参照；不等同可自由支配财政余额"}
+      ]
+    },
+    "event": {
+      "event_id": "E2014_CYCLE_DIVERGENCE",
+      "description": "光伏与重资产行业承压，集成电路政策窗口打开",
+      "affected_archetypes": ["photovoltaic", "heavy_manufacturing", "semiconductor_dram"],
+      "direction": "neutral",
+      "magnitude": 22,
+      "evidence_ids": ["HF-S3-EVENT-01", "P2014_IC_GUIDELINE"]
+    }
+  },
+  "S4": {
+    "cutoff_at": "2016-12-31",
+    "budget_assumption": {
+      "assumption_id": "fiscal-gameplay-s4-v1",
+      "new_fiscal_capacity": 30,
+      "value_type": "scenario_assumption",
+      "data_attempt_status": "insufficient",
+      "calibration_status": "uncalibrated",
+      "fallback_reason": "公开宏观财政数据不能拆出长期战略下注所能调用的真实产业资本额度。",
+      "missing_fields": ["产业基金可用余额", "财政结余与跨期结转", "政府性基金及土地出让收入", "国有资本经营预算", "政府债务与融资约束", "项目实际政府出资与后续承诺"],
+      "data_gap_ids": ["GAP-P0-FISCAL"],
+      "attempted_source_ids": ["src_hefei_2015", "src_hefei_2016", "src_hefei_2016_audit", "src_policy_emerging_2016"],
+      "replacement_key": "hefei.fiscal.investable_capacity.S4",
+      "gameplay_rationale": "在终局保留有限战略下注空间，同时让前三阶段结转和承诺成为主要约束。",
+      "source_ids": [],
+      "capacity_evidence": [
+        {"observation_id": "boe_105g_government_capital_commitment", "value": 180, "unit": "亿元", "interpretation": "2015-04-21公开的10.5代线政府方拟筹集注册资本金；是项目承诺，不是全市可自由支配余额"},
+        {"observation_id": "boe_105g_registered_capital", "value": 220, "unit": "亿元", "interpretation": "项目公司注册资本；含企业方40亿元，不是政府财政额度"}
+      ]
+    },
+    "event": {
+      "event_id": "E2016_LONG_TERM_BET",
+      "description": "战略性新兴产业政策增强长期资本与核心技术投入",
+      "affected_archetypes": ["semiconductor_dram", "biomedicine", "advanced_equipment"],
+      "direction": "positive",
+      "magnitude": 20,
+      "evidence_ids": ["P2016_EMERGING"]
+    }
+  }
+}

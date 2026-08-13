@@ -1,0 +1,123 @@
+baseline_id: boe_hefei_6g_s1_v1
+case_id: CASE-02
+stage_id: S1
+decision_date: '2008-09-12'
+information_cutoff: '2008-09-12'
+decision_publication_date: '2008-09-13'
+availability_note: >-
+  框架协议于2008-09-13公开。真实回放基线可以读取协议动作；未来盲推演的
+  Context 在2008-09-12截止，不得读取该协议及其动作、金额和条件。
+
+government_action:
+  action: invest
+  agreement_type: investment_framework
+  components:
+    - sign_framework_agreement
+    - establish_project_company
+    - commit_registered_capital
+    - arrange_syndicated_loan
+    - provide_industrial_support
+  project_total_investment:
+    value: 175
+    unit: 亿元
+  project_capital:
+    value: 90
+    unit: 亿元
+  government_registered_capital_commitment:
+    value: 60
+    unit: 亿元
+  initial_registered_capital:
+    value: 0.5
+    unit: 亿元
+  initial_government_cash_commitment:
+    value: 0.405
+    unit: 亿元
+  initial_government_equity_share:
+    value: 81
+    unit: '%'
+  annual_interest_subsidy:
+    value: 1.5
+    unit: 亿元/年
+  interest_subsidy_years: 3
+  source_ids:
+    - src_boe_hefei_6g_framework_2008
+
+conditions:
+  - condition_id: project_company_within_45_days
+    category: company_setup
+    description: 协议签署后45日内完成项目公司工商注册，否则协议自动终止。
+    source_ids: [src_boe_hefei_6g_framework_2008]
+  - condition_id: government_capital_responsibility
+    category: capital
+    description: 政府方或其指定平台承担60亿元项目公司注册资本投入。
+    source_ids: [src_boe_hefei_6g_framework_2008]
+  - condition_id: external_capital_raise
+    category: capital
+    description: 其余30亿元资本金由双方通过资本市场或战略投资者筹集，不足部分由政府方负责落实。
+    source_ids: [src_boe_hefei_6g_framework_2008]
+  - condition_id: syndicated_loan
+    category: financing
+    description: 总投资与项目资本金的差额由双方共同落实银团贷款。
+    source_ids: [src_boe_hefei_6g_framework_2008]
+  - condition_id: loan_guarantee_if_required
+    category: guarantee
+    description: 银团提出担保要求时，双方按银团要求提供担保。
+    source_ids: [src_boe_hefei_6g_framework_2008]
+  - condition_id: three_year_interest_subsidy
+    category: subsidy
+    description: 政府方为项目公司银行贷款提供3年、每年1.5亿元的贷款贴息。
+    source_ids: [src_boe_hefei_6g_framework_2008]
+  - condition_id: land_energy_infrastructure_support
+    category: industrial_support
+    description: 政府方提供地块开发、土地价格、能源、基础设施和信息等支持。
+    source_ids: [src_boe_hefei_6g_framework_2008]
+  - condition_id: construction_deadline
+    category: construction
+    description: 建设开工目标不晚于2009-03-31。
+    source_ids: [src_boe_hefei_6g_framework_2008]
+  - condition_id: production_deadline
+    category: production
+    description: 投产目标为2010年第四季度末。
+    source_ids: [src_boe_hefei_6g_framework_2008]
+
+milestones:
+  - date: '2008-10-16'
+    milestone_type: company_setup
+    description: 项目公司成立；政府平台合计现金出资4050万元，初始持股81%。
+    information_available_date: '2008-10-17'
+    source_ids: [src_boe_hefei_6g_progress_2008]
+    metrics:
+      initial_registered_capital:
+        value: 0.5
+        unit: 亿元
+      government_actual_equity_contribution:
+        value: 0.405
+        unit: 亿元
+      government_equity_share:
+        value: 81
+        unit: '%'
+  - date: '2009-04-13'
+    milestone_type: construction_start
+    description: 合肥6代线项目开工。
+    information_available_date: '2009-04-21'
+    source_ids: [src_boe_2008]
+  - date: '2009-04-21'
+    milestone_type: capital_structure_update
+    description: 截至年报披露日，京东方累计增资6亿元，持股93.769%。
+    information_available_date: '2009-04-21'
+    source_ids: [src_boe_2008]
+    metrics:
+      boe_cumulative_capital_contribution:
+        value: 6
+        unit: 亿元
+      boe_equity_share:
+        value: 93.769
+        unit: '%'
+
+sources:
+  - source_id: src_boe_hefei_6g_framework_2008
+    supports: [government_action, conditions, decision_date]
+  - source_id: src_boe_hefei_6g_progress_2008
+    supports: [company_setup, actual_initial_equity]
+  - source_id: src_boe_2008
+    supports: [construction_start, capital_structure_update]
