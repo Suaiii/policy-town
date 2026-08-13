@@ -418,6 +418,22 @@ def get_run(run_id: str) -> dict:
     return _stage_view(state, state.next_stage)
 
 
+@app.get("/api/runs/{run_id}/historical-replay")
+def historical_replay(run_id: str) -> dict:
+    """Unlock the real historical comparison only after S1-S4 are complete."""
+    engine = _engine()
+    try:
+        state = engine.resume_run(run_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    if state.next_stage is not None:
+        raise HTTPException(
+            status_code=409,
+            detail="historical replay is sealed until all four stages are complete",
+        )
+    return engine.finalize(state).model_dump(mode="json")
+
+
 @app.post("/api/runs/{run_id}/settle")
 def settle_stage(run_id: str, request: SettleStageRequest) -> dict:
     path = _result_path(run_id, request.stage_id)
