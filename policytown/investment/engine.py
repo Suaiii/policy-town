@@ -21,6 +21,7 @@ from contracts.investment_simulation_v0_1 import (
     ReplayScores,
     SimulationState,
     StageAudit,
+    DeliberationRound,
     StageId,
     StageInput,
     StageResult,
@@ -31,7 +32,7 @@ from contracts.investment_simulation_v0_1 import (
 
 from .broadcast import build_broadcast_events
 from .context import HefeiContextBuilder
-from .deliberation import DepartmentAgentRuntime, deliberate
+from .deliberation import DepartmentAgentRuntime, deliberate, settle_cached_deliberation
 from .loader import HefeiMvpLoader
 from .outcome_forecast import derive_outcome_forecast, evaluate_forecasts
 from .real_data import HefeiRealDataRepository
@@ -204,6 +205,7 @@ class InvestmentEngine:
         stage_input: StageInput,
         *,
         persist: bool | None = None,
+        deliberation_overrides: dict[str, DeliberationRound] | None = None,
     ) -> StageResult:
         """Settle one stage.
 
@@ -319,6 +321,7 @@ class InvestmentEngine:
         reality_graph_updates.extend(self._context_graph_records(
             state.run_id, stage_input.stage_id, cutoff, real_context,
         ))
+        deliberation_overrides = deliberation_overrides or {}
         self._validate_negotiation_choices(
             companies,
             city,
@@ -327,6 +330,7 @@ class InvestmentEngine:
             stage_input,
             frozen_audit,
             event.evidence_ids,
+            deliberation_overrides,
         )
         for company in companies:
             if company.status == CompanyStatus.EXITED:
@@ -351,33 +355,44 @@ class InvestmentEngine:
             evidence_ids.update(derivation_evidence)
             evidence_ids.update(company_evidence)
             assessments.extend(self._assess(company, city, budget, event.evidence_ids, real_context))
-            deliberation, company_beliefs, company_commitments, department_memories = deliberate(
-                company,
-                city,
-                budget,
-                self.context_builder,
-                real_context,
-                stage_input.stage_id,
-                event.evidence_ids,
-                state.run_id,
-                state.seed,
-                cutoff,
-                frozen_audit.context_hash,
-                negotiation_by_company.get(company.company_id),
-                self.department_runtime,
-                enterprise_private_state=self.loader.enterprise_private_state(
-                    company.company_id, stage_input.stage_id,
-                ),
-                enterprise_runtime=self.enterprise_runtime,
-                enterprise_memory=next(
-                    (memory for memory in state.enterprise_memories if memory.company_id == company.company_id),
-                    None,
-                ),
-                previous_department_memories=[
-                    memory for memory in state.department_memories
-                    if memory.company_id == company.company_id
-                ],
-            )
+            cached_preview = deliberation_overrides.get(company.company_id)
+            if cached_preview is not None:
+                choice = negotiation_by_company.get(company.company_id)
+                if choice is None:
+                    raise ValueError("cached deliberation requires a negotiation choice")
+                deliberation, company_beliefs, company_commitments, department_memories = settle_cached_deliberation(
+                    cached_preview, choice, company, city, budget, stage_input.stage_id,
+                    event.evidence_ids, state.run_id,
+                    [memory for memory in state.department_memories if memory.company_id == company.company_id],
+                )
+            else:
+                deliberation, company_beliefs, company_commitments, department_memories = deliberate(
+                    company,
+                    city,
+                    budget,
+                    self.context_builder,
+                    real_context,
+                    stage_input.stage_id,
+                    event.evidence_ids,
+                    state.run_id,
+                    state.seed,
+                    cutoff,
+                    frozen_audit.context_hash,
+                    negotiation_by_company.get(company.company_id),
+                    self.department_runtime,
+                    enterprise_private_state=self.loader.enterprise_private_state(
+                        company.company_id, stage_input.stage_id,
+                    ),
+                    enterprise_runtime=self.enterprise_runtime,
+                    enterprise_memory=next(
+                        (memory for memory in state.enterprise_memories if memory.company_id == company.company_id),
+                        None,
+                    ),
+                    previous_department_memories=[
+                        memory for memory in state.department_memories
+                        if memory.company_id == company.company_id
+                    ],
+                )
             department_memory_updates.extend(department_memories)
             agreed_points = deliberation.enterprise_response.agreed_capital_points
             negotiation_choice = negotiation_by_company.get(company.company_id)
@@ -707,6 +722,7 @@ class InvestmentEngine:
         stage_input,
         frozen_audit,
         event_evidence,
+        deliberation_overrides: dict[str, DeliberationRound],
     ) -> None:
         if not stage_input.negotiations:
             return
@@ -715,24 +731,26 @@ class InvestmentEngine:
         for choice in stage_input.negotiations:
             if choice.resolution == "reject":
                 continue
-            preview, _, _, _ = deliberate(
-                company_by_id[choice.company_id],
-                city,
-                budget,
-                self.context_builder,
-                real_context,
-                stage_input.stage_id,
-                event_evidence,
-                stage_input.run_id,
-                stage_input.seed,
-                frozen_audit.cutoff_at,
-                frozen_audit.context_hash,
-                department_runtime=self.department_runtime,
-                enterprise_private_state=self.loader.enterprise_private_state(
-                    choice.company_id, stage_input.stage_id,
-                ),
-                enterprise_runtime=self.enterprise_runtime,
-            )
+            preview = deliberation_overrides.get(choice.company_id)
+            if preview is None:
+                preview, _, _, _ = deliberate(
+                    company_by_id[choice.company_id],
+                    city,
+                    budget,
+                    self.context_builder,
+                    real_context,
+                    stage_input.stage_id,
+                    event_evidence,
+                    stage_input.run_id,
+                    stage_input.seed,
+                    frozen_audit.cutoff_at,
+                    frozen_audit.context_hash,
+                    department_runtime=self.department_runtime,
+                    enterprise_private_state=self.loader.enterprise_private_state(
+                        choice.company_id, stage_input.stage_id,
+                    ),
+                    enterprise_runtime=self.enterprise_runtime,
+                )
             proposals = {item.proposal_id: item for item in preview.meeting.proposals}
             if choice.proposal_id not in proposals:
                 raise ValueError(

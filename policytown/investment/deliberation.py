@@ -1443,3 +1443,136 @@ def deliberate(
             evidence_ids=[item.commitment_id for item in commitments],
         ))
     return deliberation, beliefs, commitments, department_memories
+
+
+def settle_cached_deliberation(
+    preview: DeliberationRound,
+    choice: NegotiationChoice,
+    company,
+    city,
+    budget,
+    stage_id: StageId,
+    evidence_ids: list[str],
+    run_id: str,
+    previous_department_memories: list[DepartmentMemoryState],
+):
+    """Apply a player's accepted package to the exact deliberation they saw.
+
+    The LLM has already produced ``preview``.  Re-running it during settlement
+    could change the package's amount, so this function performs only the
+    deterministic negotiation bookkeeping that follows a package selection.
+    """
+    if choice.resolution != "accept":
+        raise ValueError("cached deliberation settlement supports accepted proposals only")
+    if preview.company_id != company.company_id:
+        raise ValueError("cached deliberation company does not match settlement company")
+    selected = next(
+        (proposal for proposal in preview.meeting.proposals if proposal.proposal_id == choice.proposal_id),
+        None,
+    )
+    if selected is None:
+        raise ValueError(f"unknown cached proposal_id for {company.company_id}: {choice.proposal_id}")
+
+    requested_points = preview.enterprise_response.requested_capital_points
+    response_type = "counteroffer" if selected.capital_points < requested_points else "accept"
+    response = EnterpriseResponse(
+        company_id=company.company_id,
+        proposal_id=selected.proposal_id,
+        response_type=response_type,
+        resolution="accepted",
+        requested_capital_points=requested_points,
+        agreed_capital_points=selected.capital_points,
+        accepted_conditions=selected.conditions,
+        requested_changes=(
+            [f"希望将资金请求提高至 {requested_points} 点"]
+            if response_type == "counteroffer" else []
+        ),
+        rationale=(
+            "企业提出提高额度的反提案，但政府未接受；最终仍按原条件方案结算。"
+            if response_type == "counteroffer" else "企业接受条件方案并承诺按里程碑推进。"
+        ),
+        evidence_ids=evidence_ids[-8:],
+    )
+    condition_sheet = GovernmentConditionSheet(
+        sheet_id=f"{stage_id.value}-{company.company_id}-condition",
+        company_id=company.company_id,
+        proposal_id=selected.proposal_id,
+        action="invest",
+        capital_points=selected.capital_points,
+        support_focus=selected.support_focus,
+        tranches=selected.tranches,
+        risk_conditions=selected.conditions,
+        exit_condition=selected.exit_condition,
+    )
+    deliberation = preview.model_copy(deep=True)
+    deliberation.selected_proposal_id = selected.proposal_id
+    deliberation.condition_sheet = condition_sheet
+    deliberation.enterprise_counteroffer = None
+    deliberation.enterprise_response = response
+    deliberation.negotiation_log.extend([
+        NegotiationEvent(
+            sequence=len(deliberation.negotiation_log) + 1,
+            phase="government_condition",
+            actor="government",
+            summary=f"政府提出 {selected.label}，资金 {selected.capital_points} 点。",
+            evidence_ids=evidence_ids[-8:],
+        ),
+        NegotiationEvent(
+            sequence=len(deliberation.negotiation_log) + 2,
+            phase="final_commitment",
+            actor="government",
+            summary=f"协商结果：accepted，最终同意 {selected.capital_points} 点。",
+            evidence_ids=evidence_ids[-8:],
+        ),
+    ])
+    beliefs = [
+        BeliefLedgerEntry(
+            belief_id=f"{stage_id.value}-{company.company_id}-market",
+            company_id=company.company_id, belief_type="market_outlook",
+            value=max(0, min(1, (city.market_cycle + 100) / 200)), confidence=.55,
+            evidence_ids=evidence_ids[-6:], updated_at=stage_id,
+        ),
+        BeliefLedgerEntry(
+            belief_id=f"{stage_id.value}-{company.company_id}-financing",
+            company_id=company.company_id, belief_type="financing_continuity",
+            value=max(0, min(1, budget.before / max(1, company.capital_request * 2))), confidence=.55,
+            evidence_ids=evidence_ids[-6:], updated_at=stage_id,
+        ),
+    ]
+    previous_by_department = {item.department: item for item in previous_department_memories}
+    department_memories = [
+        build_department_memory(
+            run_id=run_id,
+            stage_id=stage_id,
+            department=memo.department,
+            company_id=company.company_id,
+            memo=memo,
+            previous=previous_by_department.get(memo.department),
+        )
+        for memo in deliberation.department_memos
+    ]
+    due_stage = _next_stage(stage_id)
+    commitments = [
+        CommitmentLedgerEntry(
+            commitment_id=f"{stage_id.value}-{company.company_id}-government-capital",
+            stage_id=stage_id, company_id=company.company_id, party="government",
+            promise=f"提供不超过{selected.capital_points}点的分期支持",
+            due_stage=due_stage,
+            condition=";".join(selected.conditions), evidence_ids=evidence_ids[-8:],
+        ),
+        CommitmentLedgerEntry(
+            commitment_id=f"{stage_id.value}-{company.company_id}-company-milestone",
+            stage_id=stage_id, company_id=company.company_id, party="company",
+            promise="按里程碑完成建设/技术验证并提交资金使用证明",
+            due_stage=due_stage,
+            condition=";".join(selected.conditions), evidence_ids=evidence_ids[-8:],
+        ),
+    ]
+    deliberation.negotiation_log.append(NegotiationEvent(
+        sequence=len(deliberation.negotiation_log) + 1,
+        phase="rule_settlement",
+        actor="rule_engine",
+        summary="最终条件已写入承诺账；数值仍仅由规则引擎根据 PlayerAction 结算。",
+        evidence_ids=[item.commitment_id for item in commitments],
+    ))
+    return deliberation, beliefs, commitments, department_memories

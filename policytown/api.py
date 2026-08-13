@@ -20,6 +20,7 @@ from pydantic import BaseModel, Field, model_validator
 
 from contracts.investment_simulation_v0_1 import (
     MeetingProposal, NegotiationChoice, PlayerAction, StageId, StageInput,
+    DeliberationRound,
 )
 from policytown.investment import InvestmentEngine
 
@@ -183,6 +184,16 @@ def _cached_proposals(run_id: str, stage_id: StageId, company_id: str) -> dict[s
     except (TypeError, ValueError):
         return None
     return {item.proposal_id: item for item in parsed}
+
+
+def _cached_deliberation(run_id: str, stage_id: StageId, company_id: str) -> DeliberationRound | None:
+    payload = _load_cached_deliberation(run_id, stage_id, company_id)
+    if payload is None:
+        return None
+    try:
+        return DeliberationRound.model_validate(payload)
+    except ValueError:
+        return None
 
 
 def _stage_view(state, stage_id: StageId) -> dict:
@@ -420,12 +431,13 @@ def select_proposal(run_id: str, request: SelectProposalRequest) -> dict:
     engine = _engine()
     try:
         state = engine.resume_run(run_id)
-        proposals = _cached_proposals(run_id, request.stage_id, request.company_id)
-        if proposals is None:
+        cached_deliberation = _cached_deliberation(run_id, request.stage_id, request.company_id)
+        if cached_deliberation is None:
             _preview_payload(engine, state, request.stage_id, request.company_id)
-            proposals = _cached_proposals(run_id, request.stage_id, request.company_id)
-            if proposals is None:
+            cached_deliberation = _cached_deliberation(run_id, request.stage_id, request.company_id)
+            if cached_deliberation is None:
                 raise RuntimeError("deliberation cache was not persisted")
+        proposals = {item.proposal_id: item for item in cached_deliberation.meeting.proposals}
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
@@ -451,7 +463,7 @@ def select_proposal(run_id: str, request: SelectProposalRequest) -> dict:
                 proposal_id=proposal.proposal_id,
                 resolution="accept",
             )],
-        ))
+        ), deliberation_overrides={request.company_id: cached_deliberation})
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     payload = result.model_dump(mode="json")

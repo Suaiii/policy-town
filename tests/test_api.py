@@ -136,6 +136,39 @@ class TestInvestmentApi(unittest.TestCase):
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.json()["budget"]["spent"], proposal["capital_points"])
 
+    def test_select_proposal_never_regenerates_a_cached_deliberation_during_settlement(self):
+        stage = self.client.post("/api/runs", json={"seed": 28}).json()
+        company_id = stage["companies"][0]["company_id"]
+        preview = self.client.get(
+            f"/api/runs/{stage['run_id']}/stages/S1/companies/{company_id}/deliberation"
+        ).json()
+        proposal = preview["meeting"]["proposals"][0]
+
+        import policytown.investment.engine as engine_module
+        real_deliberate = engine_module.deliberate
+
+        def reject_selected_company_regeneration(company, *args, **kwargs):
+            if company.company_id == company_id:
+                raise AssertionError("settlement must use the player-visible cached deliberation")
+            return real_deliberate(company, *args, **kwargs)
+
+        with patch(
+            "policytown.investment.engine.deliberate",
+            side_effect=reject_selected_company_regeneration,
+        ):
+            response = self.client.post(
+                f"/api/runs/{stage['run_id']}/select-proposal",
+                json={
+                    "stage_id": "S1",
+                    "company_id": company_id,
+                    "proposal_id": proposal["proposal_id"],
+                    "idempotency_key": "select-no-regeneration",
+                },
+            )
+
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["budget"]["spent"], proposal["capital_points"])
+
     def test_two_policy_packages_form_a_controlled_ablation(self):
         stage = self.client.post("/api/runs", json={"seed": 9}).json()
         company_id = stage["companies"][0]["company_id"]
