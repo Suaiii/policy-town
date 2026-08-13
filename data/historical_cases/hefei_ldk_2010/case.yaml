@@ -1,5 +1,0 @@
-case_id: case-04_replay
-cutoff_at: '2010-08-30'
-model_version: hefei-mvp-0.1
-rule_version: hefei-industry-investment-v1
-prompt_version: hefei-replay-v1

@@ -1,4 +1,22 @@
-.incoming-policy-town-H0/
+node_modules/
+dist/
+dist-map/
+
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+.DS_Store
+**/.DS_Store
+
+# Product and planning documents kept locally.
+/*.md
+/docs/
+
+# Local macOS launcher (not part of the frontend source).
+/*.command
+
+# Python backend and data artifacts (not part of frontend)
 __pycache__/
 *.py[cod]
 *.pyo
@@ -9,25 +27,16 @@ __pycache__/
 venv/
 .env
 .env.*
-!.env.example
-.idea/
-.vscode/
-.DS_Store
-Thumbs.db
+/contracts/
+/policytown/
+/scripts/
+/tests/
+/data/
+/database/
+/output/
+/requirements.txt
+/README.md
 
-# Dependencies
-node_modules/
-
-# Build outputs
-dist/
-build/
-tsconfig.tsbuildinfo
-
-# Generated Hefei simulation artifacts
-data/hefei_industry_simulation.sqlite3
-data/hefei_mvp_runs/
-data/hefei_mvp/real_backend_run.json
-data/source_archive/
-
-# IDE / Superpowers temp files
-.superpowers/
+# Root-level images/screenshots that are not frontend assets
+/*.png
+/logo.png
