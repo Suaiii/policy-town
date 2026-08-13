@@ -153,6 +153,7 @@ def detect_conflicts(memoranda: List[dict], stage_id: str = "S1") -> List[dict]:
         candidates.sort(key=lambda c: -_KIND_RANK[c["kind"]])
         for conf in candidates[:_MAX_PER_COMPANY]:
             seq += 1
+            conf["stage_id"] = stage_id
             conf["conflict_id"] = "CF-%s-%02d" % (stage_id, seq)
             conflicts.append(conf)
     return conflicts[:MAX_PER_STAGE]

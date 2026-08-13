@@ -45,9 +45,18 @@ class TestConflictDetection(unittest.TestCase):
         self.assertEqual(c["from"], "economy")    # 更不支持的部门发起
         self.assertEqual(c["to"], "sci_tech")     # 更支持的部门被质询
         self.assertEqual(c["severity"], "high")
+        self.assertEqual(c["stage_id"], "S1")
         self.assertTrue(c["question"].strip())
         self.assertTrue(c["conflict_id"].startswith("CF-S1-"))
         validate_challenge(dict(c, challenge_id="CH-S1-01", status="pending"))  # 不抛异常即通过
+
+    def test_conflicts_deterministic(self):
+        import json
+        memos = [_memo("economy", "oppose", score=30),
+                 _memo("sci_tech", "support", score=70)]
+        v1 = json.dumps(detect_conflicts(memos, "S1"), sort_keys=True)
+        v2 = json.dumps(detect_conflicts(memos, "S1"), sort_keys=True)
+        self.assertEqual(v1, v2)
 
     def test_small_gap_does_not_conflict(self):
         memos = [_memo("sci_tech", "support", score=70),

@@ -394,6 +394,7 @@ def detect_conflicts(memoranda: List[dict], stage_id: str = "S1") -> List[dict]:
         candidates.sort(key=lambda c: -_KIND_RANK[c["kind"]])
         for conf in candidates[:_MAX_PER_COMPANY]:
             seq += 1
+            conf["stage_id"] = stage_id
             conf["conflict_id"] = "CF-%s-%02d" % (stage_id, seq)
             conflicts.append(conf)
     return conflicts[:MAX_PER_STAGE]
@@ -418,7 +419,7 @@ def validate_challenge(ch: dict) -> None:
 - [ ] **Step 5: 运行确认通过**
 
 Run: `python3 -m unittest policytown.investment.tests.test_meeting -v`
-Expected: PASS（8 例）。
+Expected: PASS（10 例：TestConflictDetection 7 例 + TestChallengeValidator 3 例）。
 
 - [ ] **Step 6: 提交**
 
@@ -547,6 +548,8 @@ Run: `python3 -m unittest policytown.investment.tests.test_meeting -v`
 Expected: FAIL（`build_challenges` / `position_revision` 等不存在；`deterministic.challenge_response` 不存在）。
 
 - [ ] **Step 3: meeting.py 追加质询构建、回应校验器与立场修订**
+
+注意：`build_challenges` 用 `dict(c)` 浅拷贝并只覆盖 `challenge_id` / `status`，不得覆盖 `stage_id`（Task 1 起冲突已携带真实 stage_id）。
 
 ```python
 def build_challenges(conflicts: List[dict], stage_id: str = "S1") -> List[dict]:
