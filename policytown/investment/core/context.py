@@ -80,6 +80,7 @@ def build_context(state: WorldState, inbox: Inbox, stage_events: List[dict]) -> 
         "inbox": inbox.to_list(state.stage_id),
         "evidence_pack": evidence_pack,
         "fact_graph": state.fact_graph.to_dict(cutoff, "public"),
+        "government_commitments": [c.to_dict() for c in state.government_commitments.records],
     }
 
 

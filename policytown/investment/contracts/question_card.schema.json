@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "investment_simulation/v0.3/question_card",
+  "title": "QuestionCard v0.3 — 关键核验问题卡（文档 4.6）",
+  "description": "玩家每轮选择一张；卡片来自关键未穿透项或部门 high 级缺失信息。",
+  "type": "object",
+  "required": ["card_id", "company_id", "question", "targets", "source"],
+  "properties": {
+    "card_id": {"type": "string"},
+    "company_id": {"type": "string"},
+    "question": {"type": "string"},
+    "targets": {"type": "array", "items": {"type": "string"}},
+    "source": {"type": "string", "enum": ["key_proposition", "department_gap"]},
+    "proposition_id": {"type": "string"},
+    "department": {"type": "string"}
+  }
+}

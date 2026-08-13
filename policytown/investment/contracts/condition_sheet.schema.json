@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "investment_simulation/v0.3/condition_sheet",
+  "title": "ConditionSheet v0.3 — 政府条件单（文档 4.6）",
+  "description": "玩家结构化政府方案：投入、城市支持与风险条件。自由文本意见不能直接修改数值。",
+  "type": "object",
+  "required": ["sheet_id", "company_id", "capital_points", "support_focus", "risk_conditions"],
+  "properties": {
+    "sheet_id": {"type": "string"},
+    "company_id": {"type": "string"},
+    "capital_points": {"type": "number", "minimum": 0},
+    "support_focus": {"type": "string",
+                      "enum": ["infrastructure", "talent", "supply_chain", "financing"]},
+    "milestone_due": {"type": "string"},
+    "risk_conditions": {
+      "type": "array",
+      "items": {"type": "string",
+                "enum": ["tranches", "milestones", "audit", "exit_terms",
+                         "follow_on_cap", "fund_proof"]}
+    },
+    "exit_terms": {
+      "type": ["object", "null"],
+      "properties": {
+        "trigger": {"type": "string"},
+        "recovery": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    }
+  }
+}

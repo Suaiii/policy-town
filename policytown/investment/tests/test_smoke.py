@@ -84,3 +84,61 @@ class TestSmoke(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def run_full_negotiation(seed: int = 42):
+    """P1.5+P2 全链路：四阶段完整玩家协商循环（确定性 fallback，断网可跑）。"""
+    orch = Orchestrator(seed=seed)
+    orch.start(PICK, "S1")
+    rounds = []
+    for sid in ("S1", "S2", "S3", "S4"):
+        view = orch.open_stage()
+        cards = view["question_cards"]
+        if cards:
+            orch.request_verification(cards[0]["card_id"])
+        plan_id = view["meeting_minutes"]["proposals"][0]["proposal_id"]
+        sheets = orch.apply_plan(plan_id, {"company_a": 25.0, "company_d": 15.0,
+                                           "company_b": 20.0})
+        sheets = [s for s in sheets if s["company_id"] in {"company_a", "company_d", "company_b"}]
+        orch.submit_conditions(sheets)
+        confirmations = {s["company_id"]: {"action": "accept"} for s in sheets}
+        rounds.append(orch.finalize_negotiation(confirmations))
+        if sid != "S4":
+            orch.advance_stage()
+    return rounds, orch.finish()
+
+
+class TestFullNegotiationLoop(unittest.TestCase):
+    def test_full_loop_budget_conservation(self):
+        rounds, _ = run_full_negotiation()
+        for r in rounds:
+            b = r["budget"]
+            self.assertAlmostEqual(b["after"], b["before"] - b["spent"] + b["recovered"],
+                                   places=6)
+            self.assertLessEqual(b["spent"], b["before"] + 1e-9)
+
+    def test_full_loop_determinism(self):
+        r1, f1 = run_full_negotiation(seed=42)
+        r2, f2 = run_full_negotiation(seed=42)
+        self.assertEqual(json.dumps(r1, sort_keys=True, default=str),
+                         json.dumps(r2, sort_keys=True, default=str))
+        self.assertEqual(json.dumps(f1, sort_keys=True, default=str),
+                         json.dumps(f2, sort_keys=True, default=str))
+
+    def test_full_loop_commitments_accumulate(self):
+        orch = Orchestrator(seed=42)
+        orch.start(PICK, "S1")
+        for sid in ("S1", "S2", "S3", "S4"):
+            view = orch.open_stage()
+            sheets = orch.apply_plan(view["meeting_minutes"]["proposals"][0]["proposal_id"],
+                                     {"company_a": 20.0})
+            sheets = [s for s in sheets if s["company_id"] == "company_a"]
+            orch.submit_conditions(sheets)
+            orch.finalize_negotiation({"company_a": {"action": "accept"}})
+            if sid != "S4":
+                orch.advance_stage()
+        self.assertGreaterEqual(len(orch._state().government_commitments.records), 1)
+
+    def test_full_loop_leakage_audit(self):
+        _, final = run_full_negotiation()
+        self.assertTrue(final["historical_replay"]["leakage_audit_passed"])

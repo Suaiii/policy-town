@@ -9,6 +9,7 @@ from dataclasses import dataclass, field, asdict
 from typing import Dict, List
 
 from ..memory.fact_graph import FactGraph
+from ..memory.commitment_ledger import CommitmentLedger
 
 COMPANY_METRICS = (
     "financial_health", "execution_ability", "technology_readiness",
@@ -132,6 +133,7 @@ class WorldState:
     companies: Dict[str, CompanyState]
     history: List[dict] = field(default_factory=list)
     fact_graph: FactGraph = field(default_factory=FactGraph)
+    government_commitments: CommitmentLedger = field(default_factory=CommitmentLedger)
 
     def clone(self) -> "WorldState":
         return copy.deepcopy(self)
