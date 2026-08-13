@@ -105,5 +105,56 @@ class TestMemorandumFallback(unittest.TestCase):
         self.assertEqual(deterministic._recommendation("negative", missing_count=2), "hold")
 
 
+# ---------- Task 4：部门 LLM 路径输出备忘录契约 ----------
+
+
+class _CapturingLlm:
+    def __init__(self) -> None:
+        self.prompts: list = []
+
+    def __call__(self, prompt: str, validator=None) -> dict:
+        self.prompts.append(prompt)
+        return {
+            "agent": "fiscal", "department": "财政部门", "company_id": None,
+            "recommendation": "support", "direction": "positive",
+            "score": 70, "confidence": 0.8,
+            "core_claims": [{"claim_id": "F-1", "claim_type": "positive",
+                             "statement": "财政余量充足", "evidence_ids": []}],
+            "red_lines": [{"redline_id": "F-R1", "condition": "不超预算", "reason": "守恒"}],
+            "acceptable_conditions": [{"condition_id": "F-C1", "condition": "分期",
+                                       "reason": "控节奏"}],
+            "missing_info": [], "key_factors": [], "evidence_ids": [],
+            "reasoning_summary": "测试",
+        }
+
+
+class TestMemorandumPrompt(unittest.TestCase):
+    def test_prompt_contains_memorandum_contract(self):
+        from ..agents.professional import make_professional_agents
+        llm = _CapturingLlm()
+        agents = make_professional_agents(llm)
+        from ..core.context import build_context
+        from ..core.state import WorldState, CityState, CompanyState, MarketConditions
+        from ..core.message import Inbox
+        comp = CompanyState(company_id="company_a", anon_label="企业A", industry="display",
+                            metrics={"financial_health": 50, "execution_ability": 60,
+                                     "technology_readiness": 55, "customer_order_strength": 50,
+                                     "construction_progress": 10, "production_ramp": 0,
+                                     "project_cashflow": -10, "capital_intensity": 50},
+                            cash_points=20, debt_points=10)
+        state = WorldState(run_id="t", seed=1, stage_id="S1", cutoff_at="2008-09-30",
+                           round_index=0, city=CityState(),
+                           market={"display": MarketConditions()},
+                           companies={"company_a": comp})
+        ctx = build_context(state, Inbox(), [])
+        from ..agents.professional import run_assessments
+        run_assessments(agents, ctx)
+        self.assertTrue(llm.prompts, "部门 Agent 必须触发 LLM")
+        blob = "\n".join(llm.prompts)
+        for token in ("recommendation", "red_lines", "acceptable_conditions",
+                      "missing_info", "core_claims"):
+            self.assertIn(token, blob, "部门 Prompt 必须包含备忘录契约字段 %s" % token)
+
+
 if __name__ == "__main__":
     unittest.main()

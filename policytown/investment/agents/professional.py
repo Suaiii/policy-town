@@ -63,9 +63,57 @@ def validate_memorandum(out: dict) -> None:
             raise ValueError("invalid missing_info severity: %r" % mi.get("severity"))
 
 
+def build_memorandum_prompt(payload: dict, role: str) -> str:
+    import json as _json
+    facts = _json.dumps(payload, ensure_ascii=False, default=str)
+    example = {
+        "agent": "economy", "department": "经信部门", "company_id": "company_a",
+        "recommendation": "conditional_support", "direction": "neutral",
+        "score": 62, "confidence": 0.7,
+        "core_claims": [
+            {"claim_id": "EC-1", "claim_type": "positive",
+             "statement": "本地家电整机底盘可与显示面板形成协同",
+             "evidence_ids": ["EVID-001"]}],
+        "red_lines": [{"redline_id": "EC-R1",
+                       "condition": "政府累计出资不超过项目总投入的 40%",
+                       "reason": "防止财政过度锁定"}],
+        "acceptable_conditions": [
+            {"condition_id": "EC-C1", "condition": "按建设里程碑分期拨付",
+             "reason": "以节点验证执行能力"}],
+        "missing_info": [{"info_id": "EC-M1", "severity": "medium",
+                          "description": "本地供应链承接能力尚无测算",
+                          "impact": "协同收益可能高估"}],
+        "key_factors": [{"metric_id": "industrial_base", "effect": "positive"}],
+        "evidence_ids": ["EVID-001"],
+        "reasoning_summary": "一句话理由",
+    }
+    return (
+        "【角色与边界】你是%s。只能输出结构化部门初审备忘录 JSON 对象。\n"
+        "禁止修改任何数值；禁止使用截止日之后的信息；禁止给出成功率；"
+        "禁止编造 evidence_ids；禁止发明示例之外的其他字段或嵌套对象。\n"
+        "【当前事实（只读，禁止修改）】%s\n"
+        "【输出契约】只输出一个 JSON 对象，必须严格遵循以下结构（键、类型、"
+        "嵌套层次完全一致；recommendation 只能是 support / conditional_support / "
+        "hold / oppose；claim_type 只能是 positive / risk / assumption；"
+        "missing_info.severity 只能是 high / medium / low）：\n%s"
+        % (role, facts, _json.dumps(example, ensure_ascii=False, indent=1))
+    )
+
+
+class DepartmentAgent(BaseAgent):
+    """四部门 Agent：固定备忘录输出契约 + 备忘录 Prompt。"""
+
+    def __init__(self, role: str,
+                 llm_fn: Optional[Callable[[str], dict]] = None) -> None:
+        super().__init__(role=role, required_keys=_REQUIRED, llm_fn=llm_fn,
+                         deep_validator=validate_memorandum)
+
+    def build_prompt(self, payload: dict) -> str:
+        return build_memorandum_prompt(payload, self.role)
+
+
 def make_professional_agents(llm_fn: Optional[Callable[[str], dict]] = None) -> List[BaseAgent]:
-    return [BaseAgent(role=_ROLE_NAMES[k], required_keys=_REQUIRED, llm_fn=llm_fn)
-            for k in KINDS]
+    return [DepartmentAgent(role=_ROLE_NAMES[k], llm_fn=llm_fn) for k in KINDS]
 
 
 def run_assessments(agents: List[BaseAgent], ctx: dict,
