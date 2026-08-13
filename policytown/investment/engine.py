@@ -8,6 +8,7 @@ from contracts.investment_simulation_v0_1 import (
     CompanyActionType,
     CompanyState,
     CompanyStatus,
+    CommitmentFollowUp,
     Direction,
     FinalResult,
     InvestmentActionType,
@@ -21,9 +22,11 @@ from contracts.investment_simulation_v0_1 import (
     StageResult,
     StateDelta,
     SupportFocus,
+    TimelineEvent,
 )
 
 from .context import HefeiContextBuilder
+from .deliberation import DepartmentAgentRuntime, deliberate
 from .loader import HefeiMvpLoader
 from .real_data import HefeiRealDataRepository
 
@@ -42,10 +45,16 @@ class InvestmentEngine:
         self,
         loader: HefeiMvpLoader | None = None,
         real_data: HefeiRealDataRepository | None = None,
+        department_provider=None,
+        use_agent_api: bool | None = None,
     ) -> None:
         self.loader = loader or HefeiMvpLoader()
         self.real_data = real_data or HefeiRealDataRepository()
         self.context_builder = HefeiContextBuilder(self.loader, self.real_data)
+        self.department_runtime = DepartmentAgentRuntime(
+            department_provider,
+            use_api=use_agent_api,
+        )
 
     def new_run(
         self,
@@ -69,12 +78,24 @@ class InvestmentEngine:
         companies = [item.model_copy(deep=True) for item in state.companies]
         city = state.city_metrics.model_copy(deep=True)
         action_by_company = {item.company_id: item for item in stage_input.actions}
+        negotiation_by_company = {item.company_id: item for item in stage_input.negotiations}
         active_ids = {item.company_id for item in companies if item.status != CompanyStatus.EXITED}
         unknown_actions = sorted(set(action_by_company) - active_ids)
         if unknown_actions:
             raise ValueError(f"actions target unavailable companies: {unknown_actions}")
+        unknown_negotiations = sorted(set(negotiation_by_company) - active_ids)
+        if unknown_negotiations:
+            raise ValueError(f"negotiations target unavailable companies: {unknown_negotiations}")
 
+        cutoff = self.loader.cutoff_at(stage_input.stage_id)
         budget_assumption = self.loader.budget_assumption(stage_input.stage_id)
+        visible_observations = {
+            item.observation_id for item in self.real_data.context_at(cutoff).observations
+        }
+        budget_assumption.capacity_evidence = [
+            item for item in budget_assumption.capacity_evidence
+            if item.get("observation_id") in visible_observations
+        ]
         new_fiscal_capacity = budget_assumption.new_fiscal_capacity
         gross_resources = state.treasury_balance + new_fiscal_capacity + state.exits_and_returns
         before = max(0, gross_resources - state.committed_capital - state.maintenance_cost)
@@ -97,7 +118,16 @@ class InvestmentEngine:
         )
 
         event = self.loader.event(stage_input.stage_id)
-        cutoff = self.loader.cutoff_at(stage_input.stage_id)
+        case_ids = {
+            self.loader.raw_company_config(item.company_id).get("historical_case_id")
+            for item in companies
+        }
+        frozen_audit = self.real_data.freeze_audit(
+            stage_input.stage_id,
+            cutoff,
+            mode=stage_input.context_mode,
+            case_ids={item for item in case_ids if item},
+        )
         real_adjustments, real_context = self.context_builder.adjustments(
             [item.company_id for item in companies],
             self._previous_cutoff(stage_input.stage_id),
@@ -107,6 +137,9 @@ class InvestmentEngine:
         deltas: list[StateDelta] = []
         assessments: list[AgentAssessment] = []
         company_actions: list[CompanyAction] = []
+        deliberations = []
+        belief_updates = []
+        commitment_updates = []
         next_returns = 0
         new_commitment = 0
 
@@ -118,12 +151,62 @@ class InvestmentEngine:
             deltas,
             self._context_event_evidence(real_context, event.evidence_ids),
         )
+        commitment_follow_ups, carried_commitments = self._follow_up_commitments(
+            state.commitment_ledger,
+            companies,
+            stage_input.stage_id,
+            frozen_audit,
+        )
+        self._apply_follow_up_effects(
+            companies,
+            action_by_company,
+            commitment_follow_ups,
+            deltas,
+        )
+        self._validate_negotiation_choices(
+            companies,
+            city,
+            budget,
+            real_context,
+            stage_input,
+            frozen_audit,
+            event.evidence_ids,
+        )
         for company in companies:
             if company.status == CompanyStatus.EXITED:
                 company_actions.append(self._wait_action(company))
                 continue
             player_action = action_by_company.get(company.company_id)
             assessments.extend(self._assess(company, city, budget, event.evidence_ids, real_context))
+            deliberation, company_beliefs, company_commitments = deliberate(
+                company,
+                city,
+                budget,
+                self.context_builder,
+                real_context,
+                stage_input.stage_id,
+                event.evidence_ids,
+                state.run_id,
+                state.seed,
+                cutoff,
+                frozen_audit.context_hash,
+                negotiation_by_company.get(company.company_id),
+                self.department_runtime,
+            )
+            agreed_points = deliberation.enterprise_response.agreed_capital_points
+            negotiation_choice = negotiation_by_company.get(company.company_id)
+            if (
+                player_action
+                and negotiation_choice is not None
+                and player_action.capital_points != agreed_points
+            ):
+                raise ValueError(
+                    f"player action for {company.company_id} must match selected proposal; "
+                    f"player action points must equal negotiated amount {agreed_points}"
+                )
+            deliberations.append(deliberation)
+            belief_updates.extend(company_beliefs)
+            commitment_updates.extend(company_commitments)
             if player_action:
                 evidence_ids.add(f"PLAYER-{stage_input.stage_id.value}-{company.company_id}")
                 commitment, returned = self._apply_player_action(
@@ -159,6 +242,8 @@ class InvestmentEngine:
             committed_capital=min(25, new_commitment),
             maintenance_cost=maintenance,
             exits_and_returns=min(25, next_returns),
+            belief_ledger=[*state.belief_ledger, *belief_updates],
+            commitment_ledger=[*state.commitment_ledger, *commitment_updates],
             completed_stages=[*state.completed_stages, stage_input.stage_id],
             stage_audits=[
                 *state.stage_audits,
@@ -170,9 +255,14 @@ class InvestmentEngine:
                     city,
                     deltas,
                     real_context,
+                    commitment_follow_ups,
+                    deliberations,
+                    commitment_updates,
                 ),
             ],
         )
+        next_state.commitment_ledger = [*carried_commitments, *commitment_updates]
+        timeline_events = next_state.stage_audits[-1].timeline_events
         evidence = self._merge_evidence(
             self.loader.evidence_for(evidence_ids, cutoff),
             self.real_data.evidence_at(cutoff),
@@ -185,10 +275,16 @@ class InvestmentEngine:
             companies=companies,
             company_actions=company_actions,
             agent_assessments=assessments,
+            deliberations=deliberations,
+            belief_updates=belief_updates,
+            commitment_updates=commitment_updates,
+            commitment_follow_ups=commitment_follow_ups,
+            timeline_events=timeline_events,
             state_deltas=deltas,
             events=[event],
             evidence_refs=evidence,
             real_data_context=real_context,
+            frozen_context_audit=frozen_audit,
             next_candidates=[item.company_id for item in companies if item.status != CompanyStatus.EXITED],
             next_state=next_state,
         )
@@ -204,6 +300,58 @@ class InvestmentEngine:
         if index == 0:
             return self.loader.cutoff_at(stage_id)
         return self.loader.cutoff_at(STAGE_ORDER[index - 1])
+
+    def _validate_negotiation_choices(
+        self,
+        companies,
+        city,
+        budget,
+        real_context,
+        stage_input,
+        frozen_audit,
+        event_evidence,
+    ) -> None:
+        if not stage_input.negotiations:
+            return
+        company_by_id = {item.company_id: item for item in companies}
+        action_by_id = {item.company_id: item for item in stage_input.actions}
+        for choice in stage_input.negotiations:
+            if choice.resolution == "reject":
+                continue
+            preview, _, _ = deliberate(
+                company_by_id[choice.company_id],
+                city,
+                budget,
+                self.context_builder,
+                real_context,
+                stage_input.stage_id,
+                event_evidence,
+                stage_input.run_id,
+                stage_input.seed,
+                frozen_audit.cutoff_at,
+                frozen_audit.context_hash,
+                department_runtime=self.department_runtime,
+            )
+            proposals = {item.proposal_id: item for item in preview.meeting.proposals}
+            if choice.proposal_id not in proposals:
+                raise ValueError(
+                    f"unknown proposal_id for {choice.company_id}: {choice.proposal_id}"
+                )
+            proposal = proposals[choice.proposal_id]
+            action = action_by_id[choice.company_id]
+            expected_points = (
+                proposal.capital_points
+                if choice.resolution == "accept"
+                else max(proposal.capital_points, company_by_id[choice.company_id].capital_request)
+            )
+            if action.capital_points != expected_points:
+                raise ValueError(
+                    f"player action for {choice.company_id} must match selected proposal; "
+                    f"player action points must equal negotiated amount {expected_points}"
+                )
+            if proposal.support_focus and action.action == InvestmentActionType.SUPPORT:
+                if action.support_focus != proposal.support_focus:
+                    raise ValueError("player support focus must match negotiated proposal")
 
     def _context_event_evidence(self, real_context, configured: list[str]) -> list[str]:
         event_ids = [f"event:{item['event_id']}" for item in real_context.events]
@@ -245,6 +393,10 @@ class InvestmentEngine:
         average_progress = round(sum(item.construction_progress for item in active) / max(1, len(active)))
         average_health = round(sum(item.financial_health for item in active) / max(1, len(active)))
         replay = self._score_replay(state)
+        case_ids = {
+            self.loader.raw_company_config(item.company_id).get("historical_case_id")
+            for item in state.companies
+        }
         return FinalResult(
             run_id=state.run_id,
             portfolio_result={
@@ -255,10 +407,16 @@ class InvestmentEngine:
                 "result_label": "场景推演结果",
             },
             historical_replay=replay,
+            replay_evidence=self.real_data.replay_audit({item for item in case_ids if item}),
             branch_points=[
                 "早期财政承诺压缩后续可用点数",
                 "产业基础与供应链积累改变后续企业行动",
                 "未获投资企业仍会受市场事件影响并继续演化",
+            ],
+            story_timeline=[
+                item
+                for audit in state.stage_audits
+                for item in audit.timeline_events
             ],
         )
 
@@ -271,6 +429,9 @@ class InvestmentEngine:
         city,
         deltas,
         real_context,
+        follow_ups,
+        deliberations,
+        commitment_updates,
     ) -> StageAudit:
         evidence_prefixes = ("observation:", "policy:", "event:")
         evidence_backed = sum(
@@ -279,6 +440,15 @@ class InvestmentEngine:
         )
         future_evidence = sum(
             item.information_available_date > cutoff for item in real_context.observations
+        )
+        timeline_events = self._build_timeline_events(
+            stage_id,
+            cutoff,
+            real_context,
+            follow_ups,
+            deliberations,
+            commitment_updates,
+            deltas,
         )
         return StageAudit(
             stage_id=stage_id,
@@ -292,7 +462,199 @@ class InvestmentEngine:
             evidence_backed_deltas=evidence_backed,
             total_deltas=len(deltas),
             future_evidence_count=future_evidence,
+            follow_ups=follow_ups,
+            timeline_events=timeline_events,
         )
+
+    @staticmethod
+    def _follow_up_commitments(commitments, companies, stage_id, frozen_audit):
+        """Each stage checks at most one due commitment per company.
+
+        The MVP uses already-settled state as the observable milestone.  It does
+        not infer a historical fact or ask an LLM to decide whether money moves.
+        """
+        company_by_id = {item.company_id: item for item in companies}
+        due_by_company = {}
+        for item in commitments:
+            if item.status == "pending" and item.due_stage == stage_id:
+                due_by_company.setdefault(item.company_id, []).append(item)
+        selected = {
+            company_id: next(
+                (item for item in items if item.party == "company"),
+                items[0],
+            )
+            for company_id, items in due_by_company.items()
+        }
+        follow_ups = []
+        updated = []
+        for item in commitments:
+            if (
+                selected.get(item.company_id) is None
+                or selected[item.company_id].commitment_id != item.commitment_id
+            ):
+                updated.append(item)
+                continue
+            company = company_by_id.get(item.company_id)
+            evidence_ids = [
+                evidence_id
+                for evidence_id in [*item.evidence_ids, *frozen_audit.visible_evidence_ids]
+                if evidence_id in frozen_audit.visible_evidence_ids
+                and (evidence_id in item.evidence_ids or item.company_id in evidence_id)
+            ][-8:]
+            if item.party == "government":
+                status = "fulfilled"
+                observed, threshold = None, None
+                explanation = "政府条件已进入规则引擎，承诺金额按财政账结算。"
+                triggered = "release_next_tranche"
+            elif company is None:
+                status = "evidence_insufficient"
+                observed, threshold = None, None
+                explanation = "本阶段没有可用于核验该企业承诺的状态。"
+                triggered = "request_evidence"
+            else:
+                observed = max(
+                    company.construction_progress,
+                    company.technology_readiness,
+                    company.production_ramp,
+                )
+                threshold = 45
+                if observed >= threshold:
+                    status = "fulfilled"
+                    explanation = "建设、技术或量产指标至少一项达到阶段验收阈值。"
+                    triggered = "release_next_tranche"
+                elif evidence_ids:
+                    status = "breached"
+                    explanation = "已有阶段证据，但建设、技术与量产指标均未达到验收阈值。"
+                    triggered = "pause_follow_on"
+                else:
+                    status = "evidence_insufficient"
+                    explanation = "没有足够的本阶段可见证据确认企业是否履约。"
+                    triggered = "request_evidence"
+            follow_ups.append(CommitmentFollowUp(
+                follow_up_id=f"{stage_id.value}-{item.commitment_id}-follow-up",
+                commitment_id=item.commitment_id,
+                company_id=item.company_id,
+                due_stage=stage_id,
+                party=item.party,
+                promise=item.promise,
+                status=status,
+                observed_value=observed,
+                threshold=threshold,
+                explanation=explanation,
+                evidence_ids=evidence_ids,
+                triggered_action=triggered,
+            ))
+            ledger_status = "pending" if status == "evidence_insufficient" else status
+            updated.append(item.model_copy(update={
+                "status": ledger_status,
+                "evidence_ids": list(dict.fromkeys([*item.evidence_ids, *evidence_ids])),
+            }))
+        return follow_ups, updated
+
+    @staticmethod
+    def _build_timeline_events(
+        stage_id,
+        cutoff,
+        real_context,
+        follow_ups,
+        deliberations,
+        commitment_updates,
+        deltas,
+    ):
+        events = []
+
+        def add(event_type, actor, title, summary, company_id=None, evidence_ids=None):
+            events.append(TimelineEvent(
+                sequence=len(events) + 1,
+                stage_id=stage_id,
+                cutoff_at=cutoff,
+                event_type=event_type,
+                actor=actor,
+                title=title,
+                summary=summary,
+                company_id=company_id,
+                evidence_ids=evidence_ids or [],
+            ))
+
+        for follow_up in follow_ups:
+            add(
+                "follow_up", "rule_engine", "上一阶段承诺到期",
+                f"{follow_up.promise}：{follow_up.status}。{follow_up.explanation}",
+                follow_up.company_id, follow_up.evidence_ids,
+            )
+        visible = [f"observation:{item.observation_id}" for item in real_context.observations]
+        add(
+            "government_knowledge", "government", "政府当时知道什么",
+            f"截止 {cutoff}，冻结 Context 中有 {len(visible)} 条可见观测。",
+            evidence_ids=visible[-8:],
+        )
+        for deliberation in deliberations:
+            add(
+                "government_concern", "government", "政府担心什么",
+                deliberation.verification_question.critical_proposition,
+                deliberation.company_id,
+                deliberation.verification_question.known_evidence_ids,
+            )
+            add(
+                "enterprise_response", "company", "企业披露或回避了什么",
+                deliberation.enterprise_disclosure.statement,
+                deliberation.company_id,
+                deliberation.enterprise_disclosure.disclosed_evidence_ids,
+            )
+        for commitment in commitment_updates:
+            add(
+                "mutual_commitment", "both", "双方承诺了什么",
+                f"{commitment.party}：{commitment.promise}",
+                commitment.company_id, commitment.evidence_ids,
+            )
+        material = sorted(deltas, key=lambda item: abs(item.delta), reverse=True)[:3]
+        add(
+            "stage_outcome", "rule_engine", "后续发生了什么",
+            "；".join(
+                f"{item.entity_id}.{item.metric_id} {item.before}→{item.after}"
+                for item in material
+            ) or "本阶段没有产生数值状态变化。",
+            evidence_ids=list(dict.fromkeys(
+                evidence_id for item in material for evidence_id in item.evidence_ids
+            )),
+        )
+        return events
+
+    def _apply_follow_up_effects(self, companies, action_by_company, follow_ups, deltas):
+        company_by_id = {item.company_id: item for item in companies}
+        for follow_up in follow_ups:
+            if follow_up.party != "company" or follow_up.status != "breached":
+                continue
+            action = action_by_company.get(follow_up.company_id)
+            if action is not None and action.action == InvestmentActionType.FOLLOW_ON:
+                raise ValueError(
+                    f"follow-on is paused for {follow_up.company_id}: "
+                    f"due commitment {follow_up.commitment_id} was breached"
+                )
+            company = company_by_id.get(follow_up.company_id)
+            if company is None:
+                continue
+            evidence = follow_up.evidence_ids or [follow_up.commitment_id]
+            self._record(
+                deltas,
+                company.company_id,
+                company,
+                "missed_windows",
+                1,
+                "commitment_breach",
+                ["commitment_status", "milestone_threshold"],
+                evidence,
+            )
+            self._record(
+                deltas,
+                company.company_id,
+                company,
+                "supply_pressure",
+                4,
+                "commitment_breach",
+                ["commitment_status", "supply_pressure"],
+                evidence,
+            )
 
     def _score_replay(self, state: SimulationState) -> ReplayScores:
         if not state.stage_audits:

@@ -23,7 +23,7 @@ python scripts/seed_hefei_database.py
 python scripts/audit_hefei_database.py
 
 # 2. 查看某个截止日的真实 Context（信息截止过滤）
-python -m policytown investment-context --cutoff 2008-09-30
+python -m policytown investment-context --cutoff 2008-09-12
 
 # 3. 跑 S1—S4 产业投资推演
 python -m policytown investment-run --companies company_a company_d

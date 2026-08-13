@@ -110,6 +110,17 @@ class InvestmentEngineTest(unittest.TestCase):
             {"direction", "sequence", "mechanism", "path_feedback", "leakage"},
             set(final.historical_replay.score_basis),
         )
+        self.assertTrue(final.story_timeline)
+        self.assertEqual(
+            [StageId.S1, StageId.S2, StageId.S3, StageId.S4],
+            list(dict.fromkeys(item.stage_id for item in final.story_timeline)),
+        )
+        self.assertTrue(any(
+            item.event_type == "government_knowledge" for item in final.story_timeline
+        ))
+        self.assertTrue(any(
+            item.event_type == "stage_outcome" for item in final.story_timeline
+        ))
 
     def test_replay_sequence_score_is_computed_from_stage_history(self):
         state = self.engine.new_run("replay-score", ["company_a", "company_d"])

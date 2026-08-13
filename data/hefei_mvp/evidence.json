@@ -1,8 +1,8 @@
 [
-  {"evidence_id":"HF-S1-CITY-01","title":"2007—2008 合肥产业与城市初始状态分档","as_of":"2008-09-30","value_type":"ordinal","source_id":"src_hefei_bulletins","available_at_cutoff":true,"quality":"B","confidence":0.72},
-  {"evidence_id":"HF-S1-EVENT-01","title":"2008 年国际金融危机公开背景","as_of":"2008-09-30","value_type":"observed","source_id":"src_nbs_2008","available_at_cutoff":true,"quality":"A","confidence":0.94},
-  {"evidence_id":"HF-S2-EVENT-01","title":"2009—2011 项目扩产与建设窗口分档","as_of":"2011-12-31","value_type":"derived","source_id":"src_hefei_industry_public","available_at_cutoff":true,"quality":"B","confidence":0.73},
-  {"evidence_id":"HF-S3-EVENT-01","title":"2012—2014 产业周期分化分档","as_of":"2014-12-31","value_type":"derived","source_id":"src_hefei_industry_public","available_at_cutoff":true,"quality":"B","confidence":0.70},
-  {"evidence_id":"P2014_IC_GUIDELINE","title":"国家集成电路产业发展推进纲要","as_of":"2014-12-31","value_type":"observed","source_id":"src_gov_policy","available_at_cutoff":true,"quality":"A","confidence":0.95},
+  {"evidence_id":"HF-S1-CITY-01","title":"2007—2008 合肥产业与城市初始状态分档","as_of":"2008-09-12","value_type":"ordinal","source_id":"src_hefei_bulletins","available_at_cutoff":true,"quality":"B","confidence":0.72},
+  {"evidence_id":"HF-S1-EVENT-01","title":"2008 年上半年面板价格见顶回落与外部需求转弱信号","as_of":"2008-08-31","value_type":"observed","source_id":"src_boe_2008","available_at_cutoff":true,"quality":"A","confidence":0.90},
+  {"evidence_id":"HF-S2-EVENT-01","title":"2009—2011 项目扩产与建设窗口分档","as_of":"2011-06-30","value_type":"derived","source_id":"src_hefei_industry_public","available_at_cutoff":true,"quality":"B","confidence":0.73},
+  {"evidence_id":"HF-S3-EVENT-01","title":"2012—2014 年中产业周期分化分档","as_of":"2014-06-30","value_type":"derived","source_id":"src_hefei_industry_public","available_at_cutoff":true,"quality":"B","confidence":0.70},
+  {"evidence_id":"P2014_IC_GUIDELINE","title":"国家集成电路产业发展推进纲要","as_of":"2014-06-26","value_type":"observed","source_id":"src_gov_policy","available_at_cutoff":true,"quality":"A","confidence":0.95},
   {"evidence_id":"P2016_EMERGING","title":"十三五国家战略性新兴产业发展规划","as_of":"2016-12-31","value_type":"observed","source_id":"src_gov_policy","available_at_cutoff":true,"quality":"A","confidence":0.95}
 ]

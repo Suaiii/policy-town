@@ -16,7 +16,7 @@ def main() -> None:
     commands = parser.add_subparsers(dest="command", required=True)
 
     data_context = commands.add_parser("investment-context")
-    data_context.add_argument("--cutoff", default="2008-09-30")
+    data_context.add_argument("--cutoff", default="2008-09-12")
 
     investment_run = commands.add_parser("investment-run")
     investment_run.add_argument("--companies", nargs="+", default=["company_a", "company_d"])

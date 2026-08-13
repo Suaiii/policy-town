@@ -1,10 +1,18 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import sqlite3
 from pathlib import Path
 
-from contracts.investment_simulation_v0_1 import EvidenceRef, RawObservation, RealDataContext
+from contracts.investment_simulation_v0_1 import (
+    EvidenceFilterDecision,
+    EvidenceRef,
+    FrozenContextAudit,
+    RawObservation,
+    RealDataContext,
+    StageId,
+)
 
 
 class HefeiRealDataRepository:
@@ -99,6 +107,147 @@ class HefeiRealDataRepository:
         )
         return evidence
 
+    def freeze_audit(
+        self,
+        stage_id: StageId,
+        cutoff_at: str,
+        *,
+        mode: str = "audit",
+        case_ids: set[str] | None = None,
+    ) -> FrozenContextAudit:
+        """返回可演示的证据冻结决策，不把 future/withheld 材料写回 Context。"""
+        if mode not in {"player", "audit", "replay"}:
+            raise ValueError(f"unsupported freeze audit mode: {mode}")
+        with self._connect() as conn:
+            observation_rows = conn.execute(
+                """SELECT o.observation_id, o.effective_date, o.information_available_date,
+                          o.verification_status, o.source_id, i.indicator_name, e.name AS entity_name
+                   FROM observation o JOIN indicator_definition i USING(indicator_id)
+                   JOIN entity e USING(entity_id)
+                   ORDER BY COALESCE(o.information_available_date, '9999-12-31'), o.observation_id"""
+            ).fetchall()
+            policy_rows = conn.execute(
+                """SELECT policy_id, title, effective_date, policy_date,
+                          information_available_date, source_id
+                   FROM policy_library ORDER BY COALESCE(information_available_date, '9999-12-31'), policy_id"""
+            ).fetchall()
+            event_rows = conn.execute(
+                """SELECT event_id, description, event_date, effective_from,
+                          information_available_date, source_id
+                   FROM historical_event ORDER BY COALESCE(information_available_date, '9999-12-31'), event_id"""
+            ).fetchall()
+            milestones = []
+            if case_ids:
+                marks = ",".join("?" for _ in case_ids)
+                milestones = conn.execute(
+                    f"""SELECT milestone_id, description, milestone_date,
+                               information_available_date, source_id, is_withheld_outcome
+                        FROM case_milestone WHERE case_id IN ({marks})
+                        ORDER BY COALESCE(information_available_date, '9999-12-31'), milestone_id""",
+                    tuple(sorted(case_ids)),
+                ).fetchall()
+
+        decisions: list[EvidenceFilterDecision] = []
+        for row in observation_rows:
+            decisions.append(self._filter_decision(
+                evidence_id=f"observation:{row['observation_id']}",
+                kind="observation",
+                title=f"{row['entity_name']}·{row['indicator_name']}",
+                effective_date=row["effective_date"],
+                available_date=row["information_available_date"],
+                cutoff_at=cutoff_at,
+                source_id=row["source_id"],
+                verification_incomplete=row["verification_status"] == "needs_verification",
+            ))
+        for row in policy_rows:
+            decisions.append(self._filter_decision(
+                evidence_id=f"policy:{row['policy_id']}", kind="policy", title=row["title"],
+                effective_date=row["effective_date"] or row["policy_date"],
+                available_date=row["information_available_date"], cutoff_at=cutoff_at,
+                source_id=row["source_id"],
+            ))
+        for row in event_rows:
+            decisions.append(self._filter_decision(
+                evidence_id=f"event:{row['event_id']}", kind="event", title=row["description"],
+                effective_date=row["effective_from"] or row["event_date"],
+                available_date=row["information_available_date"], cutoff_at=cutoff_at,
+                source_id=row["source_id"],
+            ))
+        for row in milestones:
+            decisions.append(self._filter_decision(
+                evidence_id=f"milestone:{row['milestone_id']}", kind="milestone", title=row["description"],
+                effective_date=row["milestone_date"], available_date=row["information_available_date"],
+                cutoff_at=cutoff_at, source_id=row["source_id"],
+                withheld_outcome=bool(row["is_withheld_outcome"]) and mode != "replay",
+            ))
+
+        visible_ids = sorted(item.evidence_id for item in decisions if item.decision == "visible")
+        digest_payload = json.dumps(
+            {"cutoff_at": cutoff_at, "visible_evidence_ids": visible_ids},
+            ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+        ).encode("utf-8")
+        if mode in {"audit", "replay"}:
+            displayed = decisions
+        else:
+            visible = [item for item in decisions if item.decision == "visible"]
+            withheld_count = sum(item.decision == "withheld" for item in decisions)
+            displayed = [*visible]
+            if withheld_count:
+                displayed.append(EvidenceFilterDecision(
+                    evidence_id=f"withheld:{withheld_count}",
+                    evidence_kind="observation",
+                    title="当时不可知",
+                    effective_date=cutoff_at,
+                    information_available_date=None,
+                    cutoff_at=cutoff_at,
+                    decision="withheld",
+                    reason_code="published_after_cutoff",
+                    source_id=None,
+                ))
+        return FrozenContextAudit(
+            stage_id=stage_id,
+            cutoff_at=cutoff_at,
+            mode=mode,
+            visible_evidence_ids=visible_ids,
+            decisions=displayed,
+            context_hash=hashlib.sha256(digest_payload).hexdigest(),
+        )
+
+    @staticmethod
+    def _filter_decision(
+        *,
+        evidence_id: str,
+        kind: str,
+        title: str,
+        effective_date: str,
+        available_date: str | None,
+        cutoff_at: str,
+        source_id: str | None,
+        verification_incomplete: bool = False,
+        withheld_outcome: bool = False,
+    ) -> EvidenceFilterDecision:
+        if verification_incomplete:
+            decision, reason = "withheld", "verification_incomplete"
+        elif withheld_outcome:
+            decision, reason = "withheld", "withheld_outcome"
+        elif not available_date:
+            decision, reason = "withheld", "missing_available_date"
+        elif available_date > cutoff_at:
+            decision, reason = "withheld", "published_after_cutoff"
+        else:
+            decision, reason = "visible", "available_at_cutoff"
+        return EvidenceFilterDecision(
+            evidence_id=evidence_id,
+            evidence_kind=kind,
+            title=title,
+            effective_date=effective_date,
+            information_available_date=available_date,
+            cutoff_at=cutoff_at,
+            decision=decision,
+            reason_code=reason,
+            source_id=source_id,
+        )
+
     def case_outcomes(self, case_ids: set[str]) -> dict[str, str]:
         if not case_ids:
             return {}
@@ -109,6 +258,15 @@ class HefeiRealDataRepository:
                 tuple(sorted(case_ids)),
             ).fetchall()
         return {row["case_id"]: row["outcome"] for row in rows}
+
+    def replay_audit(self, case_ids: set[str]) -> FrozenContextAudit:
+        """终局隔离视图：解锁已登记的后公开证据与 withheld 里程碑。"""
+        return self.freeze_audit(
+            StageId.S4,
+            "9999-12-31",
+            mode="replay",
+            case_ids=case_ids,
+        )
 
     @staticmethod
     def _observation(row: sqlite3.Row) -> RawObservation:

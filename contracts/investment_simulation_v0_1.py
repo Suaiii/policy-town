@@ -83,17 +83,40 @@ class PlayerAction(BaseModel):
         return self
 
 
+class NegotiationChoice(BaseModel):
+    """玩家在企业回应后作出的最终协商选择；PlayerAction 保存最终同意条款。"""
+
+    company_id: str
+    proposal_id: str | None = None
+    resolution: Literal["accept", "accept_counteroffer", "reject"] = "accept"
+
+
 class StageInput(BaseModel):
     run_id: str
     stage_id: StageId
     seed: int = 42
+    context_mode: Literal["player", "audit"] = "audit"
     actions: list[PlayerAction] = Field(default_factory=list)
+    negotiations: list[NegotiationChoice] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def one_action_per_company(self) -> "StageInput":
         company_ids = [item.company_id for item in self.actions]
         if len(company_ids) != len(set(company_ids)):
             raise ValueError("each company can receive at most one player action per stage")
+        negotiation_ids = [item.company_id for item in self.negotiations]
+        if len(negotiation_ids) != len(set(negotiation_ids)):
+            raise ValueError("each company can receive at most one negotiation choice per stage")
+        rejected = {item.company_id for item in self.negotiations if item.resolution == "reject"}
+        if rejected & set(company_ids):
+            raise ValueError("rejected negotiation cannot include a funded player action")
+        action_points = {item.company_id: item.capital_points for item in self.actions}
+        for item in self.negotiations:
+            if item.resolution in {"accept", "accept_counteroffer"}:
+                if not item.proposal_id:
+                    raise ValueError("accepted negotiation requires proposal_id")
+                if item.company_id not in action_points:
+                    raise ValueError("accepted negotiation requires a matching player action")
         return self
 
 
@@ -115,6 +138,13 @@ class FiscalBudgetAssumption(BaseModel):
     replacement_key: str
     gameplay_rationale: str
     source_ids: list[str] = Field(default_factory=list)
+    capacity_evidence: list[dict] = Field(
+        default_factory=list,
+        description=(
+            "项目级真实资本承诺或实缴证据；用于约束/校准区间，不等同于"
+            "可自由支配财政余额，也不自动生成 new_fiscal_capacity"
+        ),
+    )
 
     @model_validator(mode="after")
     def assumption_is_honest(self) -> "FiscalBudgetAssumption":
@@ -122,6 +152,9 @@ class FiscalBudgetAssumption(BaseModel):
             raise ValueError("scenario_assumption cannot claim source_ids for its numeric value")
         if self.data_attempt_status == "insufficient" and not self.missing_fields:
             raise ValueError("insufficient data status requires explicit missing_fields")
+        for item in self.capacity_evidence:
+            if not item.get("observation_id") or not item.get("interpretation"):
+                raise ValueError("capacity_evidence requires observation_id and interpretation")
         return self
 
 
@@ -200,6 +233,338 @@ class AgentAssessment(BaseModel):
     key_factors: list[KeyFactor]
     evidence_ids: list[str]
     reasoning_summary: str
+
+
+DepartmentId = Literal[
+    "finance",
+    "industry_information",
+    "science_technology",
+    "development_reform",
+]
+Recommendation = Literal["support", "conditional_support", "defer", "oppose"]
+
+
+class DepartmentMemo(BaseModel):
+    memo_id: str
+    department: DepartmentId
+    company_id: str
+    recommendation: Recommendation
+    core_claim: str
+    supporting_evidence_ids: list[str]
+    opposing_evidence_ids: list[str] = Field(default_factory=list)
+    assumptions: list[str]
+    missing_information: list[str]
+    red_lines: list[str]
+    acceptable_conditions: list[str]
+    confidence: float = Field(ge=0, le=1)
+    most_important_risk: str
+    input_hash: str
+    generation_mode: Literal["model", "deterministic_fallback"] = "deterministic_fallback"
+    fallback_reason: str | None = None
+
+    @model_validator(mode="after")
+    def claim_is_traceable(self) -> "DepartmentMemo":
+        if not self.supporting_evidence_ids and not self.missing_information:
+            raise ValueError("department memo needs evidence or an explicit information gap")
+        return self
+
+
+class DepartmentBrief(BaseModel):
+    """政府四部门的冻结输入。
+
+    部门只能读取 visible_evidence_ids 中的证据；工具仅提供只读查询，
+    不能生成或修改财政点数、企业财务与建设进度。
+    """
+
+    brief_id: str
+    run_id: str
+    stage_id: StageId
+    cutoff_at: str
+    seed: int
+    department: DepartmentId
+    company_id: str
+    context_hash: str
+    visible_evidence_ids: list[str]
+    department_kpis: list[str]
+    red_lines: list[str]
+    allowed_tools: list[
+        Literal["read_frozen_context", "read_source_metadata", "read_missing_information"]
+    ]
+    missing_information: list[str]
+    # Human-readable facts are copied from the frozen context for an external
+    # model provider. They are advisory text only; all cited IDs remain checked
+    # against visible_evidence_ids and the rule engine owns numeric settlement.
+    visible_facts: list[str] = Field(default_factory=list)
+    state_summary: str = ""
+
+
+class DepartmentChallenge(BaseModel):
+    challenge_id: str
+    company_id: str
+    from_department: DepartmentId
+    to_department: DepartmentId
+    topic: str
+    disputed_claim: str
+    question: str
+    evidence_ids: list[str]
+    response: str
+    stance_before: Recommendation
+    stance_after: Recommendation
+    added_condition: str | None = None
+    status: Literal["answered", "insufficient_evidence"]
+    generation_mode: Literal["model", "deterministic_fallback"] = "deterministic_fallback"
+    fallback_reason: str | None = None
+
+
+class MeetingProposal(BaseModel):
+    proposal_id: str
+    company_id: str
+    label: str
+    recommendation: Recommendation
+    capital_points: int = Field(ge=0, le=100)
+    support_focus: SupportFocus | None = None
+    tranches: list[int] = Field(default_factory=list)
+    conditions: list[str]
+    exit_condition: str | None = None
+    rationale: str
+    supporting_departments: list[DepartmentId]
+    dissenting_departments: list[DepartmentId] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def tranches_reconcile(self) -> "MeetingProposal":
+        if self.tranches and sum(self.tranches) != self.capital_points:
+            raise ValueError("proposal tranches must sum to capital_points")
+        return self
+
+
+class JointMeetingSummary(BaseModel):
+    company_id: str
+    consensus: list[str]
+    unresolved_disagreements: list[str]
+    critical_question: str
+    challenges: list[DepartmentChallenge]
+    proposals: list[MeetingProposal] = Field(min_length=2)
+    minority_opinions: list[str]
+    evidence_ids: list[str]
+
+
+class EnterpriseResponse(BaseModel):
+    company_id: str
+    proposal_id: str | None = None
+    response_type: Literal["accept", "counteroffer", "reject", "no_offer"]
+    resolution: Literal["accepted", "accepted_as_modified", "rejected", "not_applicable"]
+    requested_capital_points: int = Field(ge=0, le=100)
+    agreed_capital_points: int = Field(0, ge=0, le=100)
+    accepted_conditions: list[str]
+    requested_changes: list[str]
+    rationale: str
+    evidence_ids: list[str]
+
+    @model_validator(mode="after")
+    def agreed_amount_matches_resolution(self) -> "EnterpriseResponse":
+        if self.resolution in {"rejected", "not_applicable"} and self.agreed_capital_points:
+            raise ValueError("unsettled enterprise response cannot have agreed capital")
+        if self.resolution == "accepted_as_modified" and (
+            self.agreed_capital_points != self.requested_capital_points
+        ):
+            raise ValueError("accepted counteroffer must use the requested capital amount")
+        return self
+
+
+class VerificationQuestionCard(BaseModel):
+    question_id: str
+    company_id: str
+    critical_proposition: str
+    question: str
+    requested_fields: list[str]
+    known_evidence_ids: list[str]
+    missing_information: list[str]
+
+
+class EnterpriseDisclosure(BaseModel):
+    question_id: str
+    company_id: str
+    response_type: Literal["disclose", "range", "refuse", "exchange_condition"]
+    statement: str
+    disclosed_evidence_ids: list[str]
+    missing_information: list[str]
+    exchange_condition: str | None = None
+
+
+class GovernmentConditionSheet(BaseModel):
+    sheet_id: str
+    company_id: str
+    proposal_id: str
+    action: InvestmentActionType
+    capital_points: int = Field(ge=0, le=100)
+    support_focus: SupportFocus | None = None
+    tranches: list[int] = Field(default_factory=list)
+    risk_conditions: list[str]
+    exit_condition: str | None = None
+
+    @model_validator(mode="after")
+    def condition_sheet_reconciles(self) -> "GovernmentConditionSheet":
+        if self.tranches and sum(self.tranches) != self.capital_points:
+            raise ValueError("condition sheet tranches must sum to capital_points")
+        return self
+
+
+class EnterpriseCounteroffer(BaseModel):
+    company_id: str
+    proposal_id: str
+    requested_capital_points: int = Field(ge=0, le=100)
+    requested_changes: list[str]
+    rationale: str
+
+
+class NegotiationEvent(BaseModel):
+    sequence: int = Field(ge=1)
+    phase: Literal[
+        "verification_question",
+        "enterprise_disclosure",
+        "government_condition",
+        "enterprise_counteroffer",
+        "final_commitment",
+        "rule_settlement",
+    ]
+    actor: Literal["government", "company", "rule_engine"]
+    summary: str
+    evidence_ids: list[str] = Field(default_factory=list)
+
+
+class DeliberationRound(BaseModel):
+    company_id: str
+    department_inputs: list[DepartmentBrief] = Field(min_length=4, max_length=4)
+    department_memos: list[DepartmentMemo] = Field(min_length=4, max_length=4)
+    meeting: JointMeetingSummary
+    verification_question: VerificationQuestionCard
+    enterprise_disclosure: EnterpriseDisclosure
+    selected_proposal_id: str | None = None
+    condition_sheet: GovernmentConditionSheet | None = None
+    enterprise_counteroffer: EnterpriseCounteroffer | None = None
+    enterprise_response: EnterpriseResponse
+    negotiation_log: list[NegotiationEvent]
+
+    @model_validator(mode="after")
+    def deliberation_is_consistent(self) -> "DeliberationRound":
+        expected_departments = {
+            "finance",
+            "industry_information",
+            "science_technology",
+            "development_reform",
+        }
+        brief_departments = {item.department for item in self.department_inputs}
+        memo_departments = {item.department for item in self.department_memos}
+        if brief_departments != expected_departments or memo_departments != expected_departments:
+            raise ValueError("deliberation requires exactly four distinct government departments")
+        if any(item.company_id != self.company_id for item in self.department_inputs):
+            raise ValueError("department brief company must match deliberation company")
+        if any(item.company_id != self.company_id for item in self.department_memos):
+            raise ValueError("department memo company must match deliberation company")
+        briefs = {item.department: item for item in self.department_inputs}
+        for memo in self.department_memos:
+            brief = briefs[memo.department]
+            if memo.input_hash != brief.context_hash:
+                raise ValueError("department memo must use its frozen brief context")
+            if not set(memo.supporting_evidence_ids) <= set(brief.visible_evidence_ids):
+                raise ValueError("department memo cites evidence outside its frozen brief")
+
+        proposals = {item.proposal_id: item for item in self.meeting.proposals}
+        if self.selected_proposal_id is None:
+            if self.condition_sheet is not None or self.enterprise_counteroffer is not None:
+                raise ValueError("unselected deliberation cannot contain negotiated terms")
+        elif self.selected_proposal_id not in proposals:
+            raise ValueError("selected proposal must belong to the joint meeting")
+        if self.condition_sheet is not None:
+            if self.condition_sheet.proposal_id != self.selected_proposal_id:
+                raise ValueError("condition sheet must correspond to the selected proposal")
+            if self.condition_sheet.company_id != self.company_id:
+                raise ValueError("condition sheet company must match deliberation company")
+            if (
+                self.condition_sheet.capital_points
+                != self.enterprise_response.agreed_capital_points
+            ):
+                raise ValueError("condition sheet must use the final agreed capital amount")
+        if self.enterprise_counteroffer is not None:
+            if self.enterprise_counteroffer.proposal_id != self.selected_proposal_id:
+                raise ValueError("enterprise counteroffer must modify the selected proposal")
+            if self.enterprise_counteroffer.company_id != self.company_id:
+                raise ValueError("counteroffer company must match deliberation company")
+        if self.enterprise_response.proposal_id != self.selected_proposal_id:
+            raise ValueError("enterprise response must correspond to the selected proposal")
+        if self.enterprise_response.resolution in {"accepted", "accepted_as_modified"}:
+            if self.condition_sheet is None:
+                raise ValueError("an agreement requires a final government condition sheet")
+        elif self.condition_sheet is not None:
+            raise ValueError("an unsettled negotiation cannot contain a final condition sheet")
+        return self
+
+
+class BeliefLedgerEntry(BaseModel):
+    belief_id: str
+    company_id: str
+    belief_type: Literal[
+        "market_outlook",
+        "financing_continuity",
+        "delivery_feasibility",
+        "government_follow_through",
+    ]
+    value: float = Field(ge=0, le=1)
+    confidence: float = Field(ge=0, le=1)
+    evidence_ids: list[str]
+    updated_at: StageId
+    update_rule: str = "bounded_evidence_blend_v1"
+
+
+class CommitmentLedgerEntry(BaseModel):
+    commitment_id: str
+    stage_id: StageId
+    company_id: str
+    party: Literal["government", "company"]
+    promise: str
+    due_stage: StageId | None = None
+    condition: str
+    status: Literal["pending", "fulfilled", "breached", "cancelled"] = "pending"
+    evidence_ids: list[str]
+
+
+class CommitmentFollowUp(BaseModel):
+    follow_up_id: str
+    commitment_id: str
+    company_id: str
+    due_stage: StageId
+    party: Literal["government", "company"]
+    promise: str
+    status: Literal["fulfilled", "breached", "evidence_insufficient"]
+    observed_value: int | None = None
+    threshold: int | None = None
+    explanation: str
+    evidence_ids: list[str] = Field(default_factory=list)
+    triggered_action: Literal[
+        "release_next_tranche",
+        "pause_follow_on",
+        "restructure_or_exit_review",
+        "request_evidence",
+    ]
+
+
+class TimelineEvent(BaseModel):
+    sequence: int = Field(ge=1)
+    stage_id: StageId
+    cutoff_at: str
+    event_type: Literal[
+        "follow_up",
+        "government_knowledge",
+        "government_concern",
+        "enterprise_response",
+        "mutual_commitment",
+        "stage_outcome",
+    ]
+    actor: Literal["system", "government", "company", "both", "rule_engine"]
+    title: str
+    summary: str
+    company_id: str | None = None
+    evidence_ids: list[str] = Field(default_factory=list)
 
 
 class CompanyAction(BaseModel):
@@ -294,6 +659,33 @@ class RealDataContext(BaseModel):
     database_path: str
 
 
+class EvidenceFilterDecision(BaseModel):
+    evidence_id: str
+    evidence_kind: Literal["observation", "policy", "event", "milestone"]
+    title: str
+    effective_date: str
+    information_available_date: str | None = None
+    cutoff_at: str
+    decision: Literal["visible", "withheld"]
+    reason_code: Literal[
+        "available_at_cutoff",
+        "published_after_cutoff",
+        "missing_available_date",
+        "withheld_outcome",
+        "verification_incomplete",
+    ]
+    source_id: str | None = None
+
+
+class FrozenContextAudit(BaseModel):
+    stage_id: StageId
+    cutoff_at: str
+    mode: Literal["player", "audit", "replay"]
+    visible_evidence_ids: list[str]
+    decisions: list[EvidenceFilterDecision]
+    context_hash: str
+
+
 class StageAudit(BaseModel):
     stage_id: StageId
     cutoff_at: str
@@ -306,6 +698,8 @@ class StageAudit(BaseModel):
     evidence_backed_deltas: int = Field(ge=0)
     total_deltas: int = Field(ge=0)
     future_evidence_count: int = Field(ge=0)
+    follow_ups: list[CommitmentFollowUp] = Field(default_factory=list)
+    timeline_events: list[TimelineEvent] = Field(default_factory=list)
 
 
 class SimulationState(BaseModel):
@@ -319,6 +713,8 @@ class SimulationState(BaseModel):
     committed_capital: int = Field(0, ge=0)
     maintenance_cost: int = Field(0, ge=0)
     exits_and_returns: int = Field(0, ge=0)
+    belief_ledger: list[BeliefLedgerEntry] = Field(default_factory=list)
+    commitment_ledger: list[CommitmentLedgerEntry] = Field(default_factory=list)
     completed_stages: list[StageId] = Field(default_factory=list)
     stage_audits: list[StageAudit] = Field(default_factory=list)
 
@@ -332,10 +728,16 @@ class StageResult(BaseModel):
     companies: list[CompanyState]
     company_actions: list[CompanyAction]
     agent_assessments: list[AgentAssessment]
+    deliberations: list[DeliberationRound] = Field(default_factory=list)
+    belief_updates: list[BeliefLedgerEntry] = Field(default_factory=list)
+    commitment_updates: list[CommitmentLedgerEntry] = Field(default_factory=list)
+    commitment_follow_ups: list[CommitmentFollowUp] = Field(default_factory=list)
+    timeline_events: list[TimelineEvent] = Field(default_factory=list)
     state_deltas: list[StateDelta]
     events: list[HistoricalEvent]
     evidence_refs: list[EvidenceRef]
     real_data_context: RealDataContext | None = None
+    frozen_context_audit: FrozenContextAudit | None = None
     next_candidates: list[str]
     next_state: SimulationState
 
@@ -356,4 +758,6 @@ class FinalResult(BaseModel):
     run_id: str
     portfolio_result: dict[str, int | float | str]
     historical_replay: ReplayScores
+    replay_evidence: FrozenContextAudit | None = None
     branch_points: list[str]
+    story_timeline: list[TimelineEvent] = Field(default_factory=list)
