@@ -1,5 +1,5 @@
-import type { MapProjectVisualState, MapSnapshot, ProjectStage } from '../../contracts/src'
-import { ARCHETYPE_RECIPES, type MapAssetId } from './assetCatalog'
+import type { MapProjectVisualState, MapSnapshot, PhysicalAssetVisualState, ProjectStage } from '../../contracts/src'
+import { ARCHETYPE_ROLE_VARIANTS, type MapAssetId } from './assetCatalog'
 import { HEFEI_PARCEL_SLOTS, PARCEL_LOCAL_ANCHORS, type ParcelSlot } from './hefeiLayout'
 
 export type ConstructionState = 'site' | 'frame' | 'shell' | 'complete'
@@ -7,6 +7,14 @@ export type ConstructionState = 'site' | 'frame' | 'shell' | 'complete'
 export interface SceneBuilding {
   assetId: MapAssetId
   anchor: 'main' | 'support' | 'warehouse' | 'utility'
+  level: number
+  status: PhysicalAssetVisualState['status']
+}
+
+export interface MapAssetScene {
+  asset: PhysicalAssetVisualState
+  constructionState: ConstructionState
+  building?: SceneBuilding
 }
 
 export interface MapParcelScene {
@@ -14,6 +22,7 @@ export interface MapParcelScene {
   slot: ParcelSlot
   project: MapProjectVisualState
   constructionState: ConstructionState
+  assetScenes: MapAssetScene[]
   buildings: SceneBuilding[]
   commutePath: Array<[number, number]>
   logisticsPath: Array<[number, number]>
@@ -89,10 +98,23 @@ function assignStableSlots(projects: MapProjectVisualState[]) {
   return assignments
 }
 
-function buildingsFor(project: MapProjectVisualState): SceneBuilding[] {
-  if (constructionStateFor(project.builtProgress) !== 'complete') return []
-  const anchors: SceneBuilding['anchor'][] = ['main', 'support', 'warehouse', 'utility']
-  return ARCHETYPE_RECIPES[project.archetype].map((assetId, index) => ({ assetId, anchor: anchors[index] }))
+function assetScenesFor(project: MapProjectVisualState): MapAssetScene[] {
+  const stableHash = [...project.id].reduce((hash, character) => ((hash * 31) + character.charCodeAt(0)) >>> 0, 2166136261)
+  return project.physicalAssets.assets.map((asset) => {
+    const variants = ARCHETYPE_ROLE_VARIANTS[project.archetype][asset.role]
+    const building = asset.currentLevel > 0
+      ? {
+          assetId: variants[(stableHash + asset.slotIndex * 7) % variants.length],
+          anchor: asset.role,
+          level: asset.currentLevel,
+          status: asset.status,
+        }
+      : undefined
+    const constructionState = asset.currentLevel > 0 && asset.workProgress === 0
+      ? 'complete'
+      : constructionStateFor(asset.workProgress)
+    return { asset, constructionState, building }
+  })
 }
 
 function createTransitions(snapshot: MapSnapshot, previous?: MapSnapshot): SceneTransition[] {
@@ -101,7 +123,7 @@ function createTransitions(snapshot: MapSnapshot, previous?: MapSnapshot): Scene
   return snapshot.projects
     .map((project) => {
       const before = previousById.get(project.id)
-      const builtDelta = before ? Math.max(0, project.builtProgress - before.builtProgress) : 0
+      const builtDelta = before ? project.physicalAssets.constructionDelta : 0
       const employmentDelta = project.delta.employment
       const logisticsDelta = project.delta.logistics
       if (!before || (builtDelta === 0 && employmentDelta === 0 && logisticsDelta === 0 && before.stage === project.stage)) return null
@@ -127,11 +149,16 @@ export function deriveMapScene(snapshot: MapSnapshot, previousSnapshot?: MapSnap
   const projects = snapshot.projects.slice(0, 9)
   const slots = assignStableSlots(projects)
   const parcels = applyResidentBudget(projects.map((project): MapParcelScene => {
-    const constructionState = constructionStateFor(project.builtProgress)
+    const assetScenes = assetScenesFor(project)
+    const activeWork = assetScenes.find((asset) => asset.asset.status === 'building' || asset.asset.status === 'paused')
+    const constructionState = activeWork?.constructionState
+      ?? (assetScenes.some((asset) => asset.asset.currentLevel > 0) ? 'complete' : 'site')
     const destination = constructionState === 'site' || constructionState === 'frame'
       ? PARCEL_LOCAL_ANCHORS.siteGate
       : PARCEL_LOCAL_ANCHORS.buildingEntrance
-    const residentActors = project.lifecycle === 'exited'
+    const residentActors = assetScenes.length === 0
+      ? 0
+      : project.lifecycle === 'exited'
       ? 0
       : project.lifecycle === 'stalled'
         ? Math.min(2, Math.round(project.employment / 10))
@@ -141,7 +168,8 @@ export function deriveMapScene(snapshot: MapSnapshot, previousSnapshot?: MapSnap
       slot: slots.get(project.id)!,
       project,
       constructionState,
-      buildings: buildingsFor(project),
+      assetScenes,
+      buildings: assetScenes.flatMap((asset) => asset.building ? [asset.building] : []),
       commutePath: [
         [...PARCEL_LOCAL_ANCHORS.transitEntry] as [number, number],
         [...PARCEL_LOCAL_ANCHORS.siteGate] as [number, number],

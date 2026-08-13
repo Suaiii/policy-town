@@ -2,13 +2,13 @@
 
 ## 当前全局场景使用
 
-- `kenney-industrial/building-{h,p,q,r}.glb`
+- `kenney-industrial/building-{a..t}.glb` 与 `chimney-* / detail-tank.glb`
   - 名称：Kenney City Kit (Industrial) 精选建筑
   - 作者：Kenney
   - 来源：https://kenney.nl/assets/city-kit-industrial
   - 许可：CC0 1.0 Universal
   - 依赖：`kenney-industrial/Textures/colormap.png`
-  - 用途：匿名重型制造、新能源制造与研发中试地块的建成运营状态。
+  - 用途：匿名重型制造、新能源制造与研发中试地块的建成运营状态；按主厂房、仓储、公用设施、研发办公等角色组合，而非随机摆放。
 
 - `Business_Man_by_Quaternius_-_JFrLIKqvCH.glb`
   - 名称：Business Man
@@ -35,3 +35,12 @@
 
 - `Business_Dude_by_Polygonal_Mind_-_odKDM2t8Cr.glb`
   - 原因：模型为无骨骼、无动画的静态网格，无法形成可信坐姿；保留作为后续静态人物或远景 NPC 备选。
+# Factory town supporting set
+
+- `../../Factory_by_Poly_by_Google_-_3mmIBtmmkkW.glb` — factory landmark, author attribution retained in the supplied filename.
+- `../../Factory_by_Robert_Schlyter_-_5nv98CqGjqR.glb` — factory landmark, author attribution retained in the supplied filename.
+- `../../House_by_Quaternius_-_oJJIRwv6Bo.glb`, `../../Town_House_by_Quaternius_-_imVkxz7oZD.glb` — worker-neighborhood buildings.
+- `../../Big_Building_by_Quaternius_-_AVCS8jUd2l.glb`, `../../Large_Building_by_Kenney_-_ppwtREejXg.glb` — operations and service-center buildings.
+- `../../Structure_by_Quaternius_-_ilWoURnbZW.glb` — industrial process tower.
+- `../../Solar_Panel_by_Quaternius_-_ah89Y79JdT.glb`, `../../Windmill_by_Quaternius_-_WUbU1Nct2W.glb` — clean-energy supporting assets.
+- These user-supplied files are normalized at runtime for the meeting-table town. The former standalone map application has been removed. Confirm each source license before external redistribution.

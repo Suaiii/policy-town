@@ -1,5 +1,5 @@
 import { GlassButton, GlassCard, type GlassButtonProps, type GlassCardProps } from '@mawtech/glass-ui';
-import type { ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
 export function FrameCorners({ inset = false, alert = false }: { inset?: boolean; alert?: boolean }) {
   return (
@@ -44,7 +44,7 @@ export function PanelHeading({ index, kicker, children }: {
   children: ReactNode;
 }) {
   return (
-    <div className="panel-heading">
+    <div className="panel-heading ui-title-block">
       <span>{index}</span>
       <div><small>{kicker}</small><h2>{children}</h2></div>
     </div>
@@ -65,5 +65,28 @@ export function ActionButton({ children, tone = 'primary', ...props }: Omit<Glas
 }
 
 export function SectionLabel({ children }: { children: ReactNode }) {
-  return <small className="section-label"><span>{children}</span></small>;
+  return <small className="section-label ui-section-label"><span>{children}</span></small>;
+}
+
+export function DirectionalButton({
+  direction,
+  children,
+  className = '',
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & {
+  direction: 'back' | 'previous' | 'next';
+}) {
+  const trailing = direction === 'next';
+  const icon = trailing ? '→' : '←';
+  return (
+    <button
+      {...props}
+      type={props.type ?? 'button'}
+      className={`ui-direction-button ui-direction-${direction} ${className}`.trim()}
+    >
+      {!trailing && <span className="ui-direction-icon" aria-hidden="true">{icon}</span>}
+      <span className="ui-direction-label">{children}</span>
+      {trailing && <span className="ui-direction-icon" aria-hidden="true">{icon}</span>}
+    </button>
+  );
 }

@@ -1,9 +1,8 @@
-import { useMemo, type CSSProperties } from 'react';
-import { PROJECT_VISUAL_PALETTES } from '../../packages/map-visuals/src/MapProjectLayer';
+import { useMemo } from 'react';
 import { getEnterprise, supportToolLabels } from '../game/scenario';
 import type { EnterpriseState, Phase, SupportTool } from '../game/types';
-import { ENTERPRISE_ARCHETYPES } from '../integration/mapAdapter';
-import { ActionButton, FramedCard, FramedPanel, PanelHeading, SectionLabel } from './ui/ParlorUI';
+import { enterpriseThemeStyle } from '../theme/enterpriseTheme';
+import { ActionButton, DirectionalButton, FramedCard, FramedPanel, PanelHeading, SectionLabel } from './ui/ParlorUI';
 
 export type NegotiationResponse = 'accept' | 'counter' | 'delay' | 'walk_away';
 
@@ -16,6 +15,7 @@ export type NegotiationRecord = {
   response?: NegotiationResponse;
   counterFiscal?: number;
   counterTool?: SupportTool;
+  finalized?: boolean;
 };
 
 export const emptyNegotiationRecord: NegotiationRecord = {
@@ -101,13 +101,10 @@ export function NegotiationOverlay({
     () => response ? responseCopy(response, profile.alias) : '',
     [profile.alias, response],
   );
-  const visualPalette = PROJECT_VISUAL_PALETTES[ENTERPRISE_ARCHETYPES[enterprise.id]];
-  const identityStyle = {
-    '--enterprise-accent': visualPalette.accent,
-    '--enterprise-primary': visualPalette.primary,
-  } as CSSProperties;
+  const identityStyle = enterpriseThemeStyle(enterprise.id);
 
   const updateOffer = (partial: Partial<NegotiationRecord>) => {
+    if (record.finalized) return;
     onChange({ ...record, ...partial, submitted: false, response: undefined, counterFiscal: undefined, counterTool: undefined });
   };
 
@@ -162,12 +159,12 @@ export function NegotiationOverlay({
     </section>
 
     <nav className="meeting-enterprise-nav enterprise-ui-theme" style={identityStyle} aria-label="切换核验企业">
-      <button className="meeting-return meeting-nav-return" onClick={onClose}>← 返回沙盘</button>
-      <button className="meeting-nav-previous" onClick={onPrevious} aria-label="查看左边企业"><span>←</span><small>上一家企业</small></button>
-      <button className="meeting-nav-next" onClick={onNext} aria-label="查看右边企业"><small>下一家企业</small><span>→</span></button>
+      <DirectionalButton direction="back" className="meeting-nav-return" onClick={onClose}>返回沙盘</DirectionalButton>
+      <DirectionalButton direction="previous" className="meeting-nav-previous" onClick={onPrevious} aria-label="查看上一家企业">上一家企业</DirectionalButton>
+      <DirectionalButton direction="next" className="meeting-nav-next" onClick={onNext} aria-label="查看下一家企业">下一家企业</DirectionalButton>
     </nav>
 
-    <FramedPanel as="aside" className="negotiation-panel enterprise-ui-theme" style={identityStyle}>
+    <FramedPanel as="aside" className="negotiation-panel layout-operation-panel enterprise-ui-theme" style={identityStyle}>
       <div className="negotiation-toolbar">
         <span>{stageLabel} · 政企条件协商</span>
         <b>一次核验 · 一次反提案</b>
@@ -190,6 +187,7 @@ export function NegotiationOverlay({
             aria-checked={record.verificationQuestion === item.question}
             className={record.verificationQuestion === item.question ? 'selected' : ''}
             onClick={() => updateOffer({ verificationQuestion: item.question })}
+            disabled={record.finalized}
           >
             <span>0{index + 1}</span><b>{item.question}</b>
           </button>
@@ -220,19 +218,20 @@ export function NegotiationOverlay({
           max={Math.min(60, Math.max(profile.request + 10, 40))}
           value={record.fiscalOffer}
           onChange={(event) => updateOffer({ fiscalOffer: Number(event.target.value) })}
+          disabled={record.finalized}
         />
         <small>企业资金请求 {profile.request} 点 · 当前覆盖 {Math.round(record.fiscalOffer / profile.request * 100)}%</small>
       </label>
       <div className="negotiation-fiscal-actions" aria-label="政府投入快捷调整">
-        <button onClick={() => updateOffer({ fiscalOffer: Math.max(0, record.fiscalOffer - 5) })}>− 5</button>
-        <button onClick={() => updateOffer({ fiscalOffer: Math.min(60, record.fiscalOffer + 5) })}>＋ 5</button>
-        <button onClick={() => updateOffer({ fiscalOffer: profile.request })}>按资金请求</button>
+        <button disabled={record.finalized} onClick={() => updateOffer({ fiscalOffer: Math.max(0, record.fiscalOffer - 5) })}>− 5</button>
+        <button disabled={record.finalized} onClick={() => updateOffer({ fiscalOffer: Math.min(60, record.fiscalOffer + 5) })}>＋ 5</button>
+        <button disabled={record.finalized} onClick={() => updateOffer({ fiscalOffer: profile.request })}>按资金请求</button>
       </div>
 
       <SectionLabel>城市支持</SectionLabel>
       <div className="negotiation-tools" aria-label="城市支持工具">
         {(Object.keys(supportToolLabels) as SupportTool[]).map((tool) => (
-          <button key={tool} className={record.tools.includes(tool) ? 'selected' : ''} onClick={() => toggleTool(tool)}>
+          <button key={tool} disabled={record.finalized} className={record.tools.includes(tool) ? 'selected' : ''} onClick={() => toggleTool(tool)}>
             {record.tools.includes(tool) ? '✓ ' : '+ '}{supportToolLabels[tool]}
           </button>
         ))}
@@ -245,7 +244,7 @@ export function NegotiationOverlay({
             <input
               type="checkbox"
               checked={record.conditions.includes(condition)}
-              disabled={!record.conditions.includes(condition) && record.conditions.length >= 3}
+              disabled={record.finalized || (!record.conditions.includes(condition) && record.conditions.length >= 3)}
               onChange={() => toggleCondition(condition)}
             />
             <span>{condition}</span>
@@ -266,7 +265,9 @@ export function NegotiationOverlay({
         <span>当前条件单</span><b>{record.fiscalOffer} 点 · {totalCommitments} 项支持与条件</b>
       </div>
 
-      {response === 'counter' ? (
+      {record.finalized ? (
+        <ActionButton onClick={onClose}>协商已确认 · 返回决策</ActionButton>
+      ) : response === 'counter' ? (
         <ActionButton onClick={acceptCounter}>确认企业反提案</ActionButton>
       ) : response === 'accept' ? (
         <ActionButton onClick={() => canApply ? onApply(record) : onClose()}>
