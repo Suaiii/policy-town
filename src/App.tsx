@@ -9,8 +9,9 @@ import { ResourceBar } from './components/ResourceBar';
 import { StageContextPanel } from './components/StageContextPanel';
 import { ActionButton, FramedCard, FramedPanel, NoticeDetailPopover, PanelHeading, SectionLabel } from './components/ui/ParlorUI';
 import { createBackendRun, fetchDeliberation, fetchHistoricalReplay, resumeBackendRun, selectPolicyPackage, type BackendResult, type BackendStage, type Deliberation, type HistoricalReplay, type PolicyPackage } from './integration/investmentBackend';
+import { clearBackendRunId, readBackendRunId, writeBackendRunId } from './integration/backendRunPersistence';
 import { createDecisionReviewExport } from './game/exportRun';
-import { restoreSimulationState } from './game/persistence';
+import { restoreInteractiveSimulationState } from './game/persistence';
 import { createMockEventFeed, type MockEventItem } from './game/mockEventFeed';
 import { createResourceInsights } from './game/resourceInsights';
 import { getRoundLoopStepIndex, roundLoopSteps } from './game/roundLoop';
@@ -62,13 +63,14 @@ const phaseLabels = {
 
 type IntroBeat = 'cover' | 'history' | 'overview' | 'enterprise' | 'handoff';
 
-function IntroExperience({ state, setState, mapCanvas, onMapCanvas, onNewRun, onComplete }: {
+function IntroExperience({ state, setState, mapCanvas, onMapCanvas, onNewRun, onComplete, error }: {
   state: SimulationState;
   setState: React.Dispatch<React.SetStateAction<SimulationState>>;
   mapCanvas: HTMLCanvasElement | null;
   onMapCanvas: (canvas: HTMLCanvasElement) => void;
-  onNewRun: () => void;
+  onNewRun: () => Promise<void>;
   onComplete: () => void;
+  error: string;
 }) {
   const [beat, setBeat] = useState<IntroBeat>('cover');
   const [focusIndex, setFocusIndex] = useState(0);
@@ -78,11 +80,11 @@ function IntroExperience({ state, setState, mapCanvas, onMapCanvas, onNewRun, on
   const focusEnterprise = state.enterprises[focusIndex];
   const showingScene = beat === 'overview' || beat === 'enterprise' || beat === 'handoff';
 
-  const beginAssignment = () => {
+  const beginAssignment = async () => {
     const randomValues = new Uint32Array(1);
     window.crypto.getRandomValues(randomValues);
     const seed = randomValues[0] || 1;
-    onNewRun();
+    await onNewRun();
     const freshSetup = {
       ...structuredClone(initialState),
       setupStartStage: selectedStageIndex,
@@ -129,6 +131,7 @@ function IntroExperience({ state, setState, mapCanvas, onMapCanvas, onNewRun, on
             <span>继续上一次推演</span>
             <b>{stages[state.stageIndex].code} · {phaseLabels[state.phase]}</b>
           </button>}
+          {error && <p className="opening-resume-error" role="alert">{error}</p>}
         </> : <>
           <p className="opening-kicker">CHOOSE THE HISTORICAL WINDOW</p>
           <h1>回到决策发生之前</h1>
@@ -503,7 +506,7 @@ function EventIntelligenceRail({ state }: { state: SimulationState }) {
 }
 
 function App() {
-  const [state, setState] = useState<SimulationState>(() => restoreSimulationState(
+  const [state, setState] = useState<SimulationState>(() => restoreInteractiveSimulationState(
     window.localStorage.getItem('hefei-sandbox-run-v1'),
   ));
   const [introActive, setIntroActive] = useState(true);
@@ -539,10 +542,6 @@ function App() {
   useEffect(() => {
     window.localStorage.setItem('hefei-negotiation-drafts-v1', JSON.stringify(negotiationRecords));
   }, [negotiationRecords]);
-  useEffect(() => {
-    if (backendRun) return;
-    void createBackendRun().then(setBackendRun).catch((reason) => setBackendError(reason instanceof Error ? reason.message : String(reason)));
-  }, [backendRun]);
   useEffect(() => {
     if (!formalUiEntering) return;
     const timer = window.setTimeout(() => setFormalUiEntering(false), 1500);
@@ -688,10 +687,11 @@ function App() {
     setDeliberation(null);
     setBackendResult(null);
     setHistoricalReplay(null);
-    setBackendRun(null);
     setBackendError('');
     window.localStorage.removeItem('hefei-sandbox-run-v1');
     window.localStorage.removeItem('hefei-negotiation-drafts-v1');
+    clearBackendRunId(window.localStorage);
+    setBackendRun(null);
     setState(initialState);
     setIntroActive(true);
   };
@@ -737,11 +737,44 @@ function App() {
       setState={setState}
       mapCanvas={mapCanvas}
       onMapCanvas={receiveMapCanvas}
-      onNewRun={() => setNegotiationRecords({})}
-      onComplete={() => {
-        setIntroActive(false);
-        setFormalUiEntering(true);
+      onNewRun={() => {
+        setBackendError('');
+        setNegotiationRecords({});
+        clearBackendRunId(window.localStorage);
+        setBackendRun(null);
+        return createBackendRun().then((run) => {
+          setBackendRun(run);
+          writeBackendRunId(window.localStorage, run.run_id);
+        }).catch((reason) => {
+          setBackendError(reason instanceof Error ? reason.message : String(reason));
+          throw reason;
+        });
       }}
+      onComplete={() => {
+        const savedRunId = readBackendRunId(window.localStorage);
+        if (!savedRunId) {
+          setBackendError('此旧本地记录没有云端存档，不能安全恢复。请点击“进入决策时点”新建一份可恢复的云端推演。');
+          return;
+        }
+        void resumeBackendRun(savedRunId).then((run) => {
+          const stageIndex = Number(run.stage_id.slice(1)) - 1;
+          if (stageIndex < state.stageIndex) {
+            setBackendError('本地记录与云端存档阶段不匹配，已阻止回退到较早阶段。请新建一份云端推演。');
+            return;
+          }
+          setBackendRun(run);
+          writeBackendRunId(window.localStorage, run.run_id);
+          setState((current) => ({
+            ...current,
+            stageIndex: Math.max(0, Math.min(stages.length - 1, stageIndex)),
+            phase: 'applications',
+            cameraMode: 'table',
+          }));
+          setIntroActive(false);
+          setFormalUiEntering(true);
+        }).catch(() => setBackendError('云端存档不可用，未创建新推演。请检查服务器后重试。'));
+      }}
+      error={backendError}
     />;
   }
 

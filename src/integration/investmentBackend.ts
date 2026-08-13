@@ -1,5 +1,15 @@
 const API_BASE = (import.meta.env.VITE_INVESTMENT_API_URL as string | undefined) ?? '';
 
+const createIdempotencyKey = () => {
+  if (typeof globalThis.crypto?.randomUUID === 'function') {
+    return globalThis.crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (token) => {
+    const value = Math.floor(Math.random() * 16);
+    return (token === 'x' ? value : (value & 0x3) | 0x8).toString(16);
+  });
+};
+
 export type BackendCompany = {
   company_id: string;
   display_name: string;
@@ -147,7 +157,7 @@ export const selectPolicyPackage = (run: BackendStage, companyId: string, propos
       stage_id: run.stage_id,
       company_id: companyId,
       proposal_id: proposalId,
-      idempotency_key: crypto.randomUUID(),
+      idempotency_key: createIdempotencyKey(),
     }),
   });
 
