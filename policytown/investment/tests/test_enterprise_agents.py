@@ -176,5 +176,37 @@ class TestDecisionBaseline(unittest.TestCase):
             self.assertTrue(bl["financing_constraints"], e["name"])
 
 
+CORE_PROTOS = {"proto_a", "proto_d", "proto_b"}
+KP_STATUSES = ("verified", "partial", "unverified", "conflicting")
+
+
+class TestKeyProposition(unittest.TestCase):
+    def test_registered_for_core_cases_only(self):
+        for e in ENTERPRISES:
+            kp = e.get("key_proposition")
+            if e["prototype_id"] in CORE_PROTOS:
+                self.assertTrue(kp, "%s 必须登记关键未穿透项" % e["name"])
+                self.assertTrue(kp["proposition"].strip())
+                self.assertIn(kp["evidence_status"], KP_STATUSES, e["name"])
+                self.assertTrue(kp["verification_questions"], e["name"])
+                self.assertTrue(kp["terminal_verification"].get("withheld"),
+                                "%s 终局验证必须标记 withheld" % e["name"])
+            else:
+                self.assertIsNone(kp, "%s 不应登记核心命题" % e["name"])
+
+    def test_terminal_verification_withheld_from_context(self):
+        orch = Orchestrator(seed=42)
+        orch.start(["proto_a", "proto_d", "proto_b"], "S1")
+        view = orch.open_stage()
+        blob = json.dumps(view["context"], ensure_ascii=False)
+        for e in ENTERPRISES:
+            kp = e.get("key_proposition")
+            if kp:
+                self.assertNotIn(kp["terminal_verification"]["evidence"], blob,
+                                 "终局证据泄漏：%s" % e["name"])
+                self.assertNotIn(kp["terminal_verification"]["outcome"], blob,
+                                 "终局结论泄漏：%s" % e["name"])
+
+
 if __name__ == "__main__":
     unittest.main()

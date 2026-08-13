@@ -48,6 +48,30 @@
       "industry_label": "大型显示制造",
       "enter_stage": "S1",
       "decision_cutoff": "2008-08-31",
+      "key_proposition": {
+        "proposition_id": "KP-BOE-01",
+        "proposition": "企业是否具备建线、融资和持续扩代的真实能力",
+        "evidence_status": "partial",
+        "visible_facts": [
+          "2007年营收约111.7亿元，TFT-LCD业务约96亿元级",
+          "2008年7月完成非公开发行股份登记，具备资本市场融资能力",
+          "北京5代线已建设运营，具备建线、调试、良率与客户导入的验证记录",
+          "2008年4月业绩预告：上半年归母净利润预计超5亿元"
+        ],
+        "verification_questions": [
+          {"question_id": "VQ-BOE-01",
+           "question": "请披露合肥6代线项目资金闭环：自有资金、银团授信与后续扩代资金来源安排",
+           "targets": ["financing_capacity", "line_building_experience"]},
+          {"question_id": "VQ-BOE-02",
+           "question": "行业周期下行临界下，产线投产后的单位成本与良率爬坡计划如何保证",
+           "targets": ["production_ramp_plan"]}
+        ],
+        "terminal_verification": {
+          "withheld": true,
+          "evidence": "终局揭示：2008年10月项目公司设立、11月定增120亿元方案落地，6代线2012年投产后成为大陆首批高世代量产线",
+          "outcome": "capability_confirmed"
+        }
+      },
       "decision_baseline": {
         "management_objectives": ["扩代并形成量产集群", "维系资本结构稳定"],
         "expansion_appetite": 0.75,
@@ -108,6 +132,27 @@
       "industry_label": "光伏制造",
       "enter_stage": "S2",
       "decision_cutoff": "2010-06-30",
+      "key_proposition": {
+        "proposition_id": "KP-LDK-01",
+        "proposition": "母公司能否在价格下降和高负债下持续提供运营资金、采购信用和技术人员",
+        "evidence_status": "partial",
+        "visible_facts": [
+          "2009年净亏损约2.34亿美元，现金及等价物约3.85亿美元",
+          "2009年末短期借款合计约9.8亿美元，全年新取得借款约22.5亿美元、偿还约16.8亿美元",
+          "一项银行贷款涉及债务资产比率约束，2010年4月方获豁免",
+          "约75%销售来自海外，需求高度暴露于欧洲补贴制度"
+        ],
+        "verification_questions": [
+          {"question_id": "VQ-LDK-01",
+           "question": "请披露合肥项目运营资金、技术人员与采购信用的具体安排，以及母公司再融资计划",
+           "targets": ["parent_support", "financing_capacity"]}
+        ],
+        "terminal_verification": {
+          "withheld": true,
+          "evidence": "终局揭示：2010年8月合肥项目落地后主要资金由地方协调；2012年双反后集团流动性危机，2014年合肥项目资产以约8.7亿元处置",
+          "outcome": "parent_support_failed"
+        }
+      },
       "decision_baseline": {
         "management_objectives": ["纵向整合扩张", "维持高增长叙事"],
         "expansion_appetite": 0.9,
@@ -161,6 +206,27 @@
       "industry_label": "半导体存储",
       "enter_stage": "S4",
       "decision_cutoff": "2016-06-30",
+      "key_proposition": {
+        "proposition_id": "KP-CX-01",
+        "proposition": "技术团队、知识产权路径和长期资本能否按阶段形成闭环",
+        "evidence_status": "unverified",
+        "visible_facts": [
+          "2016年5月与合肥达成推进DRAM项目共识，6月13日设立合肥智聚",
+          "无营收、无量产、无可验证的自主DRAM工艺节点",
+          "国际龙头已推进20nm级DDR4与LPDDR4技术认证",
+          "2016年上半年DRAM价格持续一年多下行，行业接近周期底部"
+        ],
+        "verification_questions": [
+          {"question_id": "VQ-CX-01",
+           "question": "请披露核心技术团队名单、IP与专利授权路径，以及分阶段资本投入计划",
+           "targets": ["tech_team_depth", "ip_pathway_risk"]}
+        ],
+        "terminal_verification": {
+          "withheld": true,
+          "evidence": "终局揭示：合肥通过数轮长期资本持续投入，2019年国产DRAM实现量产并逐步爬坡",
+          "outcome": "long_capital_sustained"
+        }
+      },
       "decision_baseline": {
         "management_objectives": ["长期技术追赶", "分阶段闭环"],
         "expansion_appetite": 0.85,
