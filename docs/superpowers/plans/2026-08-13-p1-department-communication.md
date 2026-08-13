@@ -753,6 +753,9 @@ git commit -m "feat(p1): directed challenge build + deterministic response + pos
 
 ## Task 3: 会议纪要（共识 / 分歧 / 方案 / 少数意见）
 
+> **执行状态（2026-08-13）：** 由并行会话在 86a96696 实现并提交（make_minutes/validate_minutes/meeting_minutes.schema.json），
+> 经规范审查通过；本会话补测试 TestMeetingMinutesProvenance（d406d695，条件来源部门断言）。
+
 **Files:**
 - Modify: `policytown/investment/core/meeting.py`（追加：`make_minutes`、`validate_minutes`、内部助手）
 - Create: `policytown/investment/contracts/meeting_minutes.schema.json`
@@ -1058,6 +1061,10 @@ git commit -m "feat(p1): meeting minutes with consensus, disagreements, proposal
 
 ## Task 4: 部门质询回应 Agent（LLM 路径）
 
+> **执行状态（2026-08-13）：** 由并行会话在 86a96696 实现并提交（build_challenge_prompt/ChallengeResponderAgent/
+> make_challenge_responders/run_challenge_responses），经规范审查通过；本会话补测试 TestChallengeResponderAgent
+> （d406d695：LLM 契约 Prompt + 错误输出回退确定性路径）。
+
 **Files:**
 - Modify: `policytown/investment/agents/professional.py`（追加：`ChallengeResponderAgent`、`build_challenge_prompt`、`make_challenge_responders`、`run_challenge_responses`）
 - Modify: `policytown/investment/tests/test_meeting.py`（追加 LLM 路径测试）
@@ -1225,6 +1232,9 @@ git commit -m "feat(p1): challenge responder agent with llm + deterministic fall
 ---
 
 ## Task 5: 编排器接线（open_stage/submit_decisions 输出）+ 回归
+
+> **执行状态（2026-08-13）：** 由并行会话在 86a96696 实现并提交（_communicate + department_communication/meeting_minutes 视图键 +
+> responder agents 初始化），经规范审查通过（含 engine 不读 position_revisions 的约束验证）。
 
 **Files:**
 - Modify: `policytown/investment/core/orchestrator.py`
