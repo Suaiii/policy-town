@@ -1,3 +1,4 @@
+# --- Python / 数据管线（来自 main） ---
 .incoming-policy-town-H0/
 __pycache__/
 *.py[cod]
@@ -15,19 +16,34 @@ venv/
 .DS_Store
 Thumbs.db
 
-# Dependencies
+# --- 前端依赖与构建 ---
 node_modules/
-
-# Build outputs
 dist/
+dist-map/
 build/
 tsconfig.tsbuildinfo
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
 
-# Generated Hefei simulation artifacts
+# --- 生成产物（Hefei 模拟运行数据） ---
 data/hefei_industry_simulation.sqlite3
 data/hefei_mvp_runs/
 data/hefei_mvp/real_backend_run.json
 data/source_archive/
 
-# IDE / Superpowers temp files
+# --- IDE / Superpowers 临时文件 ---
 .superpowers/
+
+# --- 本地文档与启动脚本 ---
+/*.md
+/*.command
+
+# --- 本地 LLM 凭据（禁止提交） ---
+sim/agent_config.json
+
+# --- 本地事件日志数据库（SQLite） ---
+bridge/data/
+
+# --- Agent 记忆持久化（运行时） ---
+sim/memories.json

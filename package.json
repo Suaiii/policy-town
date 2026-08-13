@@ -1,0 +1,41 @@
+{
+  "name": "hefei-industrial-sandbox",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run dev:global",
+    "dev:global": "vite --host 0.0.0.0 --port 5273 --strictPort",
+    "build": "npm run build:global",
+    "build:global": "tsc -b && vite build",
+    "build:all": "npm run build:global",
+    "preview": "vite --host 0.0.0.0",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@mawtech/glass-ui": "^0.2.2",
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.7.0",
+    "cytoscape": "^3.34.1",
+    "echarts": "^6.1.0",
+    "maplibre-gl": "^6.3.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-map-gl": "^8.1.2",
+    "react-three-map": "^1.0.1",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@types/cytoscape": "^3.21.9",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@types/three": "^0.185.4",
+    "@vitejs/plugin-react": "^6.0.5",
+    "autoprefixer": "^10.5.4",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.1",
+    "vitest": "^4.1.10"
+  }
+}
