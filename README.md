@@ -1,100 +1,91 @@
-# 大厂 Town（Policy Town）
+# 合肥产业投资推演系统（Hefei Town）
 
-面向就业政策发布前压力测试的多智能体推演内核。三方 Agent 负责有理由的策略响应，规则引擎负责可复核的人数、流量与指标，检测器负责机械触发建议。
+> 让玩家在 2007—2016 年的真实历史空间中扮演合肥市政府，对六个真实产业项目进行连续决策，并检验「如果政府在历史节点做出真实选择，系统能否推演出真实历史结果」。
 
-## 主体架构联调
+系统不是固定公式驱动的经营游戏，而是把真实历史变成可反证的 Agent 沙盘：真实数据 + 信息截止 + 确定性规则结算 + 后台 Historical Replay 盲测。
 
-```bash
-python -m policytown validate
-python -m policytown run draft --rounds 2
-python -m policytown report draft
-python -m unittest tests.test_kernel -v
-```
+## 核心机制
 
-队友对接说明见 `docs/INTEGRATION_ARCHITECTURE.md`，方案统一注册于 `scenarios/manifest.json`。前端与具体 Agent 均不是核心内核的运行依赖。
-
-## 当前交付
-
-> 主线状态（2026-08-13）：文档、数据工程和可审计推演已同步到 `main`；前端暂时冻结，不作为本轮验收门槛。阅读入口以 `docs/产品文档.md`、`docs/评委沟通_历史信息防泄露产品亮点.md` 和合肥财政审计报告为准。旧版产品框架和早期 H0 说明仅作历史参考，不代表当前产品口径。
-
-### 当前唯一有效的产品阅读顺序
-
-1. `docs/TODO_队友接力清单.md`：队友领取任务、依赖、验收和提交规则。
-2. `docs/产品文档.md`：产品定义、核心亮点、信息截止与来源追溯。
-3. `docs/评委沟通_历史信息防泄露产品亮点.md`：评委讲解、演示脚本和答辩问答。
-4. `合肥政府产业投资推演系统_数据工程附录_v0.3.md`：数据库字段、来源与截止规则。
-5. `docs/合肥财政数据来源与阶段预算派生审计报告.md`：财政数据、原始报告、哈希和派生公式。
-6. `docs/合肥产业投资推演系统_MVP收敛与10小时开发方案.md`：当前 MVP 范围、阶段和三人分工。
-
-### 当前主线状态
-
-- 已完成：SQLite 数据库、真实财政/产业数据接入、来源归档、SHA-256、信息截止过滤、阶段预算派生、Agent 证据链、Historical Replay、审计报告。
-- 已完成：2008—2015 政府性基金滚动序列及 2015 债务交叉验证；后公开报告不会反向进入早期 Context。
-- 已完成：43 项自动化测试通过。
-- 暂缓：前端完整接入和视觉层合并。前端不影响当前文档、数据和后端推演验收。
-- 仍开放：2007 政府性基金、土地出让逐年拆分、国有资本经营预算、财政结余、项目实际政府出资。
-
-旧文档说明：`docs/产品框架_v3.md`、`docs/终极实施方案_AI裁员政府应对模拟器.md`、`docs/最终场景_产品数据闭环.md` 等保留为历史设计参考；如与上述五份主线文档冲突，以主线文档为准。
-
-- `contracts/schema.py`：契约 v1.2，定义政策、企业动作、员工动作和前端快照。
-- `mock/build_mock.py`：生成 8 轮 A/B 世界线快照。
-- `mock/verify.py`：检查 H0 预设的关键演示现象。
-- `data/run_A`：无管制基线，共 8 轮。
-- `data/run_B`：稳就业管制世界线，共 8 轮。
-- `CONTRACT.md`：H0 契约冻结公告与联调约定。
-- `docs/产品框架_v3.md`：当前产品与 5 分钟演示方案。
-- `docs/当前执行口径.md`：文档优先级和当前交付边界。
+- **截止日冻结推演**：每条数据同时携带 `effective_date` 与 `information_available_date`，运行中的 Agent 只能看到截止日前已公开的材料；后来的年报、评级报告与真实结果只在终局 Replay 解锁，避免未来信息泄漏。
+- **确定性规则引擎**：财政点数、企业财务、建设进度由规则结算；Agent 只输出方向性意向，不生成人数与数值。
+- **真实数据溯源**：`source_id → 原 URL → 本地归档 → SHA-256` 可复核；财政点数明确标注 `scenario_assumption`，不冒充真实可投资亿元。
+- **Historical Replay**：输入真实政府决策序列时，引擎应在容差内复现历史方向；改变关键决策则长出另一条未来。
 
 ## 快速开始
 
 要求 Python 3.10 或更高版本。
 
-```bash
+```powershell
 python -m pip install -r requirements.txt
-python mock/build_mock.py
-python mock/verify.py
-python -m policytown firm-reality --output-dir data/run_firm_A_narrow
-python scripts/run_m_harness.py
+
+# 1. 重建 SQLite 真实数据库并审计
+python scripts/seed_hefei_database.py
+python scripts/audit_hefei_database.py
+
+# 2. 查看某个截止日的真实 Context（信息截止过滤）
+python -m policytown investment-context --cutoff 2008-09-30
+
+# 3. 跑 S1—S4 产业投资推演
+python -m policytown investment-run --companies company_a company_d
+
+# 4. 导出历史案例回放包（盲测校准）
+python scripts/export_hefei_case_package.py --case CASE-04 --cutoff 2010-08-30 --output data/historical_cases/hefei_ldk_2010
+
+# 5. 测试
+python -m unittest discover -s tests -p "test_*.py"
 ```
 
-M 技术主线的 `firm-reality` 入口会校验公开证据包，运行匿名企业 A 的 A0–A3 对照与四轮信念轨迹，并输出可复核报告。企业 Agent 仅输出方向性 `FirmIntent`，所有人数由确定性的 `RuleLedger` 结算。
+## 当前交付
 
-前端仅需读取：
-
-```text
-data/run_{A,B}/round_1.json ... round_8.json
-```
+- 确定性投资引擎：S1—S4 四阶段、滚动财政池、六企业原型、路径依赖与阶段反馈。
+- SQLite 真实数据库：合肥 2007—2016 财政/产业数据、企业年报、政策库与事件库，带信息截止过滤与来源 SHA-256。
+- 六个真实案例：京东方（成功）、长鑫存储（成功）、鑫昊等离子（失败）、赛维 LDK（失败）、熔安/熔盛（部分核验）、北大未名（待核验）。
+- 深校准回放包：`data/historical_cases/hefei_boe_2008/`、`data/historical_cases/hefei_ldk_2010/`。
+- 政企协商闭环（四部门初审 → 定向质询 → 企业反提案 → 承诺账 → 规则结算）开发中，当前以确定性 fallback 运行。
 
 ## 目录结构
 
 ```text
 .
-├── CONTRACT.md
 ├── contracts/
-│   └── schema.py
+│   └── investment_simulation_v0_1.py   # 投资推演契约
+├── policytown/
+│   └── investment/                     # 内核：context / engine / loader / real_data / deliberation
+├── database/
+│   └── hefei_simulation_schema.sql     # SQLite Schema
+├── scripts/
+│   ├── seed_hefei_database.py          # 建库
+│   ├── audit_hefei_database.py         # 审计
+│   ├── export_hefei_case_package.py    # 导出案例回放包
+│   └── archive_hefei_sources.py        # 来源归档（URL + SHA-256）
 ├── data/
-│   ├── run_A/
-│   └── run_B/
-├── mock/
-│   ├── build_mock.py
-│   └── verify.py
-└── docs/
-    ├── 产品框架_v3.md
-    ├── 价值主张与能力边界.md
-    ├── 当前执行口径.md
-    ├── DELIVERY_H0.md
-    ├── archive/
-    └── references/
+│   ├── hefei_mvp/                      # 冻结的 MVP 数据包
+│   ├── historical_cases/               # 案例回放包（pre_cutoff / withheld / targets）
+│   └── source_archive/                 # 原始来源归档
+├── tests/
+│   └── test_investment_*.py
+└── docs/                               # 产品、数据工程与审计文档
 ```
 
 ## 数据说明
 
-`data/` 中的数据是用于前端联调和产品演示的 Mock 快照，不是现实预测或实验结论。字段名已经按照 `CONTRACT.md` 冻结；如需调整，请先升级契约版本并同步所有消费方。
+`data/hefei_industry_simulation.sqlite3` 由 `scripts/seed_hefei_database.py` 生成，是唯一数据来源。所有数值分为三类并在界面标注：
 
-## 项目状态
+- `现实规则`：有可追溯的政策或统计来源；
+- `场景设定`：为推演而输入的城市与事件参数（如财政点数、企业反应概率）；
+- `模拟结果`：当前规则、随机种子和主体样本下的输出。
 
-H0 已完成：契约、Mock 生成器、A/B 快照和验证脚本。下一阶段将接入真实推演引擎和前端政策驾驶舱。
+系统不预测真实城市一定发生什么，而是在行动前暴露方案的结构性盲区。
+
+## 能力边界
+
+| ✅ 能做 | ❌ 不能做 |
+|---|---|
+| 揭示决策路径与机制方向 | 校准过的点预测 |
+| 二阶效应与路径依赖提示 | 因果证明 |
+| 方案相对排序 | 绝对量级 |
+| 群体分布 | 个体预测 |
 
 ## 许可
 
-当前仓库尚未指定开源许可证，默认保留所有权利。引入第三方代码或服务前，需要单独核对其许可和署名要求。
+当前仓库尚未指定开源许可证，默认保留所有权利。引入第三方代码或服务前，需单独核对其许可和署名要求。

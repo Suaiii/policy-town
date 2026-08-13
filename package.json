@@ -1,6 +1,7 @@
 {
-  "name": "policy-town",
+  "name": "hefei-town",
   "version": "0.0.0",
+  "description": "合肥产业投资推演系统（Hefei Town）",
   "private": true,
   "scripts": {
     "dev": "npm-run-all --parallel dev:backend dev:frontend",

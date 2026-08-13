@@ -1,8 +1,0 @@
-unknowns:
-  - exact_affected_headcount
-  - exact_role_mix
-  - exact_internal_transfer_acceptance_rate
-  - exact_severance_terms
-  - exact_number_of_people_leaving_beijing
-  - exact_number_of_people_entering_ai_roles
-policy: must_remain_unknown
