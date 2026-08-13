@@ -32,9 +32,9 @@ class BaselineGovernmentAction(BaseModel):
     government_registered_capital_commitment: BaselineQuantity
     initial_registered_capital: BaselineQuantity
     initial_government_cash_commitment: BaselineQuantity
-    initial_government_equity_share: BaselineQuantity
-    annual_interest_subsidy: BaselineQuantity
-    interest_subsidy_years: int = Field(gt=0)
+    initial_government_equity_share: BaselineQuantity | None = None
+    annual_interest_subsidy: BaselineQuantity | None = None
+    interest_subsidy_years: int | None = Field(None, gt=0)
     source_ids: list[str] = Field(min_length=1)
 
     @model_validator(mode="after")
@@ -48,10 +48,12 @@ class BaselineGovernmentAction(BaseModel):
         )
         if any(item.unit != "亿元" for item in money_fields):
             raise ValueError("现实资金字段必须保留为亿元，不得换算为财政点数")
-        if self.initial_government_equity_share.unit != "%":
+        if self.initial_government_equity_share is not None and self.initial_government_equity_share.unit != "%":
             raise ValueError("持股比例单位必须为 %")
-        if self.annual_interest_subsidy.unit != "亿元/年":
+        if self.annual_interest_subsidy is not None and self.annual_interest_subsidy.unit != "亿元/年":
             raise ValueError("年度贴息单位必须为亿元/年")
+        if (self.annual_interest_subsidy is None) != (self.interest_subsidy_years is None):
+            raise ValueError("年度贴息与贴息年限必须同时提供或同时缺省")
         return self
 
 
@@ -274,6 +276,8 @@ def reconcile_decision_baseline(
             baseline_value=(
                 f"{baseline.government_action.government_registered_capital_commitment.value:g}亿元; "
                 f"初始持股{baseline.government_action.initial_government_equity_share.value:g}%"
+                if baseline.government_action.initial_government_equity_share is not None
+                else f"{baseline.government_action.government_registered_capital_commitment.value:g}亿元（委托贷款，无股权口径）"
             ),
             simulated_value=None,
             reason="游戏财政点数与现实亿元、持股比例不是同一单位，不直接换算或评分。",
