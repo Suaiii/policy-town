@@ -173,3 +173,290 @@ def validate_challenge(ch: dict) -> None:
         raise ValueError("challenge without question")
     if ch.get("status") not in ("pending", "answered"):
         raise ValueError("invalid status: %r" % ch.get("status"))
+
+
+def build_challenges(conflicts: List[dict], stage_id: str = "S1") -> List[dict]:
+    """每条冲突 → 一次定向质询（一轮，不追问不闲聊）。冲突已带 stage_id，不得覆盖。"""
+    out = []
+    for i, c in enumerate(conflicts, 1):
+        ch = dict(c)
+        ch["challenge_id"] = "CH-%s-%02d" % (stage_id, i)
+        ch["status"] = "pending"
+        out.append(ch)
+    return out
+
+
+_REQUIRED_RESPONSE = ["response_id", "challenge_id", "stage_id", "from", "to",
+                      "response_type", "statement", "evidence_ids", "confidence"]
+_RESPONSE_TYPES = ("maintain", "soften", "change", "concede_insufficient")
+
+
+def validate_challenge_response(out: dict) -> None:
+    missing = [k for k in _REQUIRED_RESPONSE if k not in out]
+    if missing:
+        raise ValueError("challenge response missing keys: %s" % missing)
+    if out.get("response_type") not in _RESPONSE_TYPES:
+        raise ValueError("invalid response_type: %r" % out.get("response_type"))
+    if not out.get("statement", "").strip():
+        raise ValueError("response without statement")
+    if out.get("from") not in _DEPTS or out.get("to") not in _DEPTS:
+        raise ValueError("invalid response party: from=%r to=%r" % (out.get("from"), out.get("to")))
+
+
+def _reco_by_score(score: float) -> str:
+    for band, reco in _RECO_BANDS:
+        if score >= band:
+            return reco
+    return "oppose"
+
+
+_REQUIRED_REVISION = ["revision_id", "stage_id", "agent", "company_id",
+                      "trigger_challenge_id", "trigger_evidence_ids",
+                      "before", "after", "reason"]
+
+
+def position_revision(challenge: dict, memo: dict, challenger_memo: dict,
+                      response: dict) -> Optional[dict]:
+    """立场变化留痕：maintain → None；soften/change/concede → 记录变化前后与触发证据。"""
+    rtype = response["response_type"]
+    if rtype == "maintain":
+        return None
+    before = {"recommendation": memo["recommendation"], "score": memo["score"],
+              "red_lines": [dict(r) for r in memo.get("red_lines", [])],
+              "acceptable_conditions": [dict(c) for c in memo.get("acceptable_conditions", [])]}
+    delta = {"soften": -12, "change": -25, "concede_insufficient": -30}[rtype]
+    score = round(max(0.0, memo["score"] + delta), 1)
+    reco = "hold" if rtype == "concede_insufficient" else _reco_by_score(score)
+    conds = [dict(c) for c in before["acceptable_conditions"]]
+    extra = next(iter(challenger_memo.get("acceptable_conditions", [])), None)
+    if extra and extra["condition"] not in {c["condition"] for c in conds} and len(conds) < 4:
+        conds.append(dict(extra))
+    return {
+        "revision_id": "REV-%s" % response["challenge_id"].replace("CH-", ""),
+        "stage_id": challenge.get("stage_id", ""),
+        "agent": memo["agent"],
+        "company_id": memo.get("company_id"),
+        "trigger_challenge_id": challenge["challenge_id"],
+        "trigger_evidence_ids": [e for e in
+                                 challenge.get("evidence_ids", []) + response.get("evidence_ids", [])],
+        "before": before,
+        "after": {"recommendation": reco, "score": score,
+                  "red_lines": before["red_lines"],
+                  "acceptable_conditions": conds},
+        "reason": "%s：%s" % (rtype, response["statement"]),
+    }
+
+
+def validate_position_revision(rev: dict) -> None:
+    missing = [k for k in _REQUIRED_REVISION if k not in rev]
+    if missing:
+        raise ValueError("position revision missing keys: %s" % missing)
+    if rev.get("agent") not in _DEPTS:
+        raise ValueError("invalid revision agent: %r" % rev.get("agent"))
+    for side in ("before", "after"):
+        for k in ("recommendation", "score"):
+            if k not in rev.get(side, {}):
+                raise ValueError("revision %s missing key: %s" % (side, k))
+
+
+# ---------- P1 Task 2：定向质询构建 + 立场修订 ----------
+
+def build_challenges(conflicts: List[dict], stage_id: str = "S1") -> List[dict]:
+    """每条冲突 → 一次定向质询（一轮，不追问不闲聊）。"""
+    out = []
+    for i, c in enumerate(conflicts, 1):
+        ch = dict(c)
+        ch["challenge_id"] = "CH-%s-%02d" % (stage_id, i)
+        ch["status"] = "pending"
+        out.append(ch)
+    return out
+
+
+_REQUIRED_RESPONSE = ["response_id", "challenge_id", "stage_id", "from", "to",
+                      "response_type", "statement", "evidence_ids", "confidence"]
+_RESPONSE_TYPES = ("maintain", "soften", "change", "concede_insufficient")
+
+
+def validate_challenge_response(out: dict) -> None:
+    missing = [k for k in _REQUIRED_RESPONSE if k not in out]
+    if missing:
+        raise ValueError("challenge response missing keys: %s" % missing)
+    if out.get("response_type") not in _RESPONSE_TYPES:
+        raise ValueError("invalid response_type: %r" % out.get("response_type"))
+    if not out.get("statement", "").strip():
+        raise ValueError("response without statement")
+    if out.get("from") not in _DEPTS or out.get("to") not in _DEPTS:
+        raise ValueError("invalid response party: from=%r to=%r" % (out.get("from"), out.get("to")))
+
+
+def _reco_by_score(score: float) -> str:
+    for band, reco in _RECO_BANDS:
+        if score >= band:
+            return reco
+    return "oppose"
+
+
+_REQUIRED_REVISION = ["revision_id", "stage_id", "agent", "company_id",
+                      "trigger_challenge_id", "trigger_evidence_ids",
+                      "before", "after", "reason"]
+
+
+def position_revision(challenge: dict, memo: dict, challenger_memo: dict,
+                      response: dict) -> Optional[dict]:
+    """立场变化留痕：maintain → None；soften/change/concede → 记录变化前后与触发证据。"""
+    rtype = response["response_type"]
+    if rtype == "maintain":
+        return None
+    before = {"recommendation": memo["recommendation"], "score": memo["score"],
+              "red_lines": [dict(r) for r in memo.get("red_lines", [])],
+              "acceptable_conditions": [dict(c) for c in memo.get("acceptable_conditions", [])]}
+    delta = {"soften": -12, "change": -25, "concede_insufficient": -30}[rtype]
+    score = round(max(0.0, memo["score"] + delta), 1)
+    reco = "hold" if rtype == "concede_insufficient" else _reco_by_score(score)
+    conds = [dict(c) for c in before["acceptable_conditions"]]
+    extra = next(iter(challenger_memo.get("acceptable_conditions", [])), None)
+    if extra and extra["condition"] not in {c["condition"] for c in conds} and len(conds) < 4:
+        conds.append(dict(extra))
+    return {
+        "revision_id": "REV-%s" % response["challenge_id"].replace("CH-", ""),
+        "stage_id": challenge.get("stage_id", ""),
+        "agent": memo["agent"],
+        "company_id": memo.get("company_id"),
+        "trigger_challenge_id": challenge["challenge_id"],
+        "trigger_evidence_ids": [e for e in
+                                 challenge.get("evidence_ids", []) + response.get("evidence_ids", [])],
+        "before": before,
+        "after": {"recommendation": reco, "score": score,
+                  "red_lines": before["red_lines"],
+                  "acceptable_conditions": conds},
+        "reason": "%s：%s" % (rtype, response["statement"]),
+    }
+
+
+def validate_position_revision(rev: dict) -> None:
+    missing = [k for k in _REQUIRED_REVISION if k not in rev]
+    if missing:
+        raise ValueError("position revision missing keys: %s" % missing)
+    if rev.get("agent") not in _DEPTS:
+        raise ValueError("invalid revision agent: %r" % rev.get("agent"))
+    for side in ("before", "after"):
+        for k in ("recommendation", "score"):
+            if k not in rev.get(side, {}):
+                raise ValueError("revision %s missing key: %s" % (side, k))
+
+
+# ---------- P1 Task 3：会议纪要 ----------
+
+def _shared_evidence(memoranda: List[dict]) -> List[str]:
+    """在任一组内被 ≥3 个部门引用的证据视为共享证据。"""
+    counts: Dict[str, int] = {}
+    for memos in _grouped(memoranda).values():
+        for m in memos:
+            for eid in set(m.get("evidence_ids", [])):
+                counts[eid] = counts.get(eid, 0) + 1
+    return sorted(eid for eid, n in counts.items() if n >= 3)
+
+
+def _majority(memos: List[dict]) -> str:
+    """组内建议的中位档（保守方向）作为多数意见。"""
+    ladder = sorted(REC_LADDER[m["recommendation"]] for m in memos)
+    med = ladder[len(ladder) // 2]
+    return _reco_by_score({0: 99, 1: 50, 2: 35, 3: 20}[med])
+
+
+def _dedup_conditions(items: List[dict]) -> List[dict]:
+    seen = set()
+    out = []
+    for it in items:
+        key = (it["condition"], it["company_id"])
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(it)
+    return out
+
+
+def _build_proposals(memoranda: List[dict]) -> List[dict]:
+    support, cautious = [], []
+    for cid, memos in _grouped(memoranda).items():
+        for m in memos:
+            if m["recommendation"] in ("support", "conditional_support"):
+                for c in m.get("acceptable_conditions", []):
+                    support.append({"condition": c["condition"], "reason": c["reason"],
+                                    "proposing_department": m["agent"], "company_id": cid})
+            else:
+                for rl in m.get("red_lines", []):
+                    cautious.append({"condition": rl["condition"], "reason": rl["reason"],
+                                     "proposing_department": m["agent"], "company_id": cid})
+    return [
+        {"proposal_id": "PLAN-A", "title": "进取支持方案",
+         "basis": "支持与有条件支持部门的合并条件",
+         "conditions": _dedup_conditions(support)},
+        {"proposal_id": "PLAN-B", "title": "审慎风控方案",
+         "basis": "反对/暂缓部门红线转化及财政暴露上限",
+         "conditions": _dedup_conditions(cautious)},
+    ]
+
+
+def make_minutes(memoranda: List[dict], challenges: List[dict], responses: List[dict],
+                 revisions: List[dict], stage_id: str = "S1") -> dict:
+    """联席会议纪要：共识 / 未解决分歧 / ≥2 方案 / 少数意见 / 待调查问题。"""
+    resp_by_ch = {r["challenge_id"]: r for r in responses}
+    disagreements = []
+    for ch in challenges:
+        r = resp_by_ch.get(ch["challenge_id"])
+        rtype = r["response_type"] if r else "pending"
+        disagreements.append({
+            "conflict_id": ch["conflict_id"], "kind": ch["kind"],
+            "from": ch["from"], "to": ch["to"], "company_id": ch["company_id"],
+            "question": ch["question"],
+            "response_type": rtype,
+            "resolved": rtype in ("change", "concede_insufficient"),
+            "summary": r["statement"] if r else "未回应",
+        })
+    per_company = _grouped(memoranda)
+    consensus = {
+        "shared_evidence_ids": _shared_evidence(memoranda),
+        "majority_by_company": {cid: _majority(memos) for cid, memos in per_company.items()},
+    }
+    minority = []
+    for cid, memos in per_company.items():
+        maj = consensus["majority_by_company"][cid]
+        for m in memos:
+            if m["recommendation"] != maj:
+                minority.append({"company_id": cid, "agent": m["agent"],
+                                 "recommendation": m["recommendation"],
+                                 "reasoning_summary": m.get("reasoning_summary", "")})
+    open_questions = [
+        {"challenge_id": ch["challenge_id"], "from": ch["from"], "to": ch["to"],
+         "company_id": ch["company_id"], "question": ch["question"]}
+        for ch in challenges
+        if resp_by_ch.get(ch["challenge_id"], {}).get("response_type") in ("maintain", "soften", None)
+    ]
+    return {
+        "stage_id": stage_id,
+        "consensus": consensus,
+        "disagreements": disagreements,
+        "proposals": _build_proposals(memoranda),
+        "minority_opinions": minority,
+        "open_questions": open_questions,
+        "revision_count": len(revisions),
+    }
+
+
+_REQUIRED_MINUTES = ["stage_id", "consensus", "disagreements", "proposals",
+                     "minority_opinions", "open_questions", "revision_count"]
+
+
+def validate_minutes(minutes: dict) -> None:
+    missing = [k for k in _REQUIRED_MINUTES if k not in minutes]
+    if missing:
+        raise ValueError("minutes missing keys: %s" % missing)
+    if len(minutes.get("proposals", [])) < 2:
+        raise ValueError("minutes must contain at least 2 proposals")
+    for p in minutes.get("proposals", []):
+        if not p.get("proposal_id") or not p.get("title"):
+            raise ValueError("proposal missing id/title")
+        for c in p.get("conditions", []):
+            if not c.get("proposing_department"):
+                raise ValueError("proposal condition without proposing_department")

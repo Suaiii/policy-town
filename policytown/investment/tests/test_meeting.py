@@ -145,5 +145,104 @@ class TestChallengeValidator(unittest.TestCase):
             validate_challenge(c)
 
 
+from ..core.meeting import (build_challenges, position_revision, validate_challenge_response,
+                            validate_position_revision, _reco_by_score)
+from ..fallback import deterministic
+
+
+class TestChallengeBuild(unittest.TestCase):
+    def test_build_challenges_assigns_ids_and_pending(self):
+        conflicts = detect_conflicts([_memo("economy", "oppose", score=30),
+                                      _memo("sci_tech", "support", score=70)], "S1")
+        challenges = build_challenges(conflicts, "S1")
+        self.assertEqual(len(challenges), 1)
+        ch = challenges[0]
+        self.assertTrue(ch["challenge_id"].startswith("CH-S1-"))
+        self.assertEqual(ch["status"], "pending")
+        self.assertEqual(ch["conflict_id"], conflicts[0]["conflict_id"])
+        self.assertEqual(ch["stage_id"], "S1")   # 不得覆盖 stage_id
+        validate_challenge(ch)
+
+
+class TestDeterministicResponse(unittest.TestCase):
+    def _ch(self, i, kind="recommendation_gap"):
+        return {"challenge_id": "CH-S1-%02d" % i, "stage_id": "S1", "kind": kind,
+                "from": "economy", "to": "sci_tech", "evidence_ids": ["E1"]}
+
+    def test_maintain_when_confident_and_high_score(self):
+        memo = _memo("sci_tech", "support", score=70, confidence=0.8)
+        r = deterministic.challenge_response(self._ch(1), memo, {})
+        self.assertEqual(r["response_type"], "maintain")
+        self.assertEqual(r["from"], "sci_tech")   # 回应方 = 被质询方
+        self.assertEqual(r["to"], "economy")      # 回应给质询方
+        self.assertEqual(r["challenge_id"], "CH-S1-01")
+
+    def test_soften_mid_confidence(self):
+        memo = _memo("sci_tech", "support", score=65, confidence=0.65)
+        self.assertEqual(deterministic.challenge_response(self._ch(2), memo, {})["response_type"],
+                         "soften")
+
+    def test_change_when_low_score(self):
+        memo = _memo("sci_tech", "support", score=35, confidence=0.65)
+        self.assertEqual(deterministic.challenge_response(self._ch(3), memo, {})["response_type"],
+                         "change")
+
+    def test_concede_when_high_missing_and_no_evidence(self):
+        memo = _memo("sci_tech", "support", score=70, evidence=[])
+        r = deterministic.challenge_response(self._ch(4, "missing_info_high"), memo, {})
+        self.assertEqual(r["response_type"], "concede_insufficient")
+        self.assertEqual(r["evidence_ids"], [])
+
+    def test_all_responses_valid(self):
+        for i, (s, c) in enumerate([(70, 0.8), (65, 0.65), (35, 0.65)]):
+            memo = _memo("sci_tech", "support", score=s, confidence=c)
+            validate_challenge_response(deterministic.challenge_response(self._ch(i + 1), memo, {}))
+
+
+class TestPositionRevision(unittest.TestCase):
+    def _ch(self, i):
+        return {"challenge_id": "CH-S1-%02d" % i, "stage_id": "S1",
+                "from": "economy", "to": "sci_tech", "evidence_ids": ["E1"]}
+
+    def test_no_revision_on_maintain(self):
+        ch = self._ch(1)
+        memo = _memo("sci_tech", "support", score=70, confidence=0.8)
+        resp = deterministic.challenge_response(ch, memo, {})
+        self.assertIsNone(position_revision(ch, memo, _memo("economy", "oppose", score=30), resp))
+
+    def test_soften_merges_challenger_condition(self):
+        ch = self._ch(2)
+        memo = _memo("sci_tech", "support", score=65, confidence=0.65)
+        challenger = _memo("economy", "oppose", score=30,
+                           conditions=[{"condition_id": "E-C1", "condition": "分期拨付",
+                                        "reason": "控节奏"}])
+        resp = deterministic.challenge_response(ch, memo, {})
+        rev = position_revision(ch, memo, challenger, resp)
+        self.assertIsNotNone(rev)
+        self.assertEqual(rev["agent"], "sci_tech")
+        self.assertEqual(rev["after"]["score"], 53.0)          # 65 - 12
+        self.assertEqual(rev["after"]["recommendation"], "conditional_support")
+        self.assertEqual(rev["trigger_challenge_id"], "CH-S1-02")
+        conds = [c["condition"] for c in rev["after"]["acceptable_conditions"]]
+        self.assertIn("分期拨付", conds)                        # 质询方条件并入
+        self.assertEqual(rev["before"]["recommendation"], "support")
+        self.assertTrue(rev["reason"])
+        validate_position_revision(rev)
+
+    def test_change_lowers_by_25(self):
+        ch = self._ch(3)
+        memo = _memo("sci_tech", "support", score=35, confidence=0.65)
+        resp = deterministic.challenge_response(ch, memo, {})
+        rev = position_revision(ch, memo, _memo("economy", "oppose", score=30), resp)
+        self.assertEqual(rev["after"]["score"], 10.0)
+        self.assertEqual(rev["after"]["recommendation"], "oppose")
+
+    def test_score_bands(self):
+        self.assertEqual(_reco_by_score(60), "support")
+        self.assertEqual(_reco_by_score(53), "conditional_support")
+        self.assertEqual(_reco_by_score(38), "hold")
+        self.assertEqual(_reco_by_score(20), "oppose")
+
+
 if __name__ == "__main__":
     unittest.main()

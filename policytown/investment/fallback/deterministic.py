@@ -316,9 +316,69 @@ def counter_proposal(company: dict, private_state, conditions: dict, stage_id: s
             "alternative": alternative}
 
 
+def challenge_response(challenge: dict, memo: dict, ctx: dict) -> dict:
+    """被质询部门按自身置信度与证据强度回应（文档 4.5 / 5.5）。
+
+    路径：high 级缺失且无证据 → 承认材料不足；高置信高评分 → 维持；
+    低评分 → 改变立场；其余 → 软化并接受对方条件约束。
+    """
+    kind = challenge.get("kind", "")
+    ev = memo.get("evidence_ids", [])
+    if kind == "missing_info_high" and not ev:
+        rtype, statement = "concede_insufficient", \
+            "承认该信息缺失且暂无直接证据，将缺失影响写入条件并建议暂缓全额投入"
+    elif memo.get("confidence", 0.5) >= 0.75 and memo.get("score", 0) >= 55:
+        rtype, statement = "maintain", "维持原立场：主张有证据支撑，并说明缺失信息的处理方式"
+    elif memo.get("score", 0) < 40:
+        rtype, statement = "change", "接受质询：原判断依据不足，调整为审慎立场并补充条件"
+    else:
+        rtype, statement = "soften", "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+    return {
+        "response_id": "RESP-%s" % challenge["challenge_id"].replace("CH-", ""),
+        "challenge_id": challenge["challenge_id"],
+        "stage_id": challenge.get("stage_id", ""),
+        "from": memo["agent"],
+        "to": challenge.get("from", ""),
+        "response_type": rtype,
+        "statement": statement,
+        "evidence_ids": ev,
+        "confidence": memo.get("confidence", 0.5),
+    }
+
+
 def _dir(score: float) -> str:
     if score >= 55:
         return "positive"
     if score >= 40:
         return "neutral"
     return "negative"
+
+
+def challenge_response(challenge: dict, memo: dict, ctx: dict) -> dict:
+    """被质询部门按自身置信度与证据强度回应（文档 4.5 / 5.5）。
+
+    路径：high 级缺失且无证据 → 承认材料不足；高置信高评分 → 维持；
+    低评分 → 改变立场；其余 → 软化并接受对方条件约束。
+    """
+    kind = challenge.get("kind", "")
+    ev = memo.get("evidence_ids", [])
+    if kind == "missing_info_high" and not ev:
+        rtype, statement = "concede_insufficient", \
+            "承认该信息缺失且暂无直接证据，将缺失影响写入条件并建议暂缓全额投入"
+    elif memo.get("confidence", 0.5) >= 0.75 and memo.get("score", 0) >= 55:
+        rtype, statement = "maintain", "维持原立场：主张有证据支撑，并说明缺失信息的处理方式"
+    elif memo.get("score", 0) < 40:
+        rtype, statement = "change", "接受质询：原判断依据不足，调整为审慎立场并补充条件"
+    else:
+        rtype, statement = "soften", "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+    return {
+        "response_id": "RESP-%s" % challenge["challenge_id"].replace("CH-", ""),
+        "challenge_id": challenge["challenge_id"],
+        "stage_id": challenge.get("stage_id", ""),
+        "from": memo["agent"],
+        "to": challenge.get("from", ""),
+        "response_type": rtype,
+        "statement": statement,
+        "evidence_ids": ev,
+        "confidence": memo.get("confidence", 0.5),
+    }
