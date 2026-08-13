@@ -86,7 +86,7 @@ def _open_view(company_ids):
 class TestMemorandumFallback(unittest.TestCase):
     def test_fallback_emits_full_memorandum(self):
         view = _open_view(["proto_a", "proto_d"])
-        memos = view["agent_assessments"]
+        memos = view["department_memoranda"]
         self.assertEqual(len(memos), 1 + 2 * 3, "财政全局1份 + 三部门×2企业")
         for memo in memos:
             validate_memorandum(memo)
@@ -94,7 +94,7 @@ class TestMemorandumFallback(unittest.TestCase):
 
     def test_fiscal_is_global(self):
         view = _open_view(["proto_a"])
-        memos = [m for m in view["agent_assessments"] if m["agent"] == "fiscal"]
+        memos = [m for m in view["department_memoranda"] if m["agent"] == "fiscal"]
         self.assertEqual(len(memos), 1)
         self.assertIsNone(memos[0]["company_id"])
 
@@ -154,6 +154,31 @@ class TestMemorandumPrompt(unittest.TestCase):
         for token in ("recommendation", "red_lines", "acceptable_conditions",
                       "missing_info", "core_claims"):
             self.assertIn(token, blob, "部门 Prompt 必须包含备忘录契约字段 %s" % token)
+
+
+# ---------- Task 5：编排器视图接线 ----------
+
+
+class TestOrchestratorView(unittest.TestCase):
+    def test_open_stage_has_memoranda_for_every_company(self):
+        view = _open_view(["proto_a", "proto_d", "proto_b"])
+        memos = view["department_memoranda"]
+        self.assertIn("department_memoranda", view)
+        self.assertNotIn("agent_assessments", view)
+        by_agent = {}
+        for memo in memos:
+            by_agent.setdefault(memo["agent"], []).append(memo)
+        self.assertEqual(set(by_agent), {"fiscal", "economy", "sci_tech", "development"})
+        self.assertEqual(len(by_agent["fiscal"]), 1)
+        for kind in ("economy", "sci_tech", "development"):
+            self.assertEqual({m["company_id"] for m in by_agent[kind]},
+                             {"company_a", "company_d", "company_b"})
+
+    def test_memoranda_deterministic(self):
+        v1 = _open_view(["proto_a", "proto_d", "proto_b"])
+        v2 = _open_view(["proto_a", "proto_d", "proto_b"])
+        self.assertEqual(json.dumps(v1["department_memoranda"], sort_keys=True),
+                         json.dumps(v2["department_memoranda"], sort_keys=True))
 
 
 if __name__ == "__main__":

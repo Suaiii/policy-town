@@ -1,4 +1,4 @@
-"""LLM 版端到端演示：DeepSeek v4 Flash 驱动四专业 Agent + 企业 Agent。
+"""LLM 版端到端演示：驱动财政/经信/科技/发改四部门 Agent + 企业 Agent。
 
 与 run_demo.py（确定性 fallback）共用同一脚本与状态机，对比输出与终局评分。
 

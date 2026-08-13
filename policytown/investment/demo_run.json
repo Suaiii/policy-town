@@ -142,13 +142,61 @@
           "confidence": 0.7
         }
       ],
-      "agent_assessments": [
+      "department_memoranda": [
         {
           "agent": "fiscal",
+          "department": "财政部门",
           "company_id": null,
+          "recommendation": "support",
           "direction": "positive",
           "score": 100.0,
           "confidence": 0.8,
+          "core_claims": [
+            {
+              "claim_id": "FISCAL-1",
+              "claim_type": "positive",
+              "statement": "当期财政余量 100 点，具备承接能力",
+              "evidence_ids": []
+            },
+            {
+              "claim_id": "FISCAL-2",
+              "claim_type": "risk",
+              "statement": "已承诺资本 0 点，继续追加将压缩未来阶段空间",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "FISCAL-R1",
+              "condition": "当期支出不得超过预算上限 100 点",
+              "reason": "财政点数守恒"
+            },
+            {
+              "redline_id": "FISCAL-R2",
+              "condition": "企业资金来源未证实前不承诺后续追加上限",
+              "reason": "防止财政暴露不可控"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "FISCAL-C1",
+              "condition": "分期拨付，首期不超过方案的 50%",
+              "reason": "以里程碑控制支出节奏"
+            },
+            {
+              "condition_id": "FISCAL-C2",
+              "condition": "资金证明或同比例出资作为放款前置条件",
+              "reason": "确认企业真实出资能力"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "FISCAL-M1",
+              "severity": "medium",
+              "description": "企业融资方案未完全披露",
+              "impact": "财政暴露测算存在缺口"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "fiscal_budget",
@@ -163,11 +211,52 @@
           "reasoning_summary": "财政余量 100 点，已承诺 0 点；仍可承接新项目"
         },
         {
-          "agent": "industry",
+          "agent": "economy",
+          "department": "经信部门",
           "company_id": "company_a",
+          "recommendation": "oppose",
           "direction": "negative",
-          "score": 30.0,
+          "score": 33.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "ECON-1",
+              "claim_type": "positive",
+              "statement": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "ECON-2",
+              "claim_type": "assumption",
+              "statement": "供应链承接能力按本地产业基础水平估算",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "ECON-R1",
+              "condition": "配套不足时不建议一次性全额投入",
+              "reason": "落地效果依赖配套"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "ECON-C1",
+              "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+              "reason": "保障项目落地与产业链协同"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "ECON-M1",
+              "severity": "medium",
+              "description": "本地供应链承接能力尚无测算",
+              "impact": "协同收益可能高估"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "industrial_base",
@@ -185,11 +274,52 @@
           "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
         },
         {
-          "agent": "industry",
+          "agent": "economy",
+          "department": "经信部门",
           "company_id": "company_d",
+          "recommendation": "oppose",
           "direction": "negative",
-          "score": 30.0,
+          "score": 33.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "ECON-1",
+              "claim_type": "positive",
+              "statement": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "ECON-2",
+              "claim_type": "assumption",
+              "statement": "供应链承接能力按本地产业基础水平估算",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "ECON-R1",
+              "condition": "配套不足时不建议一次性全额投入",
+              "reason": "落地效果依赖配套"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "ECON-C1",
+              "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+              "reason": "保障项目落地与产业链协同"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "ECON-M1",
+              "severity": "medium",
+              "description": "本地供应链承接能力尚无测算",
+              "impact": "协同收益可能高估"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "industrial_base",
@@ -207,11 +337,52 @@
           "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
         },
         {
-          "agent": "industry",
+          "agent": "economy",
+          "department": "经信部门",
           "company_id": "company_b",
+          "recommendation": "oppose",
           "direction": "negative",
-          "score": 30.0,
+          "score": 33.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "ECON-1",
+              "claim_type": "positive",
+              "statement": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "ECON-2",
+              "claim_type": "assumption",
+              "statement": "供应链承接能力按本地产业基础水平估算",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "ECON-R1",
+              "condition": "配套不足时不建议一次性全额投入",
+              "reason": "落地效果依赖配套"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "ECON-C1",
+              "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+              "reason": "保障项目落地与产业链协同"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "ECON-M1",
+              "severity": "medium",
+              "description": "本地供应链承接能力尚无测算",
+              "impact": "协同收益可能高估"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "industrial_base",
@@ -229,11 +400,52 @@
           "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
         },
         {
-          "agent": "company_tech",
+          "agent": "sci_tech",
+          "department": "科技部门",
           "company_id": "company_a",
+          "recommendation": "support",
           "direction": "positive",
           "score": 65.0,
           "confidence": 0.65,
+          "core_claims": [
+            {
+              "claim_id": "TECH-1",
+              "claim_type": "positive",
+              "statement": "执行能力 70 / 技术成熟度 60",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "TECH-2",
+              "claim_type": "risk",
+              "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "TECH-R1",
+              "condition": "技术里程碑未达标时暂停后续拨付",
+              "reason": "防止资金沉淀在未验证环节"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "TECH-C1",
+              "condition": "设置建设、试产、量产里程碑并绑定放款",
+              "reason": "按阶段验证技术兑现"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "TECH-M1",
+              "severity": "high",
+              "description": "量产与良率数据缺失",
+              "impact": "产业化路径未证实"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "execution_ability",
@@ -251,11 +463,52 @@
           "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
         },
         {
-          "agent": "company_tech",
+          "agent": "sci_tech",
+          "department": "科技部门",
           "company_id": "company_d",
+          "recommendation": "support",
           "direction": "positive",
           "score": 55.0,
           "confidence": 0.65,
+          "core_claims": [
+            {
+              "claim_id": "TECH-1",
+              "claim_type": "positive",
+              "statement": "执行能力 55 / 技术成熟度 55",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "TECH-2",
+              "claim_type": "risk",
+              "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "TECH-R1",
+              "condition": "技术里程碑未达标时暂停后续拨付",
+              "reason": "防止资金沉淀在未验证环节"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "TECH-C1",
+              "condition": "设置建设、试产、量产里程碑并绑定放款",
+              "reason": "按阶段验证技术兑现"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "TECH-M1",
+              "severity": "high",
+              "description": "量产与良率数据缺失",
+              "impact": "产业化路径未证实"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "execution_ability",
@@ -273,11 +526,52 @@
           "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
         },
         {
-          "agent": "company_tech",
+          "agent": "sci_tech",
+          "department": "科技部门",
           "company_id": "company_b",
+          "recommendation": "conditional_support",
           "direction": "neutral",
           "score": 52.5,
           "confidence": 0.65,
+          "core_claims": [
+            {
+              "claim_id": "TECH-1",
+              "claim_type": "positive",
+              "statement": "执行能力 65 / 技术成熟度 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "TECH-2",
+              "claim_type": "risk",
+              "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "TECH-R1",
+              "condition": "技术里程碑未达标时暂停后续拨付",
+              "reason": "防止资金沉淀在未验证环节"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "TECH-C1",
+              "condition": "设置建设、试产、量产里程碑并绑定放款",
+              "reason": "按阶段验证技术兑现"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "TECH-M1",
+              "severity": "high",
+              "description": "量产与良率数据缺失",
+              "impact": "产业化路径未证实"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "execution_ability",
@@ -295,11 +589,52 @@
           "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
         },
         {
-          "agent": "market_risk",
+          "agent": "development",
+          "department": "发改部门",
           "company_id": "company_a",
+          "recommendation": "conditional_support",
           "direction": "neutral",
           "score": 50.0,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "DEV-1",
+              "claim_type": "risk",
+              "statement": "行业景气 0 / 价格趋势 0 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "DEV-2",
+              "claim_type": "risk",
+              "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "DEV-R1",
+              "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+              "reason": "周期反转损失难回收"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "DEV-C1",
+              "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+              "reason": "管理周期风险"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "DEV-M1",
+              "severity": "medium",
+              "description": "后续需求与政策窗口的定量预测缺失",
+              "impact": "周期判断依赖定性证据"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "market_cycle",
@@ -317,11 +652,52 @@
           "reasoning_summary": "景气 0 / 价格趋势 0 / 供给压力 40：下行风险主导，宜逆周期评估"
         },
         {
-          "agent": "market_risk",
+          "agent": "development",
+          "department": "发改部门",
           "company_id": "company_d",
+          "recommendation": "conditional_support",
           "direction": "neutral",
           "score": 50.0,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "DEV-1",
+              "claim_type": "risk",
+              "statement": "行业景气 0 / 价格趋势 0 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "DEV-2",
+              "claim_type": "risk",
+              "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "DEV-R1",
+              "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+              "reason": "周期反转损失难回收"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "DEV-C1",
+              "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+              "reason": "管理周期风险"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "DEV-M1",
+              "severity": "medium",
+              "description": "后续需求与政策窗口的定量预测缺失",
+              "impact": "周期判断依赖定性证据"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "market_cycle",
@@ -339,11 +715,52 @@
           "reasoning_summary": "景气 0 / 价格趋势 0 / 供给压力 40：下行风险主导，宜逆周期评估"
         },
         {
-          "agent": "market_risk",
+          "agent": "development",
+          "department": "发改部门",
           "company_id": "company_b",
+          "recommendation": "conditional_support",
           "direction": "neutral",
           "score": 50.0,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "DEV-1",
+              "claim_type": "risk",
+              "statement": "行业景气 0 / 价格趋势 0 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "DEV-2",
+              "claim_type": "risk",
+              "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "DEV-R1",
+              "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+              "reason": "周期反转损失难回收"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "DEV-C1",
+              "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+              "reason": "管理周期风险"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "DEV-M1",
+              "severity": "medium",
+              "description": "后续需求与政策窗口的定量预测缺失",
+              "impact": "周期判断依赖定性证据"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "market_cycle",
@@ -728,13 +1145,61 @@
           "confidence": 0.7
         }
       ],
-      "agent_assessments": [
+      "department_memoranda": [
         {
           "agent": "fiscal",
+          "department": "财政部门",
           "company_id": null,
+          "recommendation": "support",
           "direction": "positive",
           "score": 66.7,
           "confidence": 0.8,
+          "core_claims": [
+            {
+              "claim_id": "FISCAL-1",
+              "claim_type": "positive",
+              "statement": "当期财政余量 100 点，具备承接能力",
+              "evidence_ids": []
+            },
+            {
+              "claim_id": "FISCAL-2",
+              "claim_type": "risk",
+              "statement": "已承诺资本 50 点，继续追加将压缩未来阶段空间",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "FISCAL-R1",
+              "condition": "当期支出不得超过预算上限 100 点",
+              "reason": "财政点数守恒"
+            },
+            {
+              "redline_id": "FISCAL-R2",
+              "condition": "企业资金来源未证实前不承诺后续追加上限",
+              "reason": "防止财政暴露不可控"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "FISCAL-C1",
+              "condition": "分期拨付，首期不超过方案的 50%",
+              "reason": "以里程碑控制支出节奏"
+            },
+            {
+              "condition_id": "FISCAL-C2",
+              "condition": "资金证明或同比例出资作为放款前置条件",
+              "reason": "确认企业真实出资能力"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "FISCAL-M1",
+              "severity": "medium",
+              "description": "企业融资方案未完全披露",
+              "impact": "财政暴露测算存在缺口"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "fiscal_budget",
@@ -749,11 +1214,52 @@
           "reasoning_summary": "财政余量 100 点，已承诺 50 点；仍可承接新项目"
         },
         {
-          "agent": "industry",
+          "agent": "economy",
+          "department": "经信部门",
           "company_id": "company_a",
+          "recommendation": "oppose",
           "direction": "negative",
-          "score": 19.2,
+          "score": 24.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "ECON-1",
+              "claim_type": "positive",
+              "statement": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "ECON-2",
+              "claim_type": "assumption",
+              "statement": "供应链承接能力按本地产业基础水平估算",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "ECON-R1",
+              "condition": "配套不足时不建议一次性全额投入",
+              "reason": "落地效果依赖配套"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "ECON-C1",
+              "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+              "reason": "保障项目落地与产业链协同"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "ECON-M1",
+              "severity": "medium",
+              "description": "本地供应链承接能力尚无测算",
+              "impact": "协同收益可能高估"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "industrial_base",
@@ -771,11 +1277,52 @@
           "reasoning_summary": "本地产业基础 2、人才 45：配套存在缺口"
         },
         {
-          "agent": "industry",
+          "agent": "economy",
+          "department": "经信部门",
           "company_id": "company_d",
+          "recommendation": "oppose",
           "direction": "negative",
-          "score": 30.0,
+          "score": 33.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "ECON-1",
+              "claim_type": "positive",
+              "statement": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "ECON-2",
+              "claim_type": "assumption",
+              "statement": "供应链承接能力按本地产业基础水平估算",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "ECON-R1",
+              "condition": "配套不足时不建议一次性全额投入",
+              "reason": "落地效果依赖配套"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "ECON-C1",
+              "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+              "reason": "保障项目落地与产业链协同"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "ECON-M1",
+              "severity": "medium",
+              "description": "本地供应链承接能力尚无测算",
+              "impact": "协同收益可能高估"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "industrial_base",
@@ -793,11 +1340,52 @@
           "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
         },
         {
-          "agent": "industry",
+          "agent": "economy",
+          "department": "经信部门",
           "company_id": "company_b",
+          "recommendation": "oppose",
           "direction": "negative",
-          "score": 30.0,
+          "score": 33.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "ECON-1",
+              "claim_type": "positive",
+              "statement": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "ECON-2",
+              "claim_type": "assumption",
+              "statement": "供应链承接能力按本地产业基础水平估算",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "ECON-R1",
+              "condition": "配套不足时不建议一次性全额投入",
+              "reason": "落地效果依赖配套"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "ECON-C1",
+              "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+              "reason": "保障项目落地与产业链协同"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "ECON-M1",
+              "severity": "medium",
+              "description": "本地供应链承接能力尚无测算",
+              "impact": "协同收益可能高估"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "industrial_base",
@@ -815,11 +1403,52 @@
           "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
         },
         {
-          "agent": "company_tech",
+          "agent": "sci_tech",
+          "department": "科技部门",
           "company_id": "company_a",
+          "recommendation": "support",
           "direction": "positive",
           "score": 65.0,
           "confidence": 0.65,
+          "core_claims": [
+            {
+              "claim_id": "TECH-1",
+              "claim_type": "positive",
+              "statement": "执行能力 70 / 技术成熟度 60",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "TECH-2",
+              "claim_type": "risk",
+              "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "TECH-R1",
+              "condition": "技术里程碑未达标时暂停后续拨付",
+              "reason": "防止资金沉淀在未验证环节"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "TECH-C1",
+              "condition": "设置建设、试产、量产里程碑并绑定放款",
+              "reason": "按阶段验证技术兑现"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "TECH-M1",
+              "severity": "high",
+              "description": "量产与良率数据缺失",
+              "impact": "产业化路径未证实"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "execution_ability",
@@ -837,11 +1466,52 @@
           "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
         },
         {
-          "agent": "company_tech",
+          "agent": "sci_tech",
+          "department": "科技部门",
           "company_id": "company_d",
+          "recommendation": "support",
           "direction": "positive",
           "score": 55.0,
           "confidence": 0.65,
+          "core_claims": [
+            {
+              "claim_id": "TECH-1",
+              "claim_type": "positive",
+              "statement": "执行能力 55 / 技术成熟度 55",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "TECH-2",
+              "claim_type": "risk",
+              "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "TECH-R1",
+              "condition": "技术里程碑未达标时暂停后续拨付",
+              "reason": "防止资金沉淀在未验证环节"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "TECH-C1",
+              "condition": "设置建设、试产、量产里程碑并绑定放款",
+              "reason": "按阶段验证技术兑现"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "TECH-M1",
+              "severity": "high",
+              "description": "量产与良率数据缺失",
+              "impact": "产业化路径未证实"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "execution_ability",
@@ -859,11 +1529,52 @@
           "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
         },
         {
-          "agent": "company_tech",
+          "agent": "sci_tech",
+          "department": "科技部门",
           "company_id": "company_b",
+          "recommendation": "conditional_support",
           "direction": "neutral",
           "score": 52.5,
           "confidence": 0.65,
+          "core_claims": [
+            {
+              "claim_id": "TECH-1",
+              "claim_type": "positive",
+              "statement": "执行能力 65 / 技术成熟度 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "TECH-2",
+              "claim_type": "risk",
+              "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "TECH-R1",
+              "condition": "技术里程碑未达标时暂停后续拨付",
+              "reason": "防止资金沉淀在未验证环节"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "TECH-C1",
+              "condition": "设置建设、试产、量产里程碑并绑定放款",
+              "reason": "按阶段验证技术兑现"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "TECH-M1",
+              "severity": "high",
+              "description": "量产与良率数据缺失",
+              "impact": "产业化路径未证实"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "execution_ability",
@@ -881,11 +1592,52 @@
           "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
         },
         {
-          "agent": "market_risk",
+          "agent": "development",
+          "department": "发改部门",
           "company_id": "company_a",
+          "recommendation": "oppose",
           "direction": "negative",
           "score": 26.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "DEV-1",
+              "claim_type": "risk",
+              "statement": "行业景气 -35 / 价格趋势 -20 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "DEV-2",
+              "claim_type": "risk",
+              "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "DEV-R1",
+              "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+              "reason": "周期反转损失难回收"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "DEV-C1",
+              "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+              "reason": "管理周期风险"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "DEV-M1",
+              "severity": "medium",
+              "description": "后续需求与政策窗口的定量预测缺失",
+              "impact": "周期判断依赖定性证据"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "market_cycle",
@@ -903,11 +1655,52 @@
           "reasoning_summary": "景气 -35 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
         },
         {
-          "agent": "market_risk",
+          "agent": "development",
+          "department": "发改部门",
           "company_id": "company_d",
+          "recommendation": "oppose",
           "direction": "negative",
           "score": 26.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "DEV-1",
+              "claim_type": "risk",
+              "statement": "行业景气 -35 / 价格趋势 -20 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "DEV-2",
+              "claim_type": "risk",
+              "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "DEV-R1",
+              "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+              "reason": "周期反转损失难回收"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "DEV-C1",
+              "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+              "reason": "管理周期风险"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "DEV-M1",
+              "severity": "medium",
+              "description": "后续需求与政策窗口的定量预测缺失",
+              "impact": "周期判断依赖定性证据"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "market_cycle",
@@ -925,11 +1718,52 @@
           "reasoning_summary": "景气 -35 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
         },
         {
-          "agent": "market_risk",
+          "agent": "development",
+          "department": "发改部门",
           "company_id": "company_b",
+          "recommendation": "oppose",
           "direction": "negative",
           "score": 26.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "DEV-1",
+              "claim_type": "risk",
+              "statement": "行业景气 -35 / 价格趋势 -20 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "DEV-2",
+              "claim_type": "risk",
+              "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "DEV-R1",
+              "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+              "reason": "周期反转损失难回收"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "DEV-C1",
+              "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+              "reason": "管理周期风险"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "DEV-M1",
+              "severity": "medium",
+              "description": "后续需求与政策窗口的定量预测缺失",
+              "impact": "周期判断依赖定性证据"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "market_cycle",
@@ -1370,13 +2204,61 @@
           "confidence": 0.7
         }
       ],
-      "agent_assessments": [
+      "department_memoranda": [
         {
           "agent": "fiscal",
+          "department": "财政部门",
           "company_id": null,
+          "recommendation": "conditional_support",
           "direction": "neutral",
           "score": 45.0,
           "confidence": 0.8,
+          "core_claims": [
+            {
+              "claim_id": "FISCAL-1",
+              "claim_type": "positive",
+              "statement": "当期财政余量 90 点，具备承接能力",
+              "evidence_ids": []
+            },
+            {
+              "claim_id": "FISCAL-2",
+              "claim_type": "risk",
+              "statement": "已承诺资本 110 点，继续追加将压缩未来阶段空间",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "FISCAL-R1",
+              "condition": "当期支出不得超过预算上限 90 点",
+              "reason": "财政点数守恒"
+            },
+            {
+              "redline_id": "FISCAL-R2",
+              "condition": "企业资金来源未证实前不承诺后续追加上限",
+              "reason": "防止财政暴露不可控"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "FISCAL-C1",
+              "condition": "分期拨付，首期不超过方案的 50%",
+              "reason": "以里程碑控制支出节奏"
+            },
+            {
+              "condition_id": "FISCAL-C2",
+              "condition": "资金证明或同比例出资作为放款前置条件",
+              "reason": "确认企业真实出资能力"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "FISCAL-M1",
+              "severity": "medium",
+              "description": "企业融资方案未完全披露",
+              "impact": "财政暴露测算存在缺口"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "fiscal_budget",
@@ -1391,11 +2273,52 @@
           "reasoning_summary": "财政余量 90 点，已承诺 110 点；追加空间有限，需防锁定"
         },
         {
-          "agent": "industry",
+          "agent": "economy",
+          "department": "经信部门",
           "company_id": "company_a",
+          "recommendation": "oppose",
           "direction": "negative",
-          "score": 19.2,
+          "score": 24.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "ECON-1",
+              "claim_type": "positive",
+              "statement": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "ECON-2",
+              "claim_type": "assumption",
+              "statement": "供应链承接能力按本地产业基础水平估算",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "ECON-R1",
+              "condition": "配套不足时不建议一次性全额投入",
+              "reason": "落地效果依赖配套"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "ECON-C1",
+              "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+              "reason": "保障项目落地与产业链协同"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "ECON-M1",
+              "severity": "medium",
+              "description": "本地供应链承接能力尚无测算",
+              "impact": "协同收益可能高估"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "industrial_base",
@@ -1413,11 +2336,52 @@
           "reasoning_summary": "本地产业基础 2、人才 45：配套存在缺口"
         },
         {
-          "agent": "industry",
+          "agent": "economy",
+          "department": "经信部门",
           "company_id": "company_d",
+          "recommendation": "oppose",
           "direction": "negative",
-          "score": 30.0,
+          "score": 33.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "ECON-1",
+              "claim_type": "positive",
+              "statement": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "ECON-2",
+              "claim_type": "assumption",
+              "statement": "供应链承接能力按本地产业基础水平估算",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "ECON-R1",
+              "condition": "配套不足时不建议一次性全额投入",
+              "reason": "落地效果依赖配套"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "ECON-C1",
+              "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+              "reason": "保障项目落地与产业链协同"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "ECON-M1",
+              "severity": "medium",
+              "description": "本地供应链承接能力尚无测算",
+              "impact": "协同收益可能高估"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "industrial_base",
@@ -1435,11 +2399,52 @@
           "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
         },
         {
-          "agent": "industry",
+          "agent": "economy",
+          "department": "经信部门",
           "company_id": "company_b",
+          "recommendation": "oppose",
           "direction": "negative",
-          "score": 30.0,
+          "score": 33.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "ECON-1",
+              "claim_type": "positive",
+              "statement": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "ECON-2",
+              "claim_type": "assumption",
+              "statement": "供应链承接能力按本地产业基础水平估算",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "ECON-R1",
+              "condition": "配套不足时不建议一次性全额投入",
+              "reason": "落地效果依赖配套"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "ECON-C1",
+              "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+              "reason": "保障项目落地与产业链协同"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "ECON-M1",
+              "severity": "medium",
+              "description": "本地供应链承接能力尚无测算",
+              "impact": "协同收益可能高估"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "industrial_base",
@@ -1457,11 +2462,52 @@
           "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
         },
         {
-          "agent": "company_tech",
+          "agent": "sci_tech",
+          "department": "科技部门",
           "company_id": "company_a",
+          "recommendation": "support",
           "direction": "positive",
           "score": 65.0,
           "confidence": 0.65,
+          "core_claims": [
+            {
+              "claim_id": "TECH-1",
+              "claim_type": "positive",
+              "statement": "执行能力 70 / 技术成熟度 60",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "TECH-2",
+              "claim_type": "risk",
+              "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "TECH-R1",
+              "condition": "技术里程碑未达标时暂停后续拨付",
+              "reason": "防止资金沉淀在未验证环节"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "TECH-C1",
+              "condition": "设置建设、试产、量产里程碑并绑定放款",
+              "reason": "按阶段验证技术兑现"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "TECH-M1",
+              "severity": "high",
+              "description": "量产与良率数据缺失",
+              "impact": "产业化路径未证实"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "execution_ability",
@@ -1479,11 +2525,52 @@
           "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
         },
         {
-          "agent": "company_tech",
+          "agent": "sci_tech",
+          "department": "科技部门",
           "company_id": "company_d",
+          "recommendation": "support",
           "direction": "positive",
           "score": 55.0,
           "confidence": 0.65,
+          "core_claims": [
+            {
+              "claim_id": "TECH-1",
+              "claim_type": "positive",
+              "statement": "执行能力 55 / 技术成熟度 55",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "TECH-2",
+              "claim_type": "risk",
+              "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "TECH-R1",
+              "condition": "技术里程碑未达标时暂停后续拨付",
+              "reason": "防止资金沉淀在未验证环节"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "TECH-C1",
+              "condition": "设置建设、试产、量产里程碑并绑定放款",
+              "reason": "按阶段验证技术兑现"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "TECH-M1",
+              "severity": "high",
+              "description": "量产与良率数据缺失",
+              "impact": "产业化路径未证实"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "execution_ability",
@@ -1501,11 +2588,52 @@
           "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
         },
         {
-          "agent": "company_tech",
+          "agent": "sci_tech",
+          "department": "科技部门",
           "company_id": "company_b",
+          "recommendation": "conditional_support",
           "direction": "neutral",
           "score": 52.5,
           "confidence": 0.65,
+          "core_claims": [
+            {
+              "claim_id": "TECH-1",
+              "claim_type": "positive",
+              "statement": "执行能力 65 / 技术成熟度 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "TECH-2",
+              "claim_type": "risk",
+              "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "TECH-R1",
+              "condition": "技术里程碑未达标时暂停后续拨付",
+              "reason": "防止资金沉淀在未验证环节"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "TECH-C1",
+              "condition": "设置建设、试产、量产里程碑并绑定放款",
+              "reason": "按阶段验证技术兑现"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "TECH-M1",
+              "severity": "high",
+              "description": "量产与良率数据缺失",
+              "impact": "产业化路径未证实"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "execution_ability",
@@ -1523,11 +2651,52 @@
           "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
         },
         {
-          "agent": "market_risk",
+          "agent": "development",
+          "department": "发改部门",
           "company_id": "company_a",
+          "recommendation": "oppose",
           "direction": "negative",
           "score": 36.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "DEV-1",
+              "claim_type": "risk",
+              "statement": "行业景气 -15 / 价格趋势 -20 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "DEV-2",
+              "claim_type": "risk",
+              "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "DEV-R1",
+              "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+              "reason": "周期反转损失难回收"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "DEV-C1",
+              "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+              "reason": "管理周期风险"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "DEV-M1",
+              "severity": "medium",
+              "description": "后续需求与政策窗口的定量预测缺失",
+              "impact": "周期判断依赖定性证据"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "market_cycle",
@@ -1545,11 +2714,52 @@
           "reasoning_summary": "景气 -15 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
         },
         {
-          "agent": "market_risk",
+          "agent": "development",
+          "department": "发改部门",
           "company_id": "company_d",
+          "recommendation": "support",
           "direction": "positive",
           "score": 59.0,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "DEV-1",
+              "claim_type": "positive",
+              "statement": "行业景气 15 / 价格趋势 5 / 供给压力 60",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "DEV-2",
+              "claim_type": "risk",
+              "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "DEV-R1",
+              "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+              "reason": "周期反转损失难回收"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "DEV-C1",
+              "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+              "reason": "管理周期风险"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "DEV-M1",
+              "severity": "medium",
+              "description": "后续需求与政策窗口的定量预测缺失",
+              "impact": "周期判断依赖定性证据"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "market_cycle",
@@ -1567,11 +2777,52 @@
           "reasoning_summary": "景气 15 / 价格趋势 5 / 供给压力 60：时点有利"
         },
         {
-          "agent": "market_risk",
+          "agent": "development",
+          "department": "发改部门",
           "company_id": "company_b",
+          "recommendation": "oppose",
           "direction": "negative",
           "score": 36.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "DEV-1",
+              "claim_type": "risk",
+              "statement": "行业景气 -15 / 价格趋势 -20 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "DEV-2",
+              "claim_type": "risk",
+              "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "DEV-R1",
+              "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+              "reason": "周期反转损失难回收"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "DEV-C1",
+              "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+              "reason": "管理周期风险"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "DEV-M1",
+              "severity": "medium",
+              "description": "后续需求与政策窗口的定量预测缺失",
+              "impact": "周期判断依赖定性证据"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "market_cycle",
@@ -2075,13 +3326,61 @@
           "confidence": 0.7
         }
       ],
-      "agent_assessments": [
+      "department_memoranda": [
         {
           "agent": "fiscal",
+          "department": "财政部门",
           "company_id": null,
+          "recommendation": "conditional_support",
           "direction": "neutral",
           "score": 39.1,
           "confidence": 0.8,
+          "core_claims": [
+            {
+              "claim_id": "FISCAL-1",
+              "claim_type": "positive",
+              "statement": "当期财政余量 90 点，具备承接能力",
+              "evidence_ids": []
+            },
+            {
+              "claim_id": "FISCAL-2",
+              "claim_type": "risk",
+              "statement": "已承诺资本 140 点，继续追加将压缩未来阶段空间",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "FISCAL-R1",
+              "condition": "当期支出不得超过预算上限 90 点",
+              "reason": "财政点数守恒"
+            },
+            {
+              "redline_id": "FISCAL-R2",
+              "condition": "企业资金来源未证实前不承诺后续追加上限",
+              "reason": "防止财政暴露不可控"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "FISCAL-C1",
+              "condition": "分期拨付，首期不超过方案的 50%",
+              "reason": "以里程碑控制支出节奏"
+            },
+            {
+              "condition_id": "FISCAL-C2",
+              "condition": "资金证明或同比例出资作为放款前置条件",
+              "reason": "确认企业真实出资能力"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "FISCAL-M1",
+              "severity": "medium",
+              "description": "企业融资方案未完全披露",
+              "impact": "财政暴露测算存在缺口"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "fiscal_budget",
@@ -2096,11 +3395,52 @@
           "reasoning_summary": "财政余量 90 点，已承诺 140 点；追加空间有限，需防锁定"
         },
         {
-          "agent": "industry",
+          "agent": "economy",
+          "department": "经信部门",
           "company_id": "company_a",
+          "recommendation": "oppose",
           "direction": "negative",
-          "score": 19.2,
+          "score": 24.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "ECON-1",
+              "claim_type": "positive",
+              "statement": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "ECON-2",
+              "claim_type": "assumption",
+              "statement": "供应链承接能力按本地产业基础水平估算",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "ECON-R1",
+              "condition": "配套不足时不建议一次性全额投入",
+              "reason": "落地效果依赖配套"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "ECON-C1",
+              "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+              "reason": "保障项目落地与产业链协同"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "ECON-M1",
+              "severity": "medium",
+              "description": "本地供应链承接能力尚无测算",
+              "impact": "协同收益可能高估"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "industrial_base",
@@ -2118,11 +3458,52 @@
           "reasoning_summary": "本地产业基础 2、人才 45：配套存在缺口"
         },
         {
-          "agent": "industry",
+          "agent": "economy",
+          "department": "经信部门",
           "company_id": "company_d",
+          "recommendation": "oppose",
           "direction": "negative",
-          "score": 30.0,
+          "score": 33.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "ECON-1",
+              "claim_type": "positive",
+              "statement": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "ECON-2",
+              "claim_type": "assumption",
+              "statement": "供应链承接能力按本地产业基础水平估算",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "ECON-R1",
+              "condition": "配套不足时不建议一次性全额投入",
+              "reason": "落地效果依赖配套"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "ECON-C1",
+              "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+              "reason": "保障项目落地与产业链协同"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "ECON-M1",
+              "severity": "medium",
+              "description": "本地供应链承接能力尚无测算",
+              "impact": "协同收益可能高估"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "industrial_base",
@@ -2140,11 +3521,52 @@
           "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
         },
         {
-          "agent": "industry",
+          "agent": "economy",
+          "department": "经信部门",
           "company_id": "company_b",
+          "recommendation": "oppose",
           "direction": "negative",
-          "score": 30.0,
+          "score": 33.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "ECON-1",
+              "claim_type": "positive",
+              "statement": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "ECON-2",
+              "claim_type": "assumption",
+              "statement": "供应链承接能力按本地产业基础水平估算",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "ECON-R1",
+              "condition": "配套不足时不建议一次性全额投入",
+              "reason": "落地效果依赖配套"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "ECON-C1",
+              "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+              "reason": "保障项目落地与产业链协同"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "ECON-M1",
+              "severity": "medium",
+              "description": "本地供应链承接能力尚无测算",
+              "impact": "协同收益可能高估"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "industrial_base",
@@ -2162,11 +3584,52 @@
           "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
         },
         {
-          "agent": "company_tech",
+          "agent": "sci_tech",
+          "department": "科技部门",
           "company_id": "company_a",
+          "recommendation": "support",
           "direction": "positive",
           "score": 65.0,
           "confidence": 0.65,
+          "core_claims": [
+            {
+              "claim_id": "TECH-1",
+              "claim_type": "positive",
+              "statement": "执行能力 70 / 技术成熟度 60",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "TECH-2",
+              "claim_type": "risk",
+              "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "TECH-R1",
+              "condition": "技术里程碑未达标时暂停后续拨付",
+              "reason": "防止资金沉淀在未验证环节"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "TECH-C1",
+              "condition": "设置建设、试产、量产里程碑并绑定放款",
+              "reason": "按阶段验证技术兑现"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "TECH-M1",
+              "severity": "high",
+              "description": "量产与良率数据缺失",
+              "impact": "产业化路径未证实"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "execution_ability",
@@ -2184,11 +3647,52 @@
           "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
         },
         {
-          "agent": "company_tech",
+          "agent": "sci_tech",
+          "department": "科技部门",
           "company_id": "company_d",
+          "recommendation": "support",
           "direction": "positive",
           "score": 55.0,
           "confidence": 0.65,
+          "core_claims": [
+            {
+              "claim_id": "TECH-1",
+              "claim_type": "positive",
+              "statement": "执行能力 55 / 技术成熟度 55",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "TECH-2",
+              "claim_type": "risk",
+              "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "TECH-R1",
+              "condition": "技术里程碑未达标时暂停后续拨付",
+              "reason": "防止资金沉淀在未验证环节"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "TECH-C1",
+              "condition": "设置建设、试产、量产里程碑并绑定放款",
+              "reason": "按阶段验证技术兑现"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "TECH-M1",
+              "severity": "high",
+              "description": "量产与良率数据缺失",
+              "impact": "产业化路径未证实"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "execution_ability",
@@ -2206,11 +3710,52 @@
           "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
         },
         {
-          "agent": "company_tech",
+          "agent": "sci_tech",
+          "department": "科技部门",
           "company_id": "company_b",
+          "recommendation": "conditional_support",
           "direction": "neutral",
           "score": 52.5,
           "confidence": 0.65,
+          "core_claims": [
+            {
+              "claim_id": "TECH-1",
+              "claim_type": "positive",
+              "statement": "执行能力 65 / 技术成熟度 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "TECH-2",
+              "claim_type": "risk",
+              "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "TECH-R1",
+              "condition": "技术里程碑未达标时暂停后续拨付",
+              "reason": "防止资金沉淀在未验证环节"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "TECH-C1",
+              "condition": "设置建设、试产、量产里程碑并绑定放款",
+              "reason": "按阶段验证技术兑现"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "TECH-M1",
+              "severity": "high",
+              "description": "量产与良率数据缺失",
+              "impact": "产业化路径未证实"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "execution_ability",
@@ -2228,11 +3773,52 @@
           "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
         },
         {
-          "agent": "market_risk",
+          "agent": "development",
+          "department": "发改部门",
           "company_id": "company_a",
+          "recommendation": "oppose",
           "direction": "negative",
           "score": 36.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "DEV-1",
+              "claim_type": "risk",
+              "statement": "行业景气 -15 / 价格趋势 -20 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "DEV-2",
+              "claim_type": "risk",
+              "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "DEV-R1",
+              "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+              "reason": "周期反转损失难回收"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "DEV-C1",
+              "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+              "reason": "管理周期风险"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "DEV-M1",
+              "severity": "medium",
+              "description": "后续需求与政策窗口的定量预测缺失",
+              "impact": "周期判断依赖定性证据"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "market_cycle",
@@ -2250,11 +3836,52 @@
           "reasoning_summary": "景气 -15 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
         },
         {
-          "agent": "market_risk",
+          "agent": "development",
+          "department": "发改部门",
           "company_id": "company_d",
+          "recommendation": "oppose",
           "direction": "negative",
           "score": 22.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "DEV-1",
+              "claim_type": "risk",
+              "statement": "行业景气 -25 / 价格趋势 -50 / 供给压力 60",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "DEV-2",
+              "claim_type": "risk",
+              "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "DEV-R1",
+              "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+              "reason": "周期反转损失难回收"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "DEV-C1",
+              "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+              "reason": "管理周期风险"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "DEV-M1",
+              "severity": "medium",
+              "description": "后续需求与政策窗口的定量预测缺失",
+              "impact": "周期判断依赖定性证据"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "market_cycle",
@@ -2272,11 +3899,52 @@
           "reasoning_summary": "景气 -25 / 价格趋势 -50 / 供给压力 60：下行风险主导，宜逆周期评估"
         },
         {
-          "agent": "market_risk",
+          "agent": "development",
+          "department": "发改部门",
           "company_id": "company_b",
+          "recommendation": "oppose",
           "direction": "negative",
           "score": 36.5,
           "confidence": 0.7,
+          "core_claims": [
+            {
+              "claim_id": "DEV-1",
+              "claim_type": "risk",
+              "statement": "行业景气 -15 / 价格趋势 -20 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            {
+              "claim_id": "DEV-2",
+              "claim_type": "risk",
+              "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+              "evidence_ids": []
+            }
+          ],
+          "red_lines": [
+            {
+              "redline_id": "DEV-R1",
+              "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+              "reason": "周期反转损失难回收"
+            }
+          ],
+          "acceptable_conditions": [
+            {
+              "condition_id": "DEV-C1",
+              "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+              "reason": "管理周期风险"
+            }
+          ],
+          "missing_info": [
+            {
+              "info_id": "DEV-M1",
+              "severity": "medium",
+              "description": "后续需求与政策窗口的定量预测缺失",
+              "impact": "周期判断依赖定性证据"
+            }
+          ],
           "key_factors": [
             {
               "metric_id": "market_cycle",

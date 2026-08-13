@@ -1,7 +1,7 @@
 """Orchestrator — 唯一时序控制者，对应 run_round 循环 ①→⑥。
 
 用法（前端/演示只面对这两个方法）：
-  view = orch.open_stage()            # ①②：Context + 四专业研判 + 图投影
+  view = orch.open_stage()            # ①②：Context + 四部门初审备忘录 + 图投影
   result = orch.submit_decisions(d)   # ④⑤⑥：企业响应 → 结算 → 轮次输出 + 图投影
   orch.advance_stage() / orch.finish()
 
@@ -98,7 +98,7 @@ class Orchestrator:
         self._pending_view = {"context": ctx, "assessments": assessments}
         return {"stage": {"stage_id": st.stage_id, "label": stage["label"],
                           "window": stage["window"], "core_tension": stage["core_tension"]},
-                "context": ctx, "agent_assessments": assessments, "graph_view": graph}
+                "context": ctx, "department_memoranda": assessments, "graph_view": graph}
 
     # ---------- ④⑤⑥：提交决策 → 企业响应 → 结算 ----------
 
@@ -149,7 +149,7 @@ class Orchestrator:
                            "milestones_done": list(c.milestones_done)}
                           for c in st.companies.values()],
             "company_actions": plans,
-            "agent_assessments": view["assessments"],
+            "department_memoranda": view["assessments"],
             "state_deltas": result["deltas"],
             "events": [{"event_id": e["event_id"], "title": e["title"]} for e in stage["events"]],
             "evidence_refs": sorted(ctx["evidence_pack"].keys()),
