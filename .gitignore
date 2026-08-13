@@ -1,0 +1,16 @@
+node_modules/
+dist/
+dist-map/
+
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+.DS_Store
+**/.DS_Store
+
+# Product and planning documents kept locally.
+/*.md
+
+# Local macOS launcher (not part of the frontend source).
+/*.command
