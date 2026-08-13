@@ -181,5 +181,64 @@ class TestOrchestratorView(unittest.TestCase):
                          json.dumps(v2["department_memoranda"], sort_keys=True))
 
 
+# ---------- Task 5 跟进：身份以任务为准 ----------
+
+
+class TestIdentityStamping(unittest.TestCase):
+    def test_identity_stamped_regardless_of_llm_output(self):
+        from ..agents.professional import make_professional_agents, run_assessments
+        from ..core.context import build_context
+        from ..core.state import WorldState, CityState, CompanyState, MarketConditions
+        from ..core.message import Inbox
+
+        class _BogusLlm:
+            def __init__(self) -> None:
+                self.calls = 0
+
+            def __call__(self, prompt: str, validator=None) -> dict:
+                self.calls += 1
+                return {
+                    "agent": "tech_dept", "department": "自定义部门",
+                    "company_id": "company_z", "recommendation": "support",
+                    "direction": "positive", "score": 60, "confidence": 0.7,
+                    "core_claims": [], "red_lines": [], "acceptable_conditions": [],
+                    "missing_info": [], "key_factors": [], "evidence_ids": [],
+                    "reasoning_summary": "测试",
+                }
+
+        comp_a = CompanyState(company_id="company_a", anon_label="企业A", industry="display",
+                              metrics={"financial_health": 50, "execution_ability": 60,
+                                       "technology_readiness": 55, "customer_order_strength": 50,
+                                       "construction_progress": 10, "production_ramp": 0,
+                                       "project_cashflow": -10, "capital_intensity": 50},
+                              cash_points=20, debt_points=10)
+        comp_d = CompanyState(company_id="company_d", anon_label="企业D", industry="pv",
+                              metrics={"financial_health": 50, "execution_ability": 60,
+                                       "technology_readiness": 55, "customer_order_strength": 50,
+                                       "construction_progress": 10, "production_ramp": 0,
+                                       "project_cashflow": -10, "capital_intensity": 50},
+                              cash_points=20, debt_points=10)
+        state = WorldState(run_id="t", seed=1, stage_id="S1", cutoff_at="2008-09-30",
+                           round_index=0, city=CityState(),
+                           market={"display": MarketConditions(), "pv": MarketConditions()},
+                           companies={"company_a": comp_a, "company_d": comp_d})
+        ctx = build_context(state, Inbox(), [])
+        llm = _BogusLlm()
+        memos = run_assessments(make_professional_agents(llm), ctx)
+        # 7 = 财政全局1 + 三部门×2企业；身份全部由任务盖戳
+        self.assertEqual(len(memos), 1 + 2 * 3)
+        for memo in memos:
+            self.assertIn(memo["agent"], ("fiscal", "economy", "sci_tech", "development"))
+            self.assertIn("部门", memo["department"])
+        fiscal = [m for m in memos if m["agent"] == "fiscal"]
+        self.assertEqual(len(fiscal), 1)
+        self.assertIsNone(fiscal[0]["company_id"])
+        self.assertEqual({m["company_id"] for m in memos}, {None, "company_a", "company_d"})
+        # 身份错乱的 LLM 输出必须被校验器拒绝 → 每任务 初始尝试 + 1 次重试 均被拒
+        # → 走确定性 fallback（confidence=0），身份仍由任务盖戳
+        self.assertEqual(llm.calls, 2 * (1 + 2 * 3))
+        self.assertTrue(all(m["confidence"] == 0.0 for m in memos))
+
+
 if __name__ == "__main__":
     unittest.main()

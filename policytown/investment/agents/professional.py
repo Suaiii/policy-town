@@ -48,6 +48,8 @@ def validate_memorandum(out: dict) -> None:
     missing = [k for k in MEMORANDUM_REQUIRED if k not in out]
     if missing:
         raise ValueError("memorandum missing keys: %s" % missing)
+    if out.get("agent") not in _ROLE_NAMES:
+        raise ValueError("invalid agent: %r" % out.get("agent"))
     if out.get("recommendation") not in _RECOMMENDATIONS:
         raise ValueError("invalid recommendation: %r" % out.get("recommendation"))
     for claim in out.get("core_claims", []):
@@ -131,9 +133,14 @@ def run_assessments(agents: List[BaseAgent], ctx: dict,
         agent, kind, company = task
         cid = company["company_id"] if company else ""
         slim = slim_context(ctx, kind, cid)
-        return agent.run(
+        out = agent.run(
             {"kind": kind, "ctx": slim},
             lambda k=kind, c=company: deterministic.professional_assessment(k, ctx, c))
+        # 身份以任务为准：LLM 可能回显 one-shot 示例里的其他部门
+        out["agent"] = kind
+        out["department"] = _ROLE_NAMES[kind]
+        out["company_id"] = company["company_id"] if company else None
+        return out
 
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
         return list(pool.map(_run, tasks))
