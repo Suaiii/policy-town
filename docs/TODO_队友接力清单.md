@@ -112,6 +112,7 @@ $py='C:\Users\ZHUyi\.cache\codex-runtimes\codex-primary-runtime\dependencies\pyt
 - [ ] 评级报告仅作二次披露，保持 `provisional`；取得官方原表后新增来源版本，不静默覆盖。
 - [ ] 每次新增来源都更新 `manifest.json`、SHA-256、Seed 和财政审计报告。
 - [ ] 不同层级、不同地域范围和不同预算口径不得拼接成同一序列。
+- [ ] （暂缓 · 迁移服务器前处理）数据库路径去绝对化：`policytown/investment/real_data.py` 用 `Path.resolve()` 把 SQLite 路径写成机器绝对路径，并进入 `demo_run.json` 等产物的 `database_path` 字段；上线前改为相对路径或由环境变量/配置项注入，避免本地绝对路径泄漏进仓库产物。
 
 验收：每个新增数值都能回到 `source_id → URL → archived_path → SHA-256`；无法核验的字段保持缺失。
 
