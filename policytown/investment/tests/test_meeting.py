@@ -334,6 +334,8 @@ class TestOrchestratorCommunication(unittest.TestCase):
         challenges = view["department_communication"]["challenges"]
         self.assertTrue(challenges, "真实 S1 数据必须产生定向质询")
         self.assertLessEqual(len(challenges), 6)
+        for ch in challenges:
+            validate_challenge(ch)   # 真实链路产出的每条质询都必须满足契约
         parties = {ch["from"] for ch in challenges} | {ch["to"] for ch in challenges}
         self.assertLessEqual(parties, {"fiscal", "economy", "sci_tech", "development"})
 
@@ -353,3 +355,112 @@ class TestOrchestratorCommunication(unittest.TestCase):
                                          "capital_points": 30.0}])
         self.assertIn("department_communication", result)
         self.assertEqual(result["meeting_minutes"]["stage_id"], "S1")
+
+
+class TestMeetingMinutesProvenance(unittest.TestCase):
+    """纪要方案条件的部门来源可追溯（Task 3：proposing_department 归属正确）。"""
+
+    def _minutes(self):
+        from ..core.meeting import (build_challenges, detect_conflicts,
+                                    find_memorandum, make_minutes, position_revision)
+        from ..fallback import deterministic
+        memos = [_memo("fiscal", "support", company_id=None,
+                       red_lines=[{"redline_id": "F-R2",
+                                   "condition": "企业资金来源未证实前不承诺后续追加上限",
+                                   "reason": "防暴露"}]),
+                 _memo("economy", "oppose", score=30,
+                       red_lines=[{"redline_id": "E-R1",
+                                   "condition": "配套不足时不一次性全额投入",
+                                   "reason": "落地依赖配套"}]),
+                 _memo("sci_tech", "support", score=65, confidence=0.65,
+                       conditions=[{"condition_id": "T-C1", "condition": "里程碑绑定放款",
+                                    "reason": "按阶段验证"}]),
+                 _memo("development", "conditional_support", score=50, confidence=0.7,
+                       conditions=[{"condition_id": "D-C1", "condition": "保留暂停追加条款",
+                                    "reason": "管理周期风险"}])]
+        conflicts = detect_conflicts(memos, "S1")
+        challenges = build_challenges(conflicts, "S1")
+        responses = [deterministic.challenge_response(
+            c, find_memorandum(memos, c["to"], c["company_id"]) or {}, {})
+            for c in challenges]
+        revisions = []
+        for c, r in zip(challenges, responses):
+            rev = position_revision(c, find_memorandum(memos, c["to"], c["company_id"]) or {},
+                                    find_memorandum(memos, c["from"], c["company_id"]) or {}, r)
+            if rev is not None:
+                revisions.append(rev)
+        return make_minutes(memos, challenges, responses, revisions, "S1")
+
+    def test_support_plan_merges_conditions_with_department(self):
+        minutes = self._minutes()
+        plan_a = next(p for p in minutes["proposals"] if p["proposal_id"] == "PLAN-A")
+        conds = [(c["condition"], c["proposing_department"]) for c in plan_a["conditions"]]
+        self.assertIn(("里程碑绑定放款", "sci_tech"), conds)
+        self.assertIn(("保留暂停追加条款", "development"), conds)
+        plan_b = next(p for p in minutes["proposals"] if p["proposal_id"] == "PLAN-B")
+        self.assertTrue(any(c["proposing_department"] == "economy" for c in plan_b["conditions"]))
+        validate_minutes(minutes)
+
+
+class _CapturingLlm:
+    def __init__(self) -> None:
+        self.prompts: list = []
+
+    def __call__(self, prompt: str, validator=None) -> dict:
+        self.prompts.append(prompt)
+        return {
+            "response_id": "RESP-01", "challenge_id": "CH-S1-01", "stage_id": "S1",
+            "from": "sci_tech", "to": "economy", "response_type": "soften",
+            "statement": "接受质询，补充资金证明条件", "evidence_ids": ["E1"],
+            "confidence": 0.6,
+        }
+
+
+class TestChallengeResponderAgent(unittest.TestCase):
+    def test_prompt_contains_challenge_contract(self):
+        from ..agents.professional import make_challenge_responders, run_challenge_responses
+        llm = _CapturingLlm()
+        responders = make_challenge_responders(llm)
+        ch = {"conflict_id": "CF-S1-01", "challenge_id": "CH-S1-01", "stage_id": "S1",
+              "company_id": "company_a", "kind": "recommendation_gap",
+              "from": "economy", "to": "sci_tech",
+              "from_ref": {"ref_id": "E-R1", "kind": "claim", "text": "反对", "evidence_ids": []},
+              "to_ref": {"ref_id": "T-1", "kind": "claim", "text": "支持", "evidence_ids": ["E1"]},
+              "severity": "high", "question": "请说明支持依据", "evidence_ids": [],
+              "status": "pending"}
+        memos = [_memo("economy", "oppose", score=30, company_id="company_a"),
+                 _memo("sci_tech", "support", score=65, company_id="company_a")]
+        responses = run_challenge_responses(
+            responders, [ch], memos,
+            {"market": {}, "city": {"budget_points": 100}})
+        self.assertEqual(len(responses), 1)
+        self.assertEqual(responses[0]["response_type"], "soften")
+        self.assertEqual(responses[0]["from"], "sci_tech")
+        validate_challenge_response(responses[0])
+        self.assertTrue(llm.prompts, "质询回应必须触发 LLM")
+        blob = "\n".join(llm.prompts)
+        for token in ("challenge_id", "response_type", "question", "evidence_ids"):
+            self.assertIn(token, blob, "质询回应 Prompt 必须包含契约字段 %s" % token)
+
+    def test_llm_bogus_output_falls_back(self):
+        from ..agents.professional import make_challenge_responders, run_challenge_responses
+
+        class _BogusLlm:
+            def __call__(self, prompt: str, validator=None) -> dict:
+                return {"response_type": "nonsense"}
+
+        responders = make_challenge_responders(_BogusLlm())
+        ch = {"conflict_id": "CF-S1-02", "challenge_id": "CH-S1-02", "stage_id": "S1",
+              "company_id": "company_a", "kind": "recommendation_gap",
+              "from": "economy", "to": "sci_tech",
+              "from_ref": {"ref_id": "E-R2", "kind": "claim", "text": "反对", "evidence_ids": []},
+              "to_ref": {"ref_id": "T-2", "kind": "claim", "text": "支持", "evidence_ids": ["E1"]},
+              "severity": "high", "question": "请说明支持依据", "evidence_ids": [],
+              "status": "pending"}
+        memo = _memo("sci_tech", "support", score=65, confidence=0.65, company_id="company_a")
+        responses = run_challenge_responses(
+            responders, [ch],
+            [_memo("economy", "oppose", score=30, company_id="company_a"), memo],
+            {"market": {}, "city": {"budget_points": 100}})
+        self.assertEqual(responses[0]["response_type"], "soften")   # 走确定性 fallback
+        validate_challenge_response(responses[0])
