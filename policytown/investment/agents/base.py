@@ -1,50 +1,36 @@
 """BaseAgent — 所有 Agent 同一基类：prompt 三段式 + 轻量校验 + 重试 + fallback。
 
-LLM 调用通过注入 llm_fn(prompt: str) -> dict 完成；为 None 时直接走 fallback。
-校验是必需键的浅层检查（完整 JSON Schema 见 contracts/，前端/审计可用）。
+LLM 调用通过注入 llm_fn(prompt: str, validator=...) -> dict 完成；为 None 时直接走 fallback。
+校验分层：required_keys 浅层检查（BaseAgent.validate）+ 可选 deep_validator
+（如 validate_memorandum / validate_verification_response）+ run() 时按契约临时注入的 validator。
 """
 from __future__ import annotations
 
 from typing import Callable, List, Optional
 
 
-# 模型可能输出的同义动作/方向 → 契约枚举（修不了才拒绝）
-_ACTION_SYNONYMS = {
-    "delay": "wait", "pause": "wait", "hold": "wait", "maintain": "wait",
-    "halt": "contract", "shrink": "contract", "reduce": "contract", "cut_cost": "contract",
-    "expand_production": "expand", "expand_capacity": "expand", "increase_production": "expand",
-    "raise_funds": "finance", "borrow": "finance",
-    "get_orders": "seek_orders", "market_expansion": "seek_orders", "sell": "seek_orders",
-    "leave": "relocate", "move": "relocate", "relocation": "relocate",
-}
-_DIRECTION_SYNONYMS = {
-    "hold": "neutral", "maintain": "neutral", "stable": "neutral", "flat": "neutral",
-    "supportive": "positive", "positive_outlook": "positive", "optimistic": "positive",
-    "bearish": "negative", "pessimistic": "negative", "downgrade": "negative",
-}
-_COMPETITION_SYNONYMS = {
-    "none": "wait", "hold": "wait", "no_action": "wait", "": "wait",
-    "cut_price": "price_cut", "price_war": "price_cut",
-}
-
-
 class BaseAgent:
     def __init__(self, role: str, required_keys: List[str],
                  llm_fn: Optional[Callable[[str], dict]] = None,
-                 max_retries: int = 1) -> None:
+                 max_retries: int = 1,
+                 deep_validator: Optional[Callable[[dict], None]] = None) -> None:
         self.role = role
         self.required_keys = required_keys
         self.llm_fn = llm_fn
         self.max_retries = max_retries
+        self.deep_validator = deep_validator
 
-    def run(self, prompt_payload: dict, fallback_fn: Callable[[], dict]) -> dict:
+    def run(self, prompt_payload: dict, fallback_fn: Callable[[], dict],
+            validator: Optional[Callable[[dict], None]] = None) -> dict:
+        """validator 优先于 self.validate 使用（多契约 Agent 按调用场景换校验器）。"""
+        v = validator or self.validate
         if self.llm_fn is None:
             return fallback_fn()
         prompt = self.build_prompt(prompt_payload)
         for _ in range(self.max_retries + 1):
             try:
-                out = self._call(prompt)
-                self.validate(out)
+                out = self._call(prompt, v)
+                v(out)
                 return out
             except Exception:
                 continue
@@ -52,10 +38,10 @@ class BaseAgent:
         out["confidence"] = 0.0
         return out
 
-    def _call(self, prompt: str) -> dict:
+    def _call(self, prompt: str, validator: Optional[Callable[[dict], None]] = None) -> dict:
         """带 validator 调用；外部 llm_fn 不接受该参数时退化为单参调用。"""
         try:
-            return self.llm_fn(prompt, validator=self.validate)
+            return self.llm_fn(prompt, validator=validator)
         except TypeError:
             return self.llm_fn(prompt)
 
@@ -82,29 +68,18 @@ class BaseAgent:
         missing = [k for k in self.required_keys if k not in out]
         if missing:
             raise ValueError("agent output missing keys: %s" % missing)
-        # 值域校验：direction / action / competition_response 必须在契约枚举内，
-        # 同义词就近归一化（模型可能受企业人设诱导输出非契约词）
+        # 值域校验：direction / action 必须在契约枚举内
         direction = out.get("direction")
-        if direction is not None:
-            direction = _DIRECTION_SYNONYMS.get(direction, direction)
-            if direction not in ("positive", "neutral", "negative"):
-                raise ValueError("invalid direction: %r" % direction)
-            out["direction"] = direction
+        if direction is not None and direction not in ("positive", "neutral", "negative"):
+            raise ValueError("invalid direction: %r" % direction)
         action = out.get("action")
-        if action is not None:
-            action = _ACTION_SYNONYMS.get(action, action)
-            if action not in (
-                    "expand", "research", "finance", "seek_orders", "contract",
-                    "relocate", "wait"):
-                raise ValueError("invalid action: %r" % action)
-            out["action"] = action
-        comp_resp = out.get("competition_response")
-        if comp_resp is not None:
-            comp_resp = _COMPETITION_SYNONYMS.get(comp_resp, comp_resp)
-            if comp_resp not in ("price_cut", "market_focus", "wait", "escalate_request"):
-                raise ValueError("invalid competition_response: %r" % comp_resp)
-            out["competition_response"] = comp_resp
+        if action is not None and action not in (
+                "expand", "research", "finance", "seek_orders", "contract",
+                "relocate", "wait"):
+            raise ValueError("invalid action: %r" % action)
         # key_factors 形状规范化：模型可能给字符串数组 → 包装为 {metric_id, effect}
         kf = out.get("key_factors")
         if isinstance(kf, list) and kf and not isinstance(kf[0], dict):
             out["key_factors"] = [{"metric_id": str(x), "effect": "neutral"} for x in kf]
+        if self.deep_validator is not None:
+            self.deep_validator(out)

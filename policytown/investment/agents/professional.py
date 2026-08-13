@@ -13,11 +13,54 @@ from ..fallback import deterministic
 from ..core.context import slim_context
 
 KINDS = ("fiscal", "economy", "sci_tech", "development")
-_REQUIRED = ["agent", "department", "recommendation", "direction", "score", "confidence",
-             "core_claims", "red_lines", "acceptable_conditions", "missing_info",
-             "key_factors", "evidence_ids", "reasoning_summary"]
 _ROLE_NAMES = {"fiscal": "财政部门", "economy": "经信部门",
                "sci_tech": "科技部门", "development": "发改部门"}
+
+MEMORANDUM_REQUIRED = ["agent", "department", "recommendation", "direction", "score",
+                       "confidence", "core_claims", "red_lines", "acceptable_conditions",
+                       "missing_info", "key_factors", "evidence_ids", "reasoning_summary"]
+_REQUIRED = MEMORANDUM_REQUIRED
+_RECOMMENDATIONS = ("support", "conditional_support", "hold", "oppose")
+_CLAIM_TYPES = ("positive", "risk", "assumption")
+_MISSING_SEVERITIES = ("high", "medium", "low")
+
+
+def _memorandum_fixture() -> dict:
+    """测试夹具：合法备忘录模板。"""
+    return {
+        "agent": "economy", "department": "经信部门", "company_id": "company_a",
+        "recommendation": "conditional_support", "direction": "neutral",
+        "score": 62, "confidence": 0.7,
+        "core_claims": [{"claim_id": "EC-1", "claim_type": "positive",
+                         "statement": "本地产业基础可承接", "evidence_ids": ["E1"]}],
+        "red_lines": [{"redline_id": "EC-R1", "condition": "出资不超40%", "reason": "防锁定"}],
+        "acceptable_conditions": [{"condition_id": "EC-C1", "condition": "分期拨付",
+                                   "reason": "控节奏"}],
+        "missing_info": [{"info_id": "EC-M1", "severity": "medium",
+                          "description": "供应链测算缺失", "impact": "协同高估"}],
+        "key_factors": [{"metric_id": "industrial_base", "effect": "positive"}],
+        "evidence_ids": ["E1"], "reasoning_summary": "一句话理由",
+    }
+
+
+def validate_memorandum(out: dict) -> None:
+    """初审备忘录深层校验（契约 department_memorandum.schema.json 的纯 Python 实现）。"""
+    missing = [k for k in MEMORANDUM_REQUIRED if k not in out]
+    if missing:
+        raise ValueError("memorandum missing keys: %s" % missing)
+    if out.get("recommendation") not in _RECOMMENDATIONS:
+        raise ValueError("invalid recommendation: %r" % out.get("recommendation"))
+    for claim in out.get("core_claims", []):
+        if claim.get("claim_type") not in _CLAIM_TYPES:
+            raise ValueError("invalid claim_type: %r" % claim)
+        if not claim.get("statement"):
+            raise ValueError("claim without statement")
+    for rl in out.get("red_lines", []):
+        if not rl.get("condition"):
+            raise ValueError("red line without condition")
+    for mi in out.get("missing_info", []):
+        if mi.get("severity") not in _MISSING_SEVERITIES:
+            raise ValueError("invalid missing_info severity: %r" % mi.get("severity"))
 
 
 def make_professional_agents(llm_fn: Optional[Callable[[str], dict]] = None) -> List[BaseAgent]:

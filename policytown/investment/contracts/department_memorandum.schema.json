@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "investment_simulation/v0.2/department_memorandum",
+  "title": "DepartmentMemorandum v0.2 — 四部门初审备忘录",
+  "description": "文档 4.4：当前建议、核心主张、红线、可接受条件、缺失信息、置信度与风险。",
+  "type": "object",
+  "required": ["agent", "department", "recommendation", "direction", "score", "confidence",
+               "core_claims", "red_lines", "acceptable_conditions", "missing_info",
+               "key_factors", "evidence_ids", "reasoning_summary"],
+  "properties": {
+    "agent": {"type": "string", "enum": ["fiscal", "economy", "sci_tech", "development"]},
+    "department": {"type": "string"},
+    "company_id": {"type": ["string", "null"]},
+    "recommendation": {"type": "string",
+                       "enum": ["support", "conditional_support", "hold", "oppose"]},
+    "direction": {"type": "string", "enum": ["positive", "neutral", "negative"]},
+    "score": {"type": "number", "minimum": 0, "maximum": 100},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "core_claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim_id", "claim_type", "statement", "evidence_ids"],
+        "properties": {
+          "claim_id": {"type": "string"},
+          "claim_type": {"type": "string", "enum": ["positive", "risk", "assumption"]},
+          "statement": {"type": "string"},
+          "evidence_ids": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "red_lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["redline_id", "condition", "reason"],
+        "properties": {
+          "redline_id": {"type": "string"},
+          "condition": {"type": "string"},
+          "reason": {"type": "string"}
+        }
+      }
+    },
+    "acceptable_conditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["condition_id", "condition", "reason"],
+        "properties": {
+          "condition_id": {"type": "string"},
+          "condition": {"type": "string"},
+          "reason": {"type": "string"}
+        }
+      }
+    },
+    "missing_info": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["info_id", "severity", "description", "impact"],
+        "properties": {
+          "info_id": {"type": "string"},
+          "severity": {"type": "string", "enum": ["high", "medium", "low"]},
+          "description": {"type": "string"},
+          "impact": {"type": "string"}
+        }
+      }
+    },
+    "key_factors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["metric_id", "effect"],
+        "properties": {
+          "metric_id": {"type": "string"},
+          "effect": {"type": "string", "enum": ["positive", "neutral", "negative"]}
+        }
+      }
+    },
+    "evidence_ids": {"type": "array", "items": {"type": "string"}},
+    "reasoning_summary": {"type": "string"}
+  }
+}
