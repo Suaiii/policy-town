@@ -49,7 +49,7 @@ class BeliefLedger:
         w = min(0.5, max(0.05, signal_weight))
         blended = e.value * (1 - w) + signal * w
         e.value = max(0.0, min(1.0, blended))
-        e.confidence = min(1.0, e.confidence + signal_weight * 0.2)
+        e.confidence = min(1.0, e.confidence + w * 0.2)
         e.evidence_ids = list(dict.fromkeys(e.evidence_ids + list(evidence_ids)))
         e.updated_at = stage_id
         return e
@@ -62,6 +62,7 @@ class BeliefLedger:
 
 
 def make_default_beliefs(risk_preference: float) -> Dict[str, float]:
-    """风险偏好决定初始信念：越保守 → 对市场/融资的初始判断越谨慎。"""
-    base = round(0.5 - (risk_preference - 0.5) * 0.2, 3)
+    """风险偏好决定初始信念：越保守（risk→0）→ 初始判断越谨慎（base→0.4）；
+    越激进（risk→1）→ 初始判断越乐观（base→0.6）。"""
+    base = round(0.5 + (risk_preference - 0.5) * 0.2, 3)
     return {k: base for k in BELIEF_KEYS}

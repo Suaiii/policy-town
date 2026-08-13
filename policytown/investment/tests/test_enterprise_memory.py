@@ -114,14 +114,20 @@ class TestBeliefLedger(unittest.TestCase):
         self.assertEqual(set(beliefs), {"market_recovery", "financing_continuity",
                                         "tech_execution", "government_fulfillment"})
         self.assertTrue(all(0.0 <= v <= 1.0 for v in beliefs.values()))
+        low = make_default_beliefs(risk_preference=0.0)
+        high = make_default_beliefs(risk_preference=1.0)
+        self.assertLess(low["market_recovery"], high["market_recovery"])
+        self.assertEqual(low["financing_continuity"], 0.4)
+        self.assertEqual(high["financing_continuity"], 0.6)
 
     def test_blend_rule(self):
         ledger = BeliefLedger()
         ledger.init_defaults({"financing_continuity": 0.5})
         e = ledger.update("financing_continuity", signal=0.9, signal_weight=0.8,
                           stage_id="S2", evidence_ids=["E1"])
-        # w = min(0.5, 0.8) = 0.5 → 0.5*0.5 + 0.9*0.5 = 0.7
+        # w = min(0.5, 0.8) = 0.5 → 0.5*0.5 + 0.9*0.5 = 0.7; confidence = 0.5 + 0.5*0.2 = 0.6
         self.assertAlmostEqual(e.value, 0.7, places=6)
+        self.assertAlmostEqual(e.confidence, 0.6, places=6)
         self.assertEqual(e.update_rule, "bounded_evidence_blend_v1")
         self.assertEqual(e.updated_at, "S2")
         self.assertIn("E1", e.evidence_ids)
@@ -131,9 +137,10 @@ class TestBeliefLedger(unittest.TestCase):
         ledger.init_defaults({"market_recovery": 0.9})
         e = ledger.update("market_recovery", signal=0.0, signal_weight=0.5, stage_id="S3",
                           evidence_ids=["E2"])
-        # 0.9*0.75 + 0.0*0.25 → w = min(0.5, 0.5) * ... 见 update 实现：w = min(0.5, 0.5*0.5)=0.25
-        self.assertGreater(e.confidence, 0.5)
-        self.assertGreaterEqual(e.value, 0.0)
+        # w = min(0.5, max(0.05, 0.5)) = 0.5 → value = 0.9*0.5 + 0.0*0.5 = 0.45;
+        # confidence = 0.5 + 0.5*0.2 = 0.6
+        self.assertAlmostEqual(e.value, 0.45, places=6)
+        self.assertAlmostEqual(e.confidence, 0.6, places=6)
 
     def test_evidence_dedup_and_append(self):
         ledger = BeliefLedger()
