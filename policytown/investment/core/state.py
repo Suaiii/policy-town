@@ -138,4 +138,5 @@ class WorldState:
 
     def snapshot(self) -> dict:
         d = asdict(self)
+        d["fact_graph"] = self.fact_graph.to_dict("9999-12-31", "enterprise")
         return d

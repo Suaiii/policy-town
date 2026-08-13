@@ -36,12 +36,14 @@ def load_api_key() -> str:
 def make_llm_fn(model: str = DEFAULT_MODEL, temperature: float = 0.2,
                 timeout: int = 90, max_retries: int = 1,
                 use_cache: bool = True, progress: bool = False,
-                reasoning_effort: str = "low") -> Callable[[str], dict]:
+                reasoning_effort: str = "low",
+                trace_log: Optional[list] = None) -> Callable[[str], dict]:
     """返回 llm_fn(prompt: str) -> dict。
 
     参数校验：返回的 dict 必须包含该 Agent 的必需键（BaseAgent.validate 负责）。
     progress=True 时每次调用打印一个 '.'（长任务进度可见）。
     reasoning_effort=low：大幅缩短推理模型的思考时间（实测 69s → 7s）。
+    trace_log：传入 list 时，每次调用（含缓存命中与失败）追加一条轨迹记录。
     """
     api_key = load_api_key()
     memo: Dict[str, dict] = {}
@@ -65,10 +67,14 @@ def make_llm_fn(model: str = DEFAULT_MODEL, temperature: float = 0.2,
 
     def llm_fn(prompt: str, validator: Optional[Callable[[dict], None]] = None) -> dict:
         """validator 通过才缓存：失败输出永不落盘，重试不会拿到同一个坏结果。"""
+        t_start = time.time()
         h = hashlib.md5((model + "|" + prompt).encode("utf-8")).hexdigest()
         if h in memo and _passes(memo[h], validator):
             if progress:
                 print(".", end="", flush=True)
+            if trace_log is not None:
+                trace_log.append(_trace_entry(t_start, prompt, memo[h], "cache",
+                                              error=None))
             return memo[h]
 
         messages = [
@@ -78,6 +84,7 @@ def make_llm_fn(model: str = DEFAULT_MODEL, temperature: float = 0.2,
             {"role": "user", "content": prompt},
         ]
         last_err: Optional[Exception] = None
+        attempts = 0
         for use_json_mode in (True, False):
             for use_effort in (True, False):
                 payload: Dict = {"model": model, "messages": messages,
@@ -87,6 +94,7 @@ def make_llm_fn(model: str = DEFAULT_MODEL, temperature: float = 0.2,
                 if use_effort:
                     payload["reasoning_effort"] = reasoning_effort
                 for _ in range(max_retries + 1):
+                    attempts += 1
                     try:
                         data = _chat(payload)
                         content = data["choices"][0]["message"]["content"]
@@ -97,13 +105,34 @@ def make_llm_fn(model: str = DEFAULT_MODEL, temperature: float = 0.2,
                                 _save_cache(cache_path, memo)
                             if progress:
                                 print(".", end="", flush=True)
+                            if trace_log is not None:
+                                trace_log.append(_trace_entry(t_start, prompt, obj,
+                                                              "llm", error=None,
+                                                              attempts=attempts))
                             return obj
                     except Exception as e:  # noqa: BLE001
                         last_err = e
                         time.sleep(1.0)
+        if trace_log is not None:
+            trace_log.append(_trace_entry(t_start, prompt, None, "llm",
+                                          error=last_err, attempts=attempts))
         raise RuntimeError("LLM 调用失败: %s" % last_err)
 
     return llm_fn
+
+
+def _trace_entry(t_start: float, prompt: str, output: Optional[dict],
+                 source: str, error: Optional[Exception] = None,
+                 attempts: int = 1) -> dict:
+    return {
+        "t": round(time.time() - t_start, 2),
+        "prompt": prompt,
+        "prompt_chars": len(prompt),
+        "output": output,
+        "source": source,          # llm | cache
+        "attempts": attempts,
+        "error": str(error)[:300] if error else None,
+    }
 
 
 def _passes(obj: dict, validator: Optional[Callable[[dict], None]]) -> bool:

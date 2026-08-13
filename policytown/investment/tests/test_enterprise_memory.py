@@ -53,7 +53,7 @@ class TestFactGraph(unittest.TestCase):
     def test_round_trip(self):
         g = self._graph()
         data = g.to_dict("2099-12-31", "enterprise")
-        self.assertEqual(len(data), 3)  # F4 withheld 不序列化
+        self.assertEqual({d["fact_id"] for d in data}, {"F1", "F2", "F3"})
         for d in data:
             self.assertIn("fact_id", d)
 
@@ -93,3 +93,13 @@ class TestFactGraphInContext(unittest.TestCase):
                     for blob in blobs:
                         self.assertNotIn(kp["terminal_verification"]["evidence"], blob)
                         self.assertNotIn(kp["terminal_verification"]["outcome"], blob)
+
+    def test_fact_ids_are_anonymous(self):
+        from ..core.orchestrator import Orchestrator
+        orch = Orchestrator(seed=42)
+        orch.start(["proto_a", "proto_d", "proto_b"], "S4")
+        view = orch.open_stage()
+        ids = [f["fact_id"] for f in view["context"]["fact_graph"]]
+        self.assertTrue(ids)
+        for fid in ids:
+            self.assertRegex(fid, r"^FACT-(COMPANY_[A-Z])-\d{2}$", fid)

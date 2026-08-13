@@ -102,7 +102,7 @@ class Orchestrator:
             avail = ent.get("decision_cutoff", stage["cutoff_at"])
             for i, fact in enumerate(kp.get("visible_facts", [])):
                 self.state.fact_graph.add(FactRecord(
-                    fact_id="FACT-%s-%02d" % (ent.get("enterprise_id", cid).upper(), i + 1),
+                    fact_id="FACT-%s-%02d" % (cid.upper(), i + 1),
                     subject=cid, predicate="visible_fact", value=fact,
                     effective_at=avail, available_at=avail, visibility="public",
                     source_ids=["CASE-%s" % ent.get("prototype_id", "?").upper()]))

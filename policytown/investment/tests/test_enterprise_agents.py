@@ -153,13 +153,19 @@ class TestPhasedPrompt(unittest.TestCase):
         self.assertNotIn("这是晚于截止日的未来信息", prompt,
                          "runtime 必须过滤掉晚于阶段截止日的注入项")
 
-    def test_public_context_anonymized(self):
+    def test_public_context_anonymized_all_stages(self):
         orch = Orchestrator(seed=42)
         orch.start(["proto_a", "proto_d", "proto_b"], "S1")
-        view = orch.open_stage()
-        blob = json.dumps(view["context"], ensure_ascii=False)
+        blobs = []
+        for stage_id in ("S1", "S2", "S3", "S4"):
+            view = orch.open_stage()
+            blobs.append(json.dumps(view["context"], ensure_ascii=False))
+            if stage_id != "S4":
+                orch.submit_decisions([])
+                orch.advance_stage()
         for token in REAL_NAMES:
-            self.assertNotIn(token, blob, "公开Context泄漏真实企业名：%s" % token)
+            for blob in blobs:
+                self.assertNotIn(token, blob, "公开Context泄漏真实企业名：%s" % token)
 
 
 class TestDecisionBaseline(unittest.TestCase):
