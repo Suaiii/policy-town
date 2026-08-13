@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "investment_simulation/v0.2/verification_response",
+  "title": "VerificationResponse v0.2 — 企业关键核验回应",
+  "description": "文档 4.6：完整披露 / 部分披露 / 区间 / 拒答 / 交换条件。企业可策略性隐瞒，不得捏造与已掌握事实冲突的内容。",
+  "type": "object",
+  "required": ["company_id", "question_id", "response_type", "statement",
+               "evidence_ids", "confidence"],
+  "properties": {
+    "company_id": {"type": "string"},
+    "question_id": {"type": "string"},
+    "response_type": {"type": "string",
+                      "enum": ["full_disclosure", "partial_disclosure", "range",
+                               "refusal", "condition_offer"]},
+    "statement": {"type": "string"},
+    "ranges": {
+      "type": "object",
+      "description": "response_type=range 时的受约束区间",
+      "additionalProperties": {
+        "type": "array",
+        "items": {"type": "number"},
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "counter_conditions": {
+      "type": "array",
+      "description": "response_type=condition_offer 时政府需先承诺的条件",
+      "items": {
+        "type": "object",
+        "required": ["condition_id", "condition"],
+        "properties": {
+          "condition_id": {"type": "string"},
+          "condition": {"type": "string"}
+        }
+      }
+    },
+    "evidence_ids": {"type": "array", "items": {"type": "string"}},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+  }
+}

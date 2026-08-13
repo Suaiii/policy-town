@@ -234,6 +234,48 @@ def company_plan(company: dict, ctx: dict, funded_points: float) -> dict:
             "confidence": 0.7}
 
 
+def verification_response(company: dict, private_state, question: dict, ctx: dict) -> dict:
+    """企业按私有状态与利益目标作策略性回应（文档 4.6 / 5.2）。
+
+    路由：融资与母公司支持强度决定披露程度；风险偏好高 → 交换条件；
+    强度过低 → 拒答。不修改任何数值。
+    """
+    qid = question.get("question_id", "VQ-?")
+    ps = private_state.to_dict() if private_state is not None else {}
+    strength = min(ps.get("financing_capacity", 50.0), ps.get("parent_support", 50.0))
+    risk = ps.get("risk_preference", 0.5)
+    ev = company.get("evidence_ids", [])
+    if strength >= 65:
+        return {"company_id": company["company_id"], "question_id": qid,
+                "response_type": "full_disclosure",
+                "statement": "具备经核实的融资与执行能力，愿意提供资金证明与融资安排概要",
+                "evidence_ids": ev, "confidence": 0.8}
+    if strength >= 40:
+        fc = ps.get("financing_capacity", 50.0)
+        return {"company_id": company["company_id"], "question_id": qid,
+                "response_type": "range",
+                "statement": "相关能力处于正常区间，可披露大致范围",
+                "ranges": {"financing_capacity": [round(max(0.0, fc - 10), 1),
+                                                  round(fc + 10, 1)]},
+                "evidence_ids": ev, "confidence": 0.6}
+    if risk >= 0.65:
+        return {"company_id": company["company_id"], "question_id": qid,
+                "response_type": "condition_offer",
+                "statement": "可先行披露概要，但要求政府先承诺资本支持框架",
+                "counter_conditions": [{"condition_id": "CO-1",
+                                        "condition": "政府先给出资本支持框架"}],
+                "evidence_ids": ev, "confidence": 0.5}
+    if strength >= 25:
+        return {"company_id": company["company_id"], "question_id": qid,
+                "response_type": "partial_disclosure",
+                "statement": "涉及商业安排的部分仅披露概要",
+                "evidence_ids": ev, "confidence": 0.5}
+    return {"company_id": company["company_id"], "question_id": qid,
+            "response_type": "refusal",
+            "statement": "相关信息属于商业秘密，拒绝披露；可协商其他核验方式",
+            "evidence_ids": [], "confidence": 0.4}
+
+
 def _dir(score: float) -> str:
     if score >= 55:
         return "positive"

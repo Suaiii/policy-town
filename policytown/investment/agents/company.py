@@ -16,6 +16,22 @@ _REQUIRED = ["company_id", "action", "capital_request_next_round", "resource_all
              "milestone_target", "risk_response", "competition_response",
              "evidence_ids", "confidence"]
 
+_VERIFY_REQUIRED = ["company_id", "question_id", "response_type", "statement",
+                    "evidence_ids", "confidence"]
+_VERIFY_TYPES = ("full_disclosure", "partial_disclosure", "range",
+                 "refusal", "condition_offer")
+
+
+def validate_verification_response(out: dict) -> None:
+    missing = [k for k in _VERIFY_REQUIRED if k not in out]
+    if missing:
+        raise ValueError("verification response missing keys: %s" % missing)
+    if out["response_type"] not in _VERIFY_TYPES:
+        raise ValueError("invalid response_type: %r" % out["response_type"])
+    for k, r in out.get("ranges", {}).items():
+        if not (isinstance(r, list) and len(r) == 2 and r[0] <= r[1]):
+            raise ValueError("invalid range for %r: %r" % (k, r))
+
 
 class CompanyAgent(BaseAgent):
     def __init__(self, company_id: str,
@@ -51,6 +67,19 @@ class CompanyAgent(BaseAgent):
         return self.run(
             payload,
             lambda: deterministic.company_plan(company_view, ctx, funded_points))
+
+    def respond_to_verification(self, question: dict, company_view: dict, ctx: dict) -> dict:
+        """企业按私有状态与利益目标作策略性回应关键核验问题（只表达意图，不改数值）。"""
+        slim = slim_context(ctx, "company_plan", company_view["company_id"])
+        payload = {"question": question, "company": company_view, "ctx": slim,
+                   "private_state": self.private_state.to_dict()
+                   if self.private_state is not None else None,
+                   "memory": self.memory.to_dict()}
+        return self.run(
+            payload,
+            lambda: deterministic.verification_response(company_view, self.private_state,
+                                                        question, ctx),
+            validator=validate_verification_response)
 
     def build_prompt(self, payload: dict) -> str:
         if not self.enterprise:
