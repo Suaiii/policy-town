@@ -20,10 +20,10 @@ describe('simulationToMapSnapshot', () => {
 
     expect(snapshot.schemaVersion).toBe('3.0');
     expect(snapshot.revision).toBe(0);
-    expect(snapshot.projects).toHaveLength(3);
-    expect(snapshot.projects.map((project) => project.stage)).toEqual(['proposal', 'proposal', 'proposal']);
+    expect(snapshot.projects).toHaveLength(2);
+    expect(snapshot.projects.map((project) => project.stage)).toEqual(['proposal', 'proposal']);
     expect(snapshot.projects.map((project) => project.archetype)).toEqual([
-      'heavy-manufacturing', 'energy-manufacturing', 'rd-pilot',
+      'heavy-manufacturing', 'energy-manufacturing',
     ]);
   });
 

@@ -1,65 +1,126 @@
-export type MockEventTone = 'policy' | 'market' | 'city' | 'nature' | 'media';
+import { getEnterprise, stages } from './scenario';
+import type { SimulationState } from './types';
+
+export type MockEventTone = 'policy' | 'enterprise' | 'city' | 'audit' | 'media';
+export type MockEventType = 'policy' | 'enterprise_action' | 'city_update' | 'audit' | 'media';
 
 export type MockEventItem = {
   id: string;
-  time: string;
+  logicalTime: string;
+  availableAt: string;
+  cutoffDate: string;
   category: string;
   tone: MockEventTone;
+  type: MockEventType;
+  priority: 'normal' | 'important';
+  visibility: 'player_visible';
   headline: string;
   brief: string;
   source: string;
   impact: string;
+  evidenceIds: string[];
 };
 
-export const MOCK_EVENT_FEED: MockEventItem[] = [
-  {
-    id: 'mock-policy-001',
-    time: '16:20',
-    category: '政策快讯',
-    tone: 'policy',
-    headline: '扩大内需议题进入密集研判',
-    brief: '基建、产业承接与就业稳定被同时纳入地方逆周期政策讨论。',
-    source: '政策观察台 · MOCK',
-    impact: '财政窗口',
-  },
-  {
-    id: 'mock-market-002',
-    time: '14:10',
-    category: '市场监测',
-    tone: 'market',
-    headline: '面板价格继续下探',
-    brief: '终端需求转弱，设备采购议价空间扩大，但项目现金流压力同步上升。',
-    source: '产业行情台 · MOCK',
-    impact: '需求下行',
-  },
-  {
-    id: 'mock-city-003',
-    time: '11:45',
-    category: '城市现场',
-    tone: 'city',
-    headline: '重点项目联审节奏加快',
-    brief: '用地、供电与施工组织开始并联核验，城市配套能力成为共同约束。',
-    source: '城市运行台 · MOCK',
-    impact: '配套承压',
-  },
-  {
-    id: 'mock-nature-004',
-    time: '09:30',
-    category: '自然事件',
-    tone: 'nature',
-    headline: '连续降雨扰动短途物流',
-    brief: '部分施工与运输窗口缩短，项目交付节奏可能出现短期波动。',
-    source: '区域事件台 · MOCK',
-    impact: '短期扰动',
-  },
-  {
-    id: 'mock-media-005',
-    time: '08:15',
-    category: '媒体观察',
-    tone: 'media',
-    headline: '逆周期产业投资引发讨论',
-    brief: '舆论关注公共资金是否应在需求低谷期提前锁定产业机会。',
-    source: '城市媒体席 · MOCK',
-    impact: '公众预期',
-  },
-];
+/**
+ * Structured layout mock. Dates are game dates and every item is explicitly
+ * scenario data; this feed must never be presented as a live real-world source.
+ */
+export function createMockEventFeed(state: SimulationState): MockEventItem[] {
+  const stage = stages[state.stageIndex];
+  const common = {
+    logicalTime: stage.cutoff,
+    availableAt: stage.cutoff,
+    cutoffDate: stage.cutoff,
+    visibility: 'player_visible' as const,
+  };
+
+  const enterpriseEvents: MockEventItem[] = state.phase === 'applications'
+    ? state.enterprises.map((enterprise) => {
+      const profile = getEnterprise(enterprise.id);
+      return {
+        ...common,
+        id: `${stage.code}-P03-${enterprise.code}`,
+        category: '企业动态',
+        tone: 'enterprise',
+        type: 'enterprise_action',
+        priority: profile.evidenceStatus === '未验证' ? 'important' : 'normal',
+        headline: `企业 ${enterprise.code} 已提交匿名项目申请`,
+        brief: `${profile.industry}项目申请 ${profile.request} 点；当前证据状态为“${profile.evidenceStatus}”。`,
+        source: 'P03 申请登记 · 演示情景数据',
+        impact: `${profile.request} 点申请`,
+        evidenceIds: [`${stage.code}-P03-${enterprise.code}-APPLICATION`],
+      };
+    })
+    : [];
+
+  const feed: MockEventItem[] = [
+    ...enterpriseEvents,
+    {
+      ...common,
+      id: `${stage.code}-policy-window`,
+      category: '政策通告',
+      tone: 'policy',
+      type: 'policy',
+      priority: 'normal',
+      headline: stage.event,
+      brief: `当前阶段任务为“${stage.action}”，仅使用 ${stage.cutoff} 及以前可知的情景材料。`,
+      source: '阶段 Context Builder · 演示索引',
+      impact: '阶段约束',
+      evidenceIds: [`${stage.code}-CONTEXT-01`],
+    },
+    {
+      ...common,
+      id: `${stage.code}-city-capacity`,
+      category: '城市播报',
+      tone: 'city',
+      type: 'city_update',
+      priority: 'important',
+      headline: `城市基础设施余度为 ${state.resources.infrastructure} 点`,
+      brief: `当前人才供给 ${state.resources.talent} 点、产业链完备度 ${state.resources.supplyChain} 点；这些城市状态会约束项目承载能力。`,
+      source: '规则引擎初始快照 · 演示数据',
+      impact: '城市承载力',
+      evidenceIds: [`${stage.code}-CITY-CAPACITY`],
+    },
+    {
+      ...common,
+      id: `${stage.code}-audit-boundary`,
+      category: '证据审计',
+      tone: 'audit',
+      type: 'audit',
+      priority: 'important',
+      headline: '截止日后材料已从玩家视图过滤',
+      brief: '未来标题、摘要、结果与具体公开日期均不进入当前播报和企业申请材料。',
+      source: '信息边界审计 · 系统规则',
+      impact: '未来封存',
+      evidenceIds: [`${stage.code}-VISIBILITY-AUDIT`],
+    },
+    {
+      ...common,
+      id: `${stage.code}-fiscal-exposure`,
+      category: '财政提示',
+      tone: 'city',
+      type: 'city_update',
+      priority: state.resources.fiscal < 35 ? 'important' : 'normal',
+      headline: `财政余度 ${state.resources.fiscal} 点，已承诺资本 ${state.resources.committed} 点`,
+      brief: '财政余度与存量承诺共同决定本轮可用空间；支持当前项目会压缩其他项目及后续阶段的选择。',
+      source: '财政资源账 · 演示数据',
+      impact: '组合机会成本',
+      evidenceIds: [`${stage.code}-FISCAL-EXPOSURE`],
+    },
+    {
+      ...common,
+      id: `${stage.code}-portfolio-reminder`,
+      category: '组合观察',
+      tone: 'media',
+      type: 'media',
+      priority: 'normal',
+      headline: `${state.enterprises.length} 家匿名项目仍在同一资源池中竞争`,
+      brief: '本条为推演状态提示，不提供项目成败结论；未获支持的企业仍会融资、等待、收缩或迁移。',
+      source: '推演编排器 · 情景状态提示',
+      impact: '项目组合',
+      evidenceIds: [`${stage.code}-PORTFOLIO-REMINDER`],
+    },
+  ];
+
+  return feed.slice(0, 6);
+}

@@ -9,7 +9,7 @@ export type Phase =
   | 'feedback'
   | 'result';
 
-export type CameraMode = 'table' | 'meeting' | 'panorama' | 'relation';
+export type CameraMode = 'table' | 'meeting' | 'panorama';
 
 export type EnterpriseId = 'enterprise-a' | 'enterprise-b' | 'enterprise-c';
 
@@ -165,34 +165,6 @@ export type RoundEvent = {
   effects: string[];
 };
 
-export type AgentFirmRequest = {
-  amount: number;
-  tools: SupportTool[];
-  useOfFunds: string;
-  reasoning: string;
-  source?: 'llm' | 'stub';
-};
-
-export type AgentFirmAction = {
-  action: EnterpriseAction;
-  actionReason: string;
-};
-
-export type AgentDepartmentReport = {
-  dept: 'fiscal' | 'industry' | 'technology' | 'market';
-  stance: string;
-  text: string;
-};
-
-export type AgentReview = {
-  consensus: string;
-  disagreement: string;
-  unresolved: string;
-  recommendation: string;
-  departments: AgentDepartmentReport[];
-  source: 'llm' | 'stub';
-};
-
 export type SimulationState = {
   schemaVersion: 2;
   runId: string;
@@ -212,6 +184,4 @@ export type SimulationState = {
   judgments: JudgmentCard[];
   commitments: CommitmentCard[];
   stageSnapshots: StageSnapshot[];
-  agentRequests?: Record<EnterpriseId, AgentFirmRequest>;
-  agentReview?: AgentReview;
 };

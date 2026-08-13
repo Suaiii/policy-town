@@ -1,10 +1,7 @@
 import { enterprises, stages } from './scenario';
-import { ENTERPRISE_REPRESENTATIVE_CONFIG, sortEnterpriseIdsBySeat } from './representatives';
+import { sortEnterpriseIdsBySeat } from './representatives';
 import { applyConstruction, confirmQualifiedInvestment, createPhysicalAssetLedger, physicalCompletion } from './physicalAssets';
 import type {
-  AgentFirmAction,
-  AgentFirmRequest,
-  AgentReview,
   EnterpriseAction,
   EnterpriseId,
   EnterpriseMetrics,
@@ -15,13 +12,16 @@ import type {
 
 const clamp = (value: number) => Math.max(0, Math.min(100, Math.round(value)));
 
+/** The frozen interaction loop always compares the same two application seats. */
+export const FIXED_ROUND_ENTERPRISE_IDS: EnterpriseId[] = ['enterprise-a', 'enterprise-b'];
+
 const initialEnterpriseMetrics: Record<EnterpriseId, EnterpriseMetrics> = {
   'enterprise-a': { cash: 42, debt: 46, progress: 8, technology: 62, capacity: 6, orders: 48, risk: 52, employment: 12 },
   'enterprise-b': { cash: 36, debt: 38, progress: 12, technology: 68, capacity: 4, orders: 34, risk: 61, employment: 8 },
   'enterprise-c': { cash: 28, debt: 24, progress: 18, technology: 74, capacity: 2, orders: 22, risk: 49, employment: 6 },
 };
 
-function createEnterprises(ids: EnterpriseId[] = enterprises.map((enterprise) => enterprise.id)): EnterpriseState[] {
+function createEnterprises(ids: EnterpriseId[] = FIXED_ROUND_ENTERPRISE_IDS): EnterpriseState[] {
   return sortEnterpriseIdsBySeat(ids).map((id) => enterprises.find((enterprise) => enterprise.id === id)!).map((enterprise) => ({
     id: enterprise.id,
     code: enterprise.code,
@@ -32,7 +32,8 @@ function createEnterprises(ids: EnterpriseId[] = enterprises.map((enterprise) =>
     metrics: { ...initialEnterpriseMetrics[enterprise.id] },
     builtProgress: initialEnterpriseMetrics[enterprise.id].progress,
     lifecycle: 'active',
-    physicalAssets: createPhysicalAssetLedger(enterprise.request),
+    // One physical unit represents a viable first-phase build, not the full application amount.
+    physicalAssets: createPhysicalAssetLedger(Math.ceil(enterprise.request * .65)),
     lastSettlementDelta: { progress: 0, employment: 0, logistics: 0 },
   }));
 }
@@ -42,7 +43,7 @@ export const initialState: SimulationState = {
   runId: 'hefei-demo-run-v1',
   setupRandomSeed: 0,
   setupStartStage: 0,
-  setupEnterpriseIds: enterprises.map((enterprise) => enterprise.id),
+  setupEnterpriseIds: [...FIXED_ROUND_ENTERPRISE_IDS],
   phase: 'setup',
   cameraMode: 'table',
   stageIndex: 0,
@@ -72,41 +73,13 @@ export function setSetupStartStage(state: SimulationState, stageIndex: number): 
 
 export function toggleSetupEnterprise(state: SimulationState, id: EnterpriseId): SimulationState {
   if (state.phase !== 'setup') return state;
-  const exists = state.setupEnterpriseIds.includes(id);
-  if (exists && state.setupEnterpriseIds.length <= 2) return state;
-  return {
-    ...state,
-    setupEnterpriseIds: exists
-      ? state.setupEnterpriseIds.filter((item) => item !== id)
-      : sortEnterpriseIdsBySeat([...state.setupEnterpriseIds, id]),
-  };
-}
-
-function seededRandom(seed: number) {
-  let value = seed >>> 0;
-  return () => {
-    value += 0x6d2b79f5;
-    let result = value;
-    result = Math.imul(result ^ result >>> 15, result | 1);
-    result ^= result + Math.imul(result ^ result >>> 7, result | 61);
-    return ((result ^ result >>> 14) >>> 0) / 4294967296;
-  };
+  if (!FIXED_ROUND_ENTERPRISE_IDS.includes(id)) return state;
+  return state;
 }
 
 export function randomEnterpriseIds(seed: number): EnterpriseId[] {
-  if (seed === 0) return enterprises.map((enterprise) => enterprise.id);
-  const random = seededRandom(seed);
-  const ids = enterprises.map((enterprise) => enterprise.id);
-  for (let index = ids.length - 1; index > 0; index -= 1) {
-    const target = Math.floor(random() * (index + 1));
-    [ids[index], ids[target]] = [ids[target], ids[index]];
-  }
-  const count = (seed >>> 0) % 2 === 0 ? 3 : 2;
-  if (count === 3) return sortEnterpriseIdsBySeat(ids);
-  const male = ids.find((id) => ENTERPRISE_REPRESENTATIVE_CONFIG[id].gender === 'male');
-  const female = ids.find((id) => ENTERPRISE_REPRESENTATIVE_CONFIG[id].gender === 'female');
-  if (!male || !female) return sortEnterpriseIdsBySeat(ids.slice(0, 2));
-  return sortEnterpriseIdsBySeat(ids.filter((id) => id === male || id === female));
+  void seed;
+  return [...FIXED_ROUND_ENTERPRISE_IDS];
 }
 
 export function startSimulation(state: SimulationState, requestedSeed = 0): SimulationState {
@@ -142,14 +115,6 @@ export function enterApplications(state: SimulationState): SimulationState {
   return { ...state, phase: 'applications', cameraMode: 'table' };
 }
 
-export function applyAgentRequests(state: SimulationState, requests: Record<EnterpriseId, AgentFirmRequest>): SimulationState {
-  return { ...state, agentRequests: requests };
-}
-
-export function applyAgentReview(state: SimulationState, review: AgentReview): SimulationState {
-  return { ...state, agentReview: review };
-}
-
 export function selectEnterprise(state: SimulationState, id: EnterpriseId): SimulationState {
   if (!state.enterprises.some((enterprise) => enterprise.id === id)) return state;
   return { ...state, selectedEnterpriseId: id };
@@ -162,7 +127,7 @@ export function enterEnterpriseMeeting(state: SimulationState, id: EnterpriseId)
 
 export function openAnalysis(state: SimulationState): SimulationState {
   if (state.phase !== 'applications') return state;
-  return { ...state, phase: 'analysis', cameraMode: 'meeting' };
+  return { ...state, phase: 'analysis', cameraMode: 'table' };
 }
 
 export function openAllocation(state: SimulationState): SimulationState {
@@ -233,10 +198,7 @@ function chooseAction(enterprise: EnterpriseState): { action: EnterpriseAction; 
   return { action: '迁往外地', actionReason: '企业仍具备行动能力，将比较其他城市的支持条件。' };
 }
 
-export function submitDecision(
-  state: SimulationState,
-  agentActions?: Record<EnterpriseId, AgentFirmAction>,
-): SimulationState {
+export function submitDecision(state: SimulationState): SimulationState {
   if (state.phase !== 'allocation') return state;
   const total = state.enterprises.reduce((sum, enterprise) => sum + enterprise.allocation, 0);
   const hasConfiguredSupport = state.enterprises.every(
@@ -250,10 +212,9 @@ export function submitDecision(
   const decisionBase = `${state.runId}:${stageCode}`;
   const enterprisesAfterDecision = state.enterprises.map((enterprise) => {
     const selectedInvestment = enterprise.supportTools.includes('investment');
-    const agent = agentActions?.[enterprise.id];
     return {
       ...enterprise,
-      ...(agent ? { action: agent.action, actionReason: agent.actionReason } : chooseAction(enterprise)),
+      ...chooseAction(enterprise),
       physicalAssets: selectedInvestment
         ? confirmQualifiedInvestment(
             enterprise.physicalAssets,

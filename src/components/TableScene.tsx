@@ -1,10 +1,11 @@
 import { Billboard, Html, OrbitControls, RoundedBox, useAnimations, useGLTF, useTexture } from '@react-three/drei';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import * as THREE from 'three';
 import { clone as cloneSkeleton } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import type { MapSnapshot } from '../../packages/contracts/src';
 import { getEnterprise } from '../game/scenario';
+import type { ResourceInsight, TableResourceKey } from '../game/resourceInsights';
 import { ENTERPRISE_REPRESENTATIVE_CONFIG, enterpriseSeatIndex } from '../game/representatives';
 import type { CameraMode, CityResources, EnterpriseId, EnterpriseState } from '../game/types';
 import { enterpriseThemeStyle, getEnterpriseTheme } from '../theme/enterpriseTheme';
@@ -36,38 +37,43 @@ function seatPosition(index: number, count: number) {
   return [-3.2, 0, 3.2][index] ?? 0;
 }
 
-function CameraRig({ mode, selectedId, enterpriseIds, introFocus }: {
+function CameraRig({ mode, selectedId, enterpriseIds, introFocus, comparison = false }: {
   mode: CameraMode;
   selectedId: EnterpriseId;
   enterpriseIds: EnterpriseId[];
-  introFocus?: EnterpriseId | 'overview';
+  introFocus?: EnterpriseId | 'overview' | 'handoff';
+  comparison?: boolean;
 }) {
   const { camera } = useThree();
   const lookTarget = useRef(new THREE.Vector3());
-  const focusId = introFocus && introFocus !== 'overview' ? introFocus : selectedId;
+  const focusId = introFocus && introFocus !== 'overview' && introFocus !== 'handoff' ? introFocus : selectedId;
   const selectedIndex = Math.max(0, enterpriseIds.indexOf(focusId));
   const selectedX = seatPosition(selectedIndex, enterpriseIds.length);
   const positions = useMemo(
     () => ({
       table: new THREE.Vector3(0, 10.4, 9.8),
+      comparison: new THREE.Vector3(0, 4.55, 3.45),
       meeting: new THREE.Vector3(selectedX + 0.48, 2.68, 1.15),
       panorama: new THREE.Vector3(0, 4.3, 11),
-      intro: introFocus === 'overview'
-        ? new THREE.Vector3(0, 9.6, 10.8)
-        : new THREE.Vector3(selectedX + 0.42, 2.9, 1.85),
-      relation: new THREE.Vector3(0, 10.4, 9.8),
+      intro: introFocus === 'handoff'
+        ? new THREE.Vector3(0, 7.5, 8.05)
+        : introFocus === 'overview'
+          ? new THREE.Vector3(0, 9.6, 10.8)
+          : new THREE.Vector3(selectedX + 0.42, 2.9, 1.85),
     }),
     [introFocus, selectedX],
   );
   const targets = useMemo(
     () => ({
       table: new THREE.Vector3(0, 0.45, -1.15),
+      comparison: new THREE.Vector3(0, 0.92, -4.9),
       meeting: new THREE.Vector3(selectedX + 1.2, 0.92, -5.12),
       panorama: new THREE.Vector3(0, 2.1, 0),
-      intro: introFocus === 'overview'
-        ? new THREE.Vector3(0, 0.35, -1.25)
-        : new THREE.Vector3(selectedX, 0.86, -5.05),
-      relation: new THREE.Vector3(0, 0.45, -1.15),
+      intro: introFocus === 'handoff'
+        ? new THREE.Vector3(0, 0.44, -0.62)
+        : introFocus === 'overview'
+          ? new THREE.Vector3(0, 0.35, -1.25)
+          : new THREE.Vector3(selectedX, 0.86, -5.05),
     }),
     [introFocus, selectedX],
   );
@@ -76,7 +82,6 @@ function CameraRig({ mode, selectedId, enterpriseIds, introFocus }: {
       table: new THREE.Vector3(0, 1, 0),
       meeting: new THREE.Vector3(0, 1, 0),
       panorama: new THREE.Vector3(0, 1, 0),
-      relation: new THREE.Vector3(0, 1, 0),
     }),
     [],
   );
@@ -87,8 +92,8 @@ function CameraRig({ mode, selectedId, enterpriseIds, introFocus }: {
 
   useFrame((_, delta) => {
     if (mode === 'panorama') return;
-    const positionTarget = introFocus ? positions.intro : positions[mode];
-    const lookTargetValue = introFocus ? targets.intro : targets[mode];
+    const positionTarget = introFocus ? positions.intro : comparison ? positions.comparison : positions[mode];
+    const lookTargetValue = introFocus ? targets.intro : comparison ? targets.comparison : targets[mode];
     const positionEase = 1 - Math.exp(-delta * 3.4);
     const rotationEase = 1 - Math.exp(-delta * 3.6);
     camera.position.lerp(positionTarget, positionEase);
@@ -109,6 +114,9 @@ const CHESS_KING_URL = '/models/Chess_King_by_Jarlan_Perez_-_4TP6oa34Fp-.glb';
 const GENERATOR_URL = '/models/Generator_by_KolosStudios_-_K58RQ63qR5.glb';
 const GEARS_URL = '/models/Gears_by_Poly_by_Google_-_4hAw8zQHeMJ.glb';
 const REPRESENTATIVE_SCALE = 1.28;
+const REPRESENTATIVE_STANDING_Z = 0.46;
+const REPRESENTATIVE_CHAIR_Z = -0.18;
+const MEETING_REPRESENTATIVE_X_OFFSET = -0.72;
 
 const REPRESENTATIVE_MODELS: Record<EnterpriseId, string> = Object.fromEntries(
   (Object.keys(ENTERPRISE_REPRESENTATIVE_CONFIG) as EnterpriseId[]).map((id) => [
@@ -116,6 +124,16 @@ const REPRESENTATIVE_MODELS: Record<EnterpriseId, string> = Object.fromEntries(
     ENTERPRISE_REPRESENTATIVE_CONFIG[id].gender === 'female' ? BUSINESS_WOMAN_URL : BUSINESS_MAN_URL,
   ]),
 ) as Record<EnterpriseId, string>;
+
+const LOWER_BODY_TRACK = /^(Root|Body|Hips|UpperLeg[LR]|LowerLeg[LR]|Foot[LR]|PT[LR])\./;
+
+function seatedUpperBodyClip(source: THREE.AnimationClip | undefined, name: string) {
+  if (!source) return undefined;
+  const clip = source.clone();
+  clip.name = name;
+  clip.tracks = clip.tracks.filter((track) => !LOWER_BODY_TRACK.test(track.name));
+  return clip;
+}
 
 function RepresentativeFocusDisc({ accent }: { accent: string }) {
   return (
@@ -151,10 +169,11 @@ function RepresentativeFocusDisc({ accent }: { accent: string }) {
   );
 }
 
-function SeatedBusinessRepresentative({ enterpriseId, selected, onSelect }: {
+function SeatedBusinessRepresentative({ enterpriseId, selected, onSelect, presentationScale = 1 }: {
   enterpriseId: EnterpriseId;
   selected: boolean;
   onSelect: () => void;
+  presentationScale?: number;
 }) {
   const representativeModel = useGLTF(REPRESENTATIVE_MODELS[enterpriseId]);
   const officeChair = useGLTF(OFFICE_CHAIR_URL);
@@ -162,13 +181,18 @@ function SeatedBusinessRepresentative({ enterpriseId, selected, onSelect }: {
   const chair = useMemo(() => officeChair.scene.clone(true), [officeChair.scene]);
   const seatedIdle = useMemo(() => {
     const source = representativeModel.animations.find((clip) => clip.name.endsWith('|Idle_Neutral'));
-    if (!source) return undefined;
-    const clip = source.clone();
-    clip.name = 'SeatedIdle';
-    clip.tracks = clip.tracks.filter((track) => !/^(Root|Body|Hips|UpperLeg|LowerLeg|Foot|PT)[.]/.test(track.name));
-    return clip;
+    return seatedUpperBodyClip(source, 'SeatedIdle');
   }, [representativeModel.animations]);
-  const { actions } = useAnimations(seatedIdle ? [seatedIdle] : [], person);
+  const seatedWave = useMemo(() => {
+    const source = representativeModel.animations.find((clip) => clip.name.endsWith('|Wave'));
+    return seatedUpperBodyClip(source, 'SeatedWave');
+  }, [representativeModel.animations]);
+  const representativeClips = useMemo(
+    () => [seatedIdle, seatedWave].filter((clip): clip is THREE.AnimationClip => Boolean(clip)),
+    [seatedIdle, seatedWave],
+  );
+  const { actions, mixer } = useAnimations(representativeClips, person);
+  const greetingActive = useRef(false);
 
   useEffect(() => {
     const action = actions.SeatedIdle;
@@ -179,19 +203,23 @@ function SeatedBusinessRepresentative({ enterpriseId, selected, onSelect }: {
   }, [actions]);
 
   useEffect(() => {
-    const bend = (name: string, angle: number) => {
-      const bone = person.getObjectByName(name);
-      if (!bone) return;
-      bone.rotateX(angle);
+    const idle = actions.SeatedIdle;
+    const wave = actions.SeatedWave;
+    if (!idle || !wave) return undefined;
+
+    wave.setLoop(THREE.LoopOnce, 1);
+    wave.clampWhenFinished = true;
+    const finishGreeting = (event: { action: THREE.AnimationAction }) => {
+      if (event.action !== wave) return;
+      wave.fadeOut(0.18);
+      idle.reset().fadeIn(0.22).play();
+      greetingActive.current = false;
     };
+    mixer.addEventListener('finished', finishGreeting);
+    return () => mixer.removeEventListener('finished', finishGreeting);
+  }, [actions, mixer]);
 
-    bend('UpperLeg.L', -Math.PI * 0.48);
-    bend('UpperLeg.R', -Math.PI * 0.48);
-    bend('LowerLeg.L', Math.PI * 0.54);
-    bend('LowerLeg.R', Math.PI * 0.54);
-    bend('Foot.L', -Math.PI * 0.08);
-    bend('Foot.R', -Math.PI * 0.08);
-
+  useEffect(() => {
     person.traverse((object) => {
       if (!(object instanceof THREE.Mesh)) return;
       object.castShadow = true;
@@ -204,31 +232,48 @@ function SeatedBusinessRepresentative({ enterpriseId, selected, onSelect }: {
     });
   }, [chair, person]);
 
+  useEffect(() => () => { document.body.style.cursor = ''; }, []);
+
+  const greet = () => {
+    const idle = actions.SeatedIdle;
+    const wave = actions.SeatedWave;
+    if (!idle || !wave || greetingActive.current) return;
+    greetingActive.current = true;
+    idle.fadeOut(0.16);
+    wave.reset().fadeIn(0.18).play();
+  };
+
   return (
-    <group scale={REPRESENTATIVE_SCALE} onClick={(event) => { event.stopPropagation(); onSelect(); }}>
+    <group
+      scale={REPRESENTATIVE_SCALE * presentationScale}
+      onPointerEnter={(event) => { event.stopPropagation(); greet(); document.body.style.cursor = 'pointer'; }}
+      onPointerLeave={() => { document.body.style.cursor = ''; }}
+      onClick={(event) => { event.stopPropagation(); onSelect(); }}
+    >
       {selected && (
         <mesh position={[0, 0.02, 0.02]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.52, 0.64, 40]} />
           <meshBasicMaterial color="#d4aa68" transparent opacity={0.8} side={THREE.DoubleSide} />
         </mesh>
       )}
-      <primitive object={chair} position={[0, 0, -0.06]} />
-      <primitive object={person} position={[0, -0.28, 0.08]} />
+      <primitive object={chair} position={[0, 0, REPRESENTATIVE_CHAIR_Z]} />
+      <primitive object={person} position={[0, -0.28, REPRESENTATIVE_STANDING_Z]} />
     </group>
   );
 }
 
-function EnterpriseSeats({ enterprises, selectedId, meeting, labelMode, focusOnlyId, globalFocus = false, onSelect }: {
+function EnterpriseSeats({ enterprises, selectedId, meeting, comparison = false, labelMode, focusOnlyId, globalFocus = false, onSelect }: {
   enterprises: EnterpriseState[];
   selectedId: EnterpriseId;
   meeting: boolean;
+  comparison?: boolean;
   labelMode?: 'card' | 'compact';
   focusOnlyId?: EnterpriseId;
   globalFocus?: boolean;
   onSelect: (id: EnterpriseId) => void;
 }) {
   return (
-    <group position={[0, -0.27, -5.35]}>
+    <group position={[meeting ? MEETING_REPRESENTATIVE_X_OFFSET : 0, -0.27, -5.35]}>
       {enterprises.map((enterprise, index) => {
         // Global-focus suppresses the table selection treatment during the stage
         // briefing, but a 1v1 meeting must always keep its selected representative.
@@ -239,12 +284,19 @@ function EnterpriseSeats({ enterprises, selectedId, meeting, labelMode, focusOnl
         const visualPalette = getEnterpriseTheme(enterprise.id);
         const identityStyle = enterpriseThemeStyle(enterprise.id);
         return (
-          <group key={enterprise.id} position={[seatPosition(index, enterprises.length), 0, 0]}>
+          <group key={enterprise.id} position={[comparison ? (index === 0 ? -3.75 : 3.75) : seatPosition(index, enterprises.length), 0, 0]}>
             {meeting && selected && <RepresentativeFocusDisc accent={visualPalette.accent} />}
-            <SeatedBusinessRepresentative enterpriseId={enterprise.id} selected={selected} onSelect={() => onSelect(enterprise.id)} />
+            <SeatedBusinessRepresentative
+              enterpriseId={enterprise.id}
+              selected={selected}
+              presentationScale={comparison ? 1.52 : 1}
+              onSelect={() => onSelect(enterprise.id)}
+            />
             {labelMode && <Html
               center
-              position={[0, labelMode === 'card' ? 2.3 : 2.02, 0]}
+              position={comparison && labelMode === 'card'
+                ? [index === 0 ? -0.45 : 0.35, 2.95, 0]
+                : [0, labelMode === 'card' ? 2.3 : 2.02, 0]}
               distanceFactor={labelMode === 'compact' ? 11 : undefined}
               occlude={labelMode === 'compact'}
             >
@@ -255,9 +307,16 @@ function EnterpriseSeats({ enterprises, selectedId, meeting, labelMode, focusOnl
                 onClick={(event) => { event.stopPropagation(); onSelect(enterprise.id); }}
               >
                 <FrameCorners inset />
-                <small>企业 {enterprise.code}{labelMode === 'compact' ? ` · ${profile.industry}` : ''}</small>
-                {labelMode === 'card' && <strong>{profile.industry}</strong>}
-                <span>{enterprise.allocation > 0 ? `政府投入 ${enterprise.allocation} 点` : `资金请求 ${profile.request} 点`}</span>
+                {labelMode === 'card' ? (
+                  <small className="enterprise-heading">
+                    <span className="enterprise-code">企业 {enterprise.code}</span>
+                    <i aria-hidden="true">·</i>
+                    <strong className="enterprise-industry">{profile.industry}</strong>
+                  </small>
+                ) : (
+                  <small className="enterprise-code">企业 {enterprise.code} · {profile.industry}</small>
+                )}
+                <span className="enterprise-request">{enterprise.allocation > 0 ? `政府投入 ${enterprise.allocation} 点` : `资金请求 ${profile.request} 点`}</span>
               </button>
             </Html>}
           </group>
@@ -404,18 +463,40 @@ function kindsForResource(resource: 'capital' | 'talent' | 'infrastructure' | 's
   return Array.from({ length: level }, () => resource === 'infrastructure' ? 'generator' : 'gears');
 }
 
-type TableResourceKey = 'capital' | 'talent' | 'infrastructure' | 'supplyChain';
+function ResourceHoverCard({ insight, changeTone }: {
+  insight: ResourceInsight;
+  changeTone: 'stable' | 'up' | 'down';
+}) {
+  return <aside className="resource-hover-card" role="tooltip">
+    <header><small>CITY RESOURCE INDEX</small><div><strong>{insight.label}</strong><b>{insight.value}</b></div></header>
+    <section className={`resource-hover-current ${changeTone}`} aria-label="本轮指标状态">
+      <div>
+        <span>{insight.changeLabel}</span>
+        {insight.previousValue !== null && <small>上轮 {insight.previousValue} → 当前 {insight.value}</small>}
+      </div>
+      <p>{insight.reason}</p>
+    </section>
+    <p>{insight.definition}</p>
+    <dl>
+      <div><dt>指标口径</dt><dd>{insight.metric}</dd></div>
+      <div><dt>主要变动因素</dt><dd>{insight.drivers}</dd></div>
+    </dl>
+  </aside>;
+}
 
-function ResourceStation({ x, resource, label, value, accent }: {
+function ResourceStation({ x, resource, label, value, accent, insight }: {
   x: number;
   resource: TableResourceKey;
   label: string;
   value: number;
   accent: string;
+  insight?: ResourceInsight;
 }) {
   const level = resourceLevel(value);
   const [renderedLevel, setRenderedLevel] = useState(level);
   const [activeLevel, setActiveLevel] = useState(level);
+  const [hovered, setHovered] = useState(false);
+  const tooltipPortal = useRef<HTMLElement>(document.body);
 
   useEffect(() => {
     if (level >= renderedLevel) {
@@ -430,8 +511,16 @@ function ResourceStation({ x, resource, label, value, accent }: {
   }, [level, renderedLevel]);
 
   const kinds = kindsForResource(resource, renderedLevel);
+  const changeTone = insight?.delta === null || insight?.delta === 0
+    ? 'stable'
+    : insight?.delta && insight.delta > 0 ? 'up' : 'down';
   return (
-    <group position={[x, 0, 0]} rotation={[0, 0, x * 0.008]}>
+    <group
+      position={[x, 0, 0]}
+      rotation={[0, 0, x * 0.008]}
+      onPointerEnter={(event) => { event.stopPropagation(); setHovered(true); }}
+      onPointerLeave={() => setHovered(false)}
+    >
       <RoundedBox args={[1.32, 0.14, 1.02]} radius={0.09} smoothness={4} position={[0, 0.05, 0.02]} castShadow receiveShadow>
         <meshStandardMaterial color="#263330" roughness={0.62} metalness={0.24} />
       </RoundedBox>
@@ -462,44 +551,76 @@ function ResourceStation({ x, resource, label, value, accent }: {
           active={index < activeLevel}
         />
       ))}
-      <Html center position={[0, 0.9, 0]} distanceFactor={13}>
-        <span className="piece-label resource-piece-label" style={{ borderColor: accent }}>{label} · {Math.round(value)}</span>
+      <Html center position={[0, 0.9, 0]} distanceFactor={10} zIndexRange={[20, 0]}>
+        <div
+          className={`resource-station-overlay ${hovered ? 'is-open' : ''}`}
+          style={{ '--resource-accent': accent } as CSSProperties}
+          tabIndex={0}
+          aria-label={`${label}指标，当前 ${Math.round(value)} 点，悬浮或聚焦查看说明`}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          onFocus={() => setHovered(true)}
+          onBlur={() => setHovered(false)}
+        >
+          <span className="piece-label resource-piece-label" style={{ borderColor: accent }}><b>{label}</b><i>·</i><strong>{Math.round(value)}</strong></span>
+        </div>
       </Html>
+      {insight && hovered && <Html
+        center
+        position={[0, 0.9, 0]}
+        distanceFactor={13}
+        portal={tooltipPortal}
+        zIndexRange={[1000, 900]}
+        pointerEvents="none"
+      >
+        <div className="resource-hover-portal-anchor" style={{ '--resource-accent': accent } as CSSProperties}>
+          <ResourceHoverCard insight={insight} changeTone={changeTone} />
+        </div>
+      </Html>}
     </group>
   );
 }
 
-function PolicyPieces({ resources }: { resources: CityResources }) {
+function PolicyPieces({ resources, insights }: { resources: CityResources; insights?: Record<TableResourceKey, ResourceInsight> }) {
+  const viewportWidth = useThree((state) => state.size.width);
+  const outerOffset = viewportWidth <= 1320 ? 1.75 : viewportWidth <= 1600 ? 2.05 : 2.7;
+  const innerOffset = outerOffset / 3;
   const stations = [
-    { x: -2.22, resource: 'capital', label: '资本', value: resources.fiscal, accent: '#a8793e' },
-    { x: -0.74, resource: 'infrastructure', label: '基建', value: resources.infrastructure, accent: '#487978' },
-    { x: 0.74, resource: 'talent', label: '人才', value: resources.talent, accent: '#6a5988' },
-    { x: 1.9, resource: 'supplyChain', label: '产业链', value: resources.supplyChain, accent: '#9a5936' },
+    { x: -outerOffset, resource: 'capital', label: '资本', value: resources.fiscal, accent: '#a8793e' },
+    { x: -innerOffset, resource: 'infrastructure', label: '基建', value: resources.infrastructure, accent: '#487978' },
+    { x: innerOffset, resource: 'talent', label: '人才', value: resources.talent, accent: '#6a5988' },
+    { x: outerOffset, resource: 'supplyChain', label: '产业链', value: resources.supplyChain, accent: '#9a5936' },
   ] as const;
 
   return (
     <group position={[0, 0.34, 3.0]}>
-      {stations.map((station) => <ResourceStation key={station.resource} {...station} />)}
+      {stations.map((station) => <ResourceStation key={station.resource} {...station} insight={insights?.[station.resource]} />)}
     </group>
   );
 }
 
-export function TableScene({ mode, enterprises, resources, mapSnapshot, mapCanvas, selectedId, onEnterpriseSelect, introFocus, introMinimal = false, globalFocus = false }: {
+export function TableScene({ mode, enterprises, resources, resourceInsights, mapSnapshot, mapCanvas, selectedId, onEnterpriseSelect, introFocus, introMinimal = false, globalFocus = false, comparisonIds }: {
   mode: CameraMode;
   enterprises: EnterpriseState[];
   resources: CityResources;
+  resourceInsights?: Record<TableResourceKey, ResourceInsight>;
   mapSnapshot: MapSnapshot;
   mapCanvas: HTMLCanvasElement | null;
   selectedId: EnterpriseId;
   onEnterpriseSelect: (id: EnterpriseId) => void;
-  introFocus?: EnterpriseId | 'overview';
+  introFocus?: EnterpriseId | 'overview' | 'handoff';
   introMinimal?: boolean;
   globalFocus?: boolean;
+  comparisonIds?: EnterpriseId[];
 }) {
   const orderedEnterprises = useMemo(
     () => [...enterprises].sort((left, right) => enterpriseSeatIndex(left.id) - enterpriseSeatIndex(right.id)),
     [enterprises],
   );
+  const visibleEnterprises = comparisonIds
+    ? orderedEnterprises.filter((enterprise) => comparisonIds.includes(enterprise.id)).slice(0, 2)
+    : orderedEnterprises;
+  const comparison = Boolean(comparisonIds?.length);
 
   return (
     <Canvas
@@ -522,15 +643,16 @@ export function TableScene({ mode, enterprises, resources, mapSnapshot, mapCanva
           </RoundedBox>
           <Suspense fallback={null}><TableMapDiorama snapshot={mapSnapshot} mapCanvas={mapCanvas} /></Suspense>
           <Suspense fallback={null}><EnterpriseSeats
-              enterprises={orderedEnterprises}
+              enterprises={visibleEnterprises}
               selectedId={selectedId}
               meeting={mode === 'meeting'}
+              comparison={comparison}
               labelMode={!introMinimal && mode === 'table' ? 'card' : mode === 'panorama' ? 'compact' : undefined}
-              focusOnlyId={introFocus && introFocus !== 'overview' ? introFocus : undefined}
+              focusOnlyId={introFocus && introFocus !== 'overview' && introFocus !== 'handoff' ? introFocus : undefined}
               globalFocus={globalFocus}
               onSelect={onEnterpriseSelect}
             /></Suspense>
-          {!introMinimal && <Suspense fallback={null}><PolicyPieces resources={resources} /></Suspense>}
+          {!introMinimal && <Suspense fallback={null}><PolicyPieces resources={resources} insights={resourceInsights} /></Suspense>}
           {!introMinimal && <Html center position={[0, 0.65, 3.7]} distanceFactor={12}>
             <div className="government-plaque"><small>PLAYER</small><strong>合肥市政府</strong></div>
           </Html>}
@@ -538,8 +660,9 @@ export function TableScene({ mode, enterprises, resources, mapSnapshot, mapCanva
       <CameraRig
         mode={mode}
         selectedId={selectedId}
-        enterpriseIds={orderedEnterprises.map((enterprise) => enterprise.id)}
+        enterpriseIds={visibleEnterprises.map((enterprise) => enterprise.id)}
         introFocus={introFocus}
+        comparison={comparison}
       />
       <OrbitControls
         makeDefault
