@@ -103,3 +103,52 @@ class TestFactGraphInContext(unittest.TestCase):
         self.assertTrue(ids)
         for fid in ids:
             self.assertRegex(fid, r"^FACT-(COMPANY_[A-Z])-\d{2}$", fid)
+
+
+from ..memory.belief_ledger import BeliefLedger, make_default_beliefs
+
+
+class TestBeliefLedger(unittest.TestCase):
+    def test_defaults_from_risk_preference(self):
+        beliefs = make_default_beliefs(risk_preference=0.5)
+        self.assertEqual(set(beliefs), {"market_recovery", "financing_continuity",
+                                        "tech_execution", "government_fulfillment"})
+        self.assertTrue(all(0.0 <= v <= 1.0 for v in beliefs.values()))
+
+    def test_blend_rule(self):
+        ledger = BeliefLedger()
+        ledger.init_defaults({"financing_continuity": 0.5})
+        e = ledger.update("financing_continuity", signal=0.9, signal_weight=0.8,
+                          stage_id="S2", evidence_ids=["E1"])
+        # w = min(0.5, 0.8) = 0.5 → 0.5*0.5 + 0.9*0.5 = 0.7
+        self.assertAlmostEqual(e.value, 0.7, places=6)
+        self.assertEqual(e.update_rule, "bounded_evidence_blend_v1")
+        self.assertEqual(e.updated_at, "S2")
+        self.assertIn("E1", e.evidence_ids)
+
+    def test_clamp_and_confidence(self):
+        ledger = BeliefLedger()
+        ledger.init_defaults({"market_recovery": 0.9})
+        e = ledger.update("market_recovery", signal=0.0, signal_weight=0.5, stage_id="S3",
+                          evidence_ids=["E2"])
+        # 0.9*0.75 + 0.0*0.25 → w = min(0.5, 0.5) * ... 见 update 实现：w = min(0.5, 0.5*0.5)=0.25
+        self.assertGreater(e.confidence, 0.5)
+        self.assertGreaterEqual(e.value, 0.0)
+
+    def test_evidence_dedup_and_append(self):
+        ledger = BeliefLedger()
+        ledger.init_defaults({"tech_execution": 0.5})
+        ledger.update("tech_execution", signal=0.6, signal_weight=0.3, stage_id="S1",
+                      evidence_ids=["E1"])
+        e = ledger.update("tech_execution", signal=0.6, signal_weight=0.3, stage_id="S2",
+                          evidence_ids=["E1", "E2"])
+        self.assertEqual(e.evidence_ids, ["E1", "E2"])
+
+    def test_round_trip(self):
+        ledger = BeliefLedger()
+        ledger.init_defaults(make_default_beliefs(0.5))
+        ledger.update("financing_continuity", signal=0.7, signal_weight=0.5, stage_id="S2",
+                      evidence_ids=["E1"])
+        data = ledger.to_dict()
+        self.assertEqual(len(data), 4)
+        self.assertEqual([d["update_rule"] for d in data], ["bounded_evidence_blend_v1"] * 4)
