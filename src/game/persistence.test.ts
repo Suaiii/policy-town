@@ -26,7 +26,7 @@ describe('simulation save restoration', () => {
 
     expect(restored.schemaVersion).toBe(2);
     expect(restored.phase).toBe('briefing');
-    expect(restored.enterprises).toHaveLength(3);
+    expect(restored.enterprises).toHaveLength(2);
     expect(restored.enterprises.every((enterprise) => enterprise.physicalAssets.assets.length === 0)).toBe(true);
     expect(restored.facts).toEqual([]);
   });
@@ -34,6 +34,23 @@ describe('simulation save restoration', () => {
   it('preserves a valid current run', () => {
     const current = startSimulation(initialState, 20260813);
     expect(restoreSimulationState(JSON.stringify(current))).toEqual(current);
+  });
+
+  it('drops the third seat when restoring an old three-enterprise save', () => {
+    const current = structuredClone(startSimulation(initialState));
+    const thirdSeat = { ...structuredClone(current.enterprises[0]), id: 'enterprise-c', code: 'C' };
+    const oldSave = {
+      ...current,
+      enterprises: [...current.enterprises, thirdSeat],
+      setupEnterpriseIds: ['enterprise-a', 'enterprise-b', 'enterprise-c'],
+      selectedEnterpriseId: 'enterprise-c',
+    };
+
+    const restored = restoreSimulationState(JSON.stringify(oldSave));
+
+    expect(restored.enterprises.map((enterprise) => enterprise.id)).toEqual(['enterprise-a', 'enterprise-b']);
+    expect(restored.setupEnterpriseIds).toEqual(['enterprise-a', 'enterprise-b']);
+    expect(restored.selectedEnterpriseId).toBe('enterprise-a');
   });
 
   it('replaces a corrupt asset ledger before the map renderer can consume it', () => {

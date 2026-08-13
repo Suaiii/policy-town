@@ -1,4 +1,4 @@
-import { initialState } from './simulation';
+import { FIXED_ROUND_ENTERPRISE_IDS, initialState } from './simulation';
 import { enterpriseSeatIndex, sortEnterpriseIdsBySeat } from './representatives';
 import type {
   CameraMode,
@@ -71,7 +71,9 @@ function restoreEnterprise(value: unknown): EnterpriseState | null {
     metrics: metrics as EnterpriseState['metrics'],
     builtProgress: isFiniteNumber(value.builtProgress) ? value.builtProgress : base.builtProgress,
     lifecycle: value.lifecycle === 'stalled' || value.lifecycle === 'exited' ? value.lifecycle : 'active',
-    physicalAssets: isPhysicalAssetLedger(value.physicalAssets) ? value.physicalAssets : structuredClone(base.physicalAssets),
+    physicalAssets: isPhysicalAssetLedger(value.physicalAssets)
+      ? { ...value.physicalAssets, developmentUnitCost: base.physicalAssets.developmentUnitCost }
+      : structuredClone(base.physicalAssets),
     lastSettlementDelta: lastSettlementDelta as EnterpriseState['lastSettlementDelta'],
   };
 }
@@ -92,10 +94,6 @@ export function restoreSimulationState(raw: string | null): SimulationState {
     const selectedEnterpriseId = selectedEnterprises.some((enterprise) => enterprise.id === value.selectedEnterpriseId)
       ? value.selectedEnterpriseId as EnterpriseId
       : selectedEnterprises[0].id;
-    const setupEnterpriseIds = Array.isArray(value.setupEnterpriseIds)
-      ? value.setupEnterpriseIds.filter((id): id is EnterpriseId => enterpriseIds.includes(id as EnterpriseId))
-      : selectedEnterprises.map((enterprise) => enterprise.id);
-
     return {
       ...structuredClone(initialState),
       ...value,
@@ -106,9 +104,7 @@ export function restoreSimulationState(raw: string | null): SimulationState {
       cameraMode: cameraModes.includes(value.cameraMode as CameraMode) ? value.cameraMode as CameraMode : 'table',
       stageIndex,
       setupStartStage: isFiniteNumber(value.setupStartStage) ? Math.max(0, Math.min(3, Math.trunc(value.setupStartStage))) : stageIndex,
-      setupEnterpriseIds: setupEnterpriseIds.length >= 2
-        ? sortEnterpriseIdsBySeat([...new Set(setupEnterpriseIds)])
-        : selectedEnterprises.map((enterprise) => enterprise.id),
+      setupEnterpriseIds: [...FIXED_ROUND_ENTERPRISE_IDS],
       selectedEnterpriseId,
       enterprises: selectedEnterprises,
       resources: isObject(value.resources) ? { ...initialState.resources, ...value.resources } : structuredClone(initialState.resources),

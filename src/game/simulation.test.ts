@@ -16,12 +16,11 @@ import {
   toggleSupportTool,
   updateAllocation,
 } from './simulation'
-import { ENTERPRISE_REPRESENTATIVE_CONFIG } from './representatives'
 
 describe('fiscal competition simulation', () => {
   const started = () => startSimulation(initialState)
 
-  it('assigns the enterprise set once from an auditable seed instead of user selection', () => {
+  it('keeps the frozen two-enterprise set regardless of the auditable run seed', () => {
     const seed = 20260813
     const startedState = startSimulation(initialState, seed)
 
@@ -32,18 +31,10 @@ describe('fiscal competition simulation', () => {
     expect(startSimulation(startedState, seed + 1)).toBe(startedState)
   })
 
-  it('assigns one man and one woman for two seats, and two men and one woman for three seats', () => {
-    const twoSeats = randomEnterpriseIds(20260813)
-    const threeSeats = randomEnterpriseIds(20260814)
-    const genders = (ids: typeof twoSeats) => ids.map((id) => ENTERPRISE_REPRESENTATIVE_CONFIG[id].gender)
-
-    expect(twoSeats).toHaveLength(2)
-    expect(genders(twoSeats).sort()).toEqual(['female', 'male'])
-    expect(threeSeats).toHaveLength(3)
-    expect(genders(threeSeats).sort()).toEqual(['female', 'male', 'male'])
-    expect(threeSeats).toEqual(['enterprise-a', 'enterprise-b', 'enterprise-c'])
-    expect(ENTERPRISE_REPRESENTATIVE_CONFIG[threeSeats[1]].gender).toBe('female')
-    expect(twoSeats).toEqual([...twoSeats].sort())
+  it('never creates a third active enterprise seat', () => {
+    expect(randomEnterpriseIds(0)).toEqual(['enterprise-a', 'enterprise-b'])
+    expect(randomEnterpriseIds(20260813)).toEqual(['enterprise-a', 'enterprise-b'])
+    expect(randomEnterpriseIds(20260814)).toEqual(['enterprise-a', 'enterprise-b'])
   })
 
   it('preserves the phase order and rejects premature transitions', () => {
@@ -55,6 +46,7 @@ describe('fiscal competition simulation', () => {
 
     expect(applications.phase).toBe('applications')
     expect(analysis.phase).toBe('analysis')
+    expect(analysis.cameraMode).toBe('table')
     expect(allocation.phase).toBe('allocation')
   })
 
@@ -85,11 +77,12 @@ describe('fiscal competition simulation', () => {
   })
 
   it('selects only enterprises that exist in the current state', () => {
-    const selected = selectEnterprise(initialState, 'enterprise-c')
-    expect(selected.selectedEnterpriseId).toBe('enterprise-c')
+    const rejected = selectEnterprise(initialState, 'enterprise-c')
+    expect(rejected.selectedEnterpriseId).toBe('enterprise-a')
 
-    const meeting = enterEnterpriseMeeting(selected, 'enterprise-c')
-    expect(meeting.selectedEnterpriseId).toBe('enterprise-c')
+    const selected = selectEnterprise(initialState, 'enterprise-b')
+    const meeting = enterEnterpriseMeeting(selected, 'enterprise-b')
+    expect(meeting.selectedEnterpriseId).toBe('enterprise-b')
     expect(meeting.cameraMode).toBe('meeting')
   })
 

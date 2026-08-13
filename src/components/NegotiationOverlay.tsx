@@ -1,13 +1,17 @@
-import { useMemo } from 'react';
-import { getEnterprise, supportToolLabels } from '../game/scenario';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { getJointReview } from '../game/jointReview';
+import type { DepartmentKey } from '../game/jointReview';
+import { agentLabels, getEnterprise, supportToolLabels } from '../game/scenario';
 import type { EnterpriseState, Phase, SupportTool } from '../game/types';
+import { compilePlayerDecisionPackages } from '../game/verificationOutcome';
 import { enterpriseThemeStyle } from '../theme/enterpriseTheme';
-import { ActionButton, DirectionalButton, FramedCard, FramedPanel, PanelHeading, SectionLabel } from './ui/ParlorUI';
+import { ActionButton, DirectionalButton, FramedPanel, PanelHeading } from './ui/ParlorUI';
 
 export type NegotiationResponse = 'accept' | 'counter' | 'delay' | 'walk_away';
 
 export type NegotiationRecord = {
   verificationQuestion?: string;
+  verificationLocked?: boolean;
   fiscalOffer: number;
   tools: SupportTool[];
   conditions: string[];
@@ -25,60 +29,33 @@ export const emptyNegotiationRecord: NegotiationRecord = {
   submitted: false,
 };
 
-const conditionOptions = [
-  '企业提交自有资金证明',
-  '按技术或建设里程碑分期拨付',
-  '双方按约定比例同步出资',
-  '引入专项审计与进度核验',
-  '未达里程碑时暂停追加',
-  '触发减持、重组或退出安排',
-] as const;
+const departmentMarks: Record<DepartmentKey, string> = {
+  fiscal: '财',
+  industry: '经',
+  technology: '科',
+  market: '发',
+};
 
-const askLabels = {
-  equity: '股权资本',
-  subsidy: '补贴 / 贴息',
-  land: '土地与公用容量',
-  financing: '贷款协调 / 担保',
-  infrastructure: '基础设施配套',
-} as const;
+const departmentOrder: DepartmentKey[] = ['fiscal', 'industry', 'technology', 'market'];
 
-function evaluateOffer(enterprise: EnterpriseState, record: NegotiationRecord) {
-  const profile = getEnterprise(enterprise.id);
-  const coverage = record.fiscalOffer / profile.request;
-  const preferredMatches = record.tools.filter((tool) => profile.requestedTools.includes(tool)).length;
-  const missingPreferredTool = profile.requestedTools.find((tool) => !record.tools.includes(tool));
-
-  if (coverage >= 0.8 && preferredMatches >= 2) {
-    return { response: 'accept' as const };
-  }
-  if (coverage >= 0.45 && preferredMatches >= 1) {
-    return {
-      response: 'counter' as const,
-      counterFiscal: Math.max(record.fiscalOffer + 5, Math.ceil(profile.request * 0.75)),
-      counterTool: missingPreferredTool,
-    };
-  }
-  if (coverage > 0) return { response: 'delay' as const };
-  return { response: 'walk_away' as const };
-}
-
-function responseCopy(response: NegotiationResponse, alias: string) {
-  if (response === 'accept') return `${alias}接受政府条件单，双方承诺将按约定条件进入项目准备。`;
-  if (response === 'counter') return `${alias}提出一次性反提案，要求调整投入上限或补足关键城市支持。`;
-  if (response === 'delay') return `${alias}认为当前条件不足以启动项目，将等待总部决策或外部融资结果。`;
-  return `${alias}拒绝本轮条件单，并开始比较其他城市的支持条件。`;
-}
+type VerificationMessage = {
+  id: string;
+  kind: 'system' | 'enterprise' | 'department' | 'challenge';
+  speaker: string;
+  mark: string;
+  meta: string;
+  text: string;
+  detail?: string;
+  department?: DepartmentKey;
+};
 
 export function NegotiationOverlay({
   enterprise,
   phase,
   stageLabel,
   record,
-  onChange,
   onClose,
   onApply,
-  onPrevious,
-  onNext,
 }: {
   enterprise: EnterpriseState;
   phase: Phase;
@@ -87,66 +64,132 @@ export function NegotiationOverlay({
   onChange: (record: NegotiationRecord) => void;
   onClose: () => void;
   onApply: (record: NegotiationRecord) => void;
-  onPrevious: () => void;
-  onNext: () => void;
 }) {
   const profile = getEnterprise(enterprise.id);
-  const response = record.response;
-  const totalCommitments = record.tools.length + record.conditions.length;
-  const canSubmit = Boolean(record.verificationQuestion) && record.fiscalOffer > 0 && record.tools.length > 0;
+  const review = getJointReview(enterprise.id);
   const selectedVerification = profile.negotiation.verificationQuestions.find(
     (item) => item.question === record.verificationQuestion,
-  );
-  const responseText = useMemo(
-    () => response ? responseCopy(response, profile.alias) : '',
-    [profile.alias, response],
-  );
+  ) ?? profile.negotiation.verificationQuestions[0];
+  const selectedCandidate = review.verificationCandidates.find(
+    (item) => item.question === selectedVerification.question,
+  ) ?? review.verificationCandidates[0];
+  const challenge = review.challenges[0];
+  const challengeFrom = agentLabels[challenge.from];
+  const challengeTo = agentLabels[challenge.to];
   const identityStyle = enterpriseThemeStyle(enterprise.id);
+  const decisionPackages = useMemo(
+    () => compilePlayerDecisionPackages(enterprise.id, selectedVerification.question),
+    [enterprise.id, selectedVerification.question],
+  );
+  const [selectedPackageId, setSelectedPackageId] = useState<'prudent' | 'progressive'>('prudent');
+  const selectedPackage = decisionPackages.find((item) => item.id === selectedPackageId) ?? decisionPackages[0];
 
-  const updateOffer = (partial: Partial<NegotiationRecord>) => {
-    if (record.finalized) return;
-    onChange({ ...record, ...partial, submitted: false, response: undefined, counterFiscal: undefined, counterTool: undefined });
-  };
-
-  const toggleTool = (tool: SupportTool) => {
-    updateOffer({
-      tools: record.tools.includes(tool)
-        ? record.tools.filter((item) => item !== tool)
-        : [...record.tools, tool],
-    });
-  };
-
-  const toggleCondition = (condition: string) => {
-    const exists = record.conditions.includes(condition);
-    if (!exists && record.conditions.length >= 3) return;
-    updateOffer({
-      conditions: exists
-        ? record.conditions.filter((item) => item !== condition)
-        : [...record.conditions, condition],
-    });
-  };
-
-  const submitOffer = () => {
-    const result = evaluateOffer(enterprise, record);
-    onChange({ ...record, ...result, submitted: true });
-  };
-
-  const acceptCounter = () => {
-    const tools = record.counterTool && !record.tools.includes(record.counterTool)
-      ? [...record.tools, record.counterTool]
-      : record.tools;
-    onChange({
+  const compiledRecord = useMemo<NegotiationRecord>(() => {
+    return {
       ...record,
-      fiscalOffer: record.counterFiscal ?? record.fiscalOffer,
-      tools,
+      verificationQuestion: selectedVerification.question,
+      verificationLocked: true,
+      fiscalOffer: selectedPackage.fiscalOffer,
+      tools: selectedPackage.tools,
+      conditions: selectedPackage.conditions,
       submitted: true,
       response: 'accept',
       counterFiscal: undefined,
       counterTool: undefined,
+    };
+  }, [record, selectedPackage, selectedVerification.question]);
+
+  const messages = useMemo<VerificationMessage[]>(() => {
+    const departmentMessages = departmentOrder.map((key) => {
+      const department = review.departments[key];
+      return {
+        id: `department-${key}`,
+        kind: 'department' as const,
+        speaker: agentLabels[key],
+        mark: departmentMarks[key],
+        meta: `核验后复议 · ${department.stance} · 置信度 ${department.confidence}%`,
+        text: department.claim,
+        detail: `更新约束：${department.acceptableCondition}`,
+        department: key,
+      };
     });
+
+    return [
+      {
+        id: 'system-question',
+        kind: 'system',
+        speaker: '核验主持',
+        mark: '问',
+        meta: '来自前序四部门联判分歧 · 本轮仅核验一次',
+        text: selectedVerification.question,
+        detail: `决策影响：${selectedCandidate.decisionImpact}`,
+      },
+      {
+        id: 'enterprise-response',
+        kind: 'enterprise',
+        speaker: `${profile.alias} · 企业代表`,
+        mark: enterprise.code,
+        meta: `企业回应 · ${selectedVerification.responseType}`,
+        text: selectedVerification.response,
+        detail: '该回应将改变部门支持强度与条件，不直接构成政府承诺。',
+      },
+      ...departmentMessages,
+      {
+        id: 'department-challenge',
+        kind: 'challenge',
+        speaker: `${challengeFrom} → ${challengeTo}`,
+        mark: '质',
+        meta: '部门定向质询 · 围绕核心分歧',
+        text: challenge.question,
+        detail: `争议：${review.disagreement}`,
+        department: challenge.from,
+      },
+      {
+        id: 'department-answer',
+        kind: 'challenge',
+        speaker: challengeTo,
+        mark: departmentMarks[challenge.to],
+        meta: challenge.changed ? '回应质询 · 立场已更新' : '回应质询 · 维持原判断',
+        text: challenge.response,
+        detail: challenge.changed
+          ? `${challenge.stanceBefore} → ${challenge.stanceAfter}；新增条件：${challenge.addedCondition}`
+          : challenge.changedBecause,
+        department: challenge.to,
+      },
+    ];
+  }, [challenge, challengeFrom, challengeTo, enterprise.code, profile.alias, review.departments, review.disagreement, selectedCandidate.decisionImpact, selectedVerification.question, selectedVerification.response, selectedVerification.responseType]);
+
+  const [visibleCount, setVisibleCount] = useState(record.finalized ? messages.length : 0);
+  const [running, setRunning] = useState(false);
+  const feedRef = useRef<HTMLDivElement>(null);
+  const complete = visibleCount >= messages.length;
+
+  useEffect(() => {
+    if (!running || complete) return;
+    const timer = window.setTimeout(() => setVisibleCount((current) => Math.min(messages.length, current + 1)), 360);
+    return () => window.clearTimeout(timer);
+  }, [complete, messages.length, running, visibleCount]);
+
+  useEffect(() => {
+    if (complete) setRunning(false);
+  }, [complete]);
+
+  useEffect(() => {
+    const feed = feedRef.current;
+    if (feed) feed.scrollTo({ top: feed.scrollHeight, behavior: visibleCount > 1 ? 'smooth' : 'auto' });
+  }, [visibleCount]);
+
+  const supportLevel = selectedPackage.supportLevel;
+
+  const startSession = () => {
+    setVisibleCount((current) => current || 1);
+    setRunning(true);
   };
 
-  const canApply = phase === 'allocation' && response === 'accept';
+  const finishSession = () => {
+    setVisibleCount(messages.length);
+    setRunning(false);
+  };
 
   return <>
     <div className="meeting-focus-shade enterprise-ui-theme" style={identityStyle} aria-hidden="true" />
@@ -158,125 +201,96 @@ export function NegotiationOverlay({
       <blockquote>“{profile.negotiation.opening}”</blockquote>
     </section>
 
-    <nav className="meeting-enterprise-nav enterprise-ui-theme" style={identityStyle} aria-label="切换核验企业">
+    <nav className="meeting-enterprise-nav enterprise-ui-theme" style={identityStyle} aria-label="核验导航">
       <DirectionalButton direction="back" className="meeting-nav-return" onClick={onClose}>返回沙盘</DirectionalButton>
-      <DirectionalButton direction="previous" className="meeting-nav-previous" onClick={onPrevious} aria-label="查看上一家企业">上一家企业</DirectionalButton>
-      <DirectionalButton direction="next" className="meeting-nav-next" onClick={onNext} aria-label="查看下一家企业">下一家企业</DirectionalButton>
     </nav>
 
-    <FramedPanel as="aside" className="negotiation-panel layout-operation-panel enterprise-ui-theme" style={identityStyle}>
+    <FramedPanel as="aside" className="negotiation-panel verification-room-panel layout-operation-panel enterprise-ui-theme" style={identityStyle}>
       <div className="negotiation-toolbar">
-        <span>{stageLabel} · 政企条件协商</span>
-        <b>一次核验 · 一次反提案</b>
-        <button aria-label="关闭政企协商" onClick={onClose}>×</button>
+        <span>{stageLabel} · 政企关键核验</span>
+        <b>{record.finalized ? '核验纪要已归档' : '结构化 Agent 研判 · 演示数据'}</b>
+        <button aria-label="关闭政企核验" onClick={onClose}>×</button>
       </div>
 
-      <PanelHeading index="1V1" kicker="KEY CLAIM VERIFICATION">与企业 {enterprise.code} 核验关键命题</PanelHeading>
+      <PanelHeading index="1V1" kicker="KEY CLAIM VERIFICATION">企业回应与部门复议</PanelHeading>
 
-      <FramedCard className="critical-proposition" tone="amber">
-        <div><small>本项目关键未穿透项</small><b>{profile.negotiation.verificationStatus}</b></div>
-        <p>{profile.negotiation.criticalProposition}</p>
-      </FramedCard>
+      <section className="verification-context" aria-label="企业核验背景数据">
+        <div className="verification-context-lead">
+          <small>本轮唯一核验问题</small>
+          <strong>{selectedVerification.question}</strong>
+          <span>承接前序四部门联判 · {selectedCandidate.status} · {selectedCandidate.decisionImpact}</span>
+        </div>
+        <dl className="verification-context-stats">
+          <div><dt>项目规模</dt><dd>{profile.investment}</dd></div>
+          <div><dt>财政申请</dt><dd>{profile.request} 点</dd></div>
+          <div><dt>已知证据</dt><dd>{profile.evidenceStatus}</dd></div>
+          <div><dt>企业底线</dt><dd>{profile.negotiation.bottomLine}</dd></div>
+        </dl>
+      </section>
 
-      <SectionLabel>选择一个关键核验问题</SectionLabel>
-      <div className="verification-questions" role="radiogroup" aria-label="关键核验问题">
-        {profile.negotiation.verificationQuestions.map((item, index) => (
-          <button
-            key={item.question}
-            role="radio"
-            aria-checked={record.verificationQuestion === item.question}
-            className={record.verificationQuestion === item.question ? 'selected' : ''}
-            onClick={() => updateOffer({ verificationQuestion: item.question })}
-            disabled={record.finalized}
-          >
-            <span>0{index + 1}</span><b>{item.question}</b>
-          </button>
-        ))}
-      </div>
-      {selectedVerification && <FramedCard className="verification-response">
-        <div><small>企业核验回应</small><b>{selectedVerification.responseType}</b></div>
-        <p>{selectedVerification.response}</p>
-      </FramedCard>}
+      <section className="verification-dialogue" aria-label="企业回应与部门复议会话">
+        <header>
+          <div><span className={running ? 'live' : ''} /><b>企业回应与部门复议</b><small>{complete ? '已形成核验后更新结论' : running ? '部门 Agent 正在更新判断' : '等待企业回应'}</small></div>
+          {!complete && visibleCount > 0 && <button onClick={finishSession}>直接形成结论</button>}
+        </header>
 
-      <SectionLabel>企业资源诉求</SectionLabel>
-      <div className="negotiation-ask-grid">
-        {(Object.keys(askLabels) as Array<keyof typeof askLabels>).map((key) => (
-          <FramedCard key={key}><span>{askLabels[key]}</span><b>{profile.negotiation.ask[key]}</b></FramedCard>
-        ))}
-      </div>
-      <FramedCard className="negotiation-bottom-line" tone="amber">
-        <small>企业可谈边界</small><p>{profile.negotiation.bottomLine}</p>
-      </FramedCard>
+        <div className="verification-message-feed" ref={feedRef} aria-live="polite">
+          {visibleCount === 0 && <div className="verification-empty-state">
+            <span>4</span>
+            <div><b>前序 one-by-one 联判已完成</b><p>企业回应后，四位部门 Agent 只更新一次判断，并对仍未消除的核心分歧进行一次复议质询。</p></div>
+          </div>}
+          {messages.slice(0, visibleCount).map((message) => (
+            <article key={message.id} className={`verification-message ${message.kind} ${message.department ? `department-${message.department}` : ''}`}>
+              <span className="verification-speaker-mark">{message.mark}</span>
+              <div>
+                <header><b>{message.speaker}</b><small>{message.meta}</small></header>
+                <p>{message.text}</p>
+                {message.detail && <aside>{message.detail}</aside>}
+              </div>
+            </article>
+          ))}
+          {running && !complete && <div className="verification-typing"><i /><i /><i /><span>正在读取下一位部门 Agent 的复议更新</span></div>}
+        </div>
+      </section>
 
-      <SectionLabel>政府条件单</SectionLabel>
-      <label className="negotiation-fiscal-slider">
-        <div><span>政府投入 · 首期上限</span><b>{record.fiscalOffer} 点</b></div>
-        <input
-          aria-label="政府投入"
-          type="range"
-          min="0"
-          max={Math.min(60, Math.max(profile.request + 10, 40))}
-          value={record.fiscalOffer}
-          onChange={(event) => updateOffer({ fiscalOffer: Number(event.target.value) })}
-          disabled={record.finalized}
-        />
-        <small>企业资金请求 {profile.request} 点 · 当前覆盖 {Math.round(record.fiscalOffer / profile.request * 100)}%</small>
-      </label>
-      <div className="negotiation-fiscal-actions" aria-label="政府投入快捷调整">
-        <button disabled={record.finalized} onClick={() => updateOffer({ fiscalOffer: Math.max(0, record.fiscalOffer - 5) })}>− 5</button>
-        <button disabled={record.finalized} onClick={() => updateOffer({ fiscalOffer: Math.min(60, record.fiscalOffer + 5) })}>＋ 5</button>
-        <button disabled={record.finalized} onClick={() => updateOffer({ fiscalOffer: profile.request })}>按资金请求</button>
-      </div>
+      {complete && <section className="verification-conclusion" aria-label="核验后联判更新结论">
+        <header><span>结</span><div><small>POST-VERIFICATION UPDATE</small><h3>核验后联判更新结论</h3></div><b>{supportLevel}</b></header>
+        <p>{review.recommendation}</p>
+        <div className="verification-conclusion-grid">
+          <dl><dt>当前方案投入</dt><dd>{compiledRecord.fiscalOffer} 点</dd><small>玩家不能修改参数</small></dl>
+          <dl><dt>支持方向</dt><dd>{compiledRecord.tools.map((tool) => supportToolLabels[tool]).join(' · ')}</dd><small>随方案自动配置</small></dl>
+          <dl><dt>硬约束</dt><dd>{compiledRecord.conditions.length} 项</dd><small>分期、里程碑与退出条件</small></dl>
+        </div>
+        <ul>{compiledRecord.conditions.map((condition) => <li key={condition}>{condition}</li>)}</ul>
+        <div className="verification-player-decision">
+          <header><div><small>PLAYER DECISION</small><b>玩家最终拍板</b></div><span>选择后立即结算本轮</span></header>
+          <div className="verification-policy-options" role="radiogroup" aria-label="选择本轮政府方案">
+            {decisionPackages.map((item) => <button
+              type="button"
+              role="radio"
+              aria-checked={selectedPackageId === item.id}
+              className={selectedPackageId === item.id ? 'selected' : ''}
+              onClick={() => setSelectedPackageId(item.id)}
+              key={item.id}
+            >
+              <span>{item.label}</span><b>{item.title}</b><p>{item.description}</p>
+              <dl><div><dt>首期投入</dt><dd>{item.fiscalOffer} 点</dd></div><div><dt>支持工具</dt><dd>{item.tools.length} 项</dd></div></dl>
+              <em>{selectedPackageId === item.id ? '已选择' : '选择此方案'}</em>
+            </button>)}
+          </div>
+          <footer>
+            <span>确认后自动执行企业行动、历史冲击与规则结算，沙盘建筑将按结果更新。</span>
+            <ActionButton onClick={() => phase === 'allocation' && !record.finalized ? onApply(compiledRecord) : onClose()}>
+              {record.finalized ? '本轮已完成 · 返回沙盘' : `执行${selectedPackage.label}并完成本轮`}
+            </ActionButton>
+          </footer>
+        </div>
+      </section>}
 
-      <SectionLabel>城市支持</SectionLabel>
-      <div className="negotiation-tools" aria-label="城市支持工具">
-        {(Object.keys(supportToolLabels) as SupportTool[]).map((tool) => (
-          <button key={tool} disabled={record.finalized} className={record.tools.includes(tool) ? 'selected' : ''} onClick={() => toggleTool(tool)}>
-            {record.tools.includes(tool) ? '✓ ' : '+ '}{supportToolLabels[tool]}
-          </button>
-        ))}
-      </div>
-
-      <SectionLabel>风险条件 · 最多三项</SectionLabel>
-      <div className="negotiation-conditions">
-        {conditionOptions.map((condition) => (
-          <label key={condition} className={record.conditions.includes(condition) ? 'selected' : ''}>
-            <input
-              type="checkbox"
-              checked={record.conditions.includes(condition)}
-              disabled={record.finalized || (!record.conditions.includes(condition) && record.conditions.length >= 3)}
-              onChange={() => toggleCondition(condition)}
-            />
-            <span>{condition}</span>
-          </label>
-        ))}
-      </div>
-
-      {response && <FramedCard className={`negotiation-response response-${response}`} tone={response === 'walk_away' ? 'alert' : 'amber'}>
-        <div><small>企业回应</small><b>{response === 'accept' ? '接受条件单' : response === 'counter' ? '提出一次性反提案' : response === 'delay' ? '等待 / 延期' : '拒绝并退出'}</b></div>
-        <p>{responseText}</p>
-        {response === 'counter' && <dl>
-          <div><dt>要求财政支持</dt><dd>{record.counterFiscal} 点</dd></div>
-          {record.counterTool && <div><dt>要求补充</dt><dd>{supportToolLabels[record.counterTool]}</dd></div>}
-        </dl>}
-      </FramedCard>}
-
-      <div className="negotiation-summary">
-        <span>当前条件单</span><b>{record.fiscalOffer} 点 · {totalCommitments} 项支持与条件</b>
-      </div>
-
-      {record.finalized ? (
-        <ActionButton onClick={onClose}>协商已确认 · 返回决策</ActionButton>
-      ) : response === 'counter' ? (
-        <ActionButton onClick={acceptCounter}>确认企业反提案</ActionButton>
-      ) : response === 'accept' ? (
-        <ActionButton onClick={() => canApply ? onApply(record) : onClose()}>
-          {canApply ? '采用条件单并返回决策' : '保存协商纪要并返回'}
-        </ActionButton>
-      ) : (
-        <ActionButton disabled={!canSubmit} onClick={submitOffer}>提交政府条件单</ActionButton>
-      )}
-      {record.submitted && response !== 'accept' && response !== 'counter' && <button className="negotiation-secondary" onClick={onClose}>保留协商结果并返回决策</button>}
+      {!complete && <div className="verification-session-action">
+        <div><b>{visibleCount === 0 ? '本轮只进行一次关键核验' : `${visibleCount} / ${messages.length} 条研判已生成`}</b><small>不开放自由提问，不允许前端修改政策参数</small></div>
+        <ActionButton disabled={running} onClick={startSession}>{running ? '企业回应处理中…' : visibleCount ? '继续部门复议' : '向企业核验'}</ActionButton>
+      </div>}
     </FramedPanel>
   </>;
 }
