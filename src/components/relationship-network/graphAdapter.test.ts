@@ -28,6 +28,11 @@ describe('toRelationshipViewModel', () => {
     const model = toRelationshipViewModel(snapshot);
 
     expect(model.nodes.map((node) => node.kind)).toEqual(['Government', 'Project']);
+    expect(model.nodes.find((node) => node.uuid === 'enterprise-a')).toMatchObject({
+      name: '远景显示',
+      code: 'A',
+      summary: '新型显示企业',
+    });
     expect(model.edges).toEqual([
       expect.objectContaining({
         source_node_uuid: 'gov', target_node_uuid: 'enterprise-a',
@@ -56,5 +61,20 @@ describe('toRelationshipViewModel', () => {
     expect(edge).toBeDefined();
     expect(positions[edge!.source_node_uuid]).toBeDefined();
     expect(positions[edge!.target_node_uuid]).toBeDefined();
+  });
+
+  it('keeps baseline policy links visible before any decision events exist', () => {
+    const model = toRelationshipViewModel({
+      schemaVersion: '0.1', revision: 0,
+      nodes: [
+        { id: 'gov', kind: 'government', name: '合肥市政府', color: '#5b6cff' },
+        { id: 'enterprise-a', kind: 'company', name: '远景显示', industry: '新型显示', color: '#22d3ee' },
+        { id: 'enterprise-b', kind: 'company', name: '曙光能源', industry: '新能源', color: '#22d3ee' },
+      ], edges: [],
+    });
+
+    expect(model.edges).toHaveLength(2);
+    expect(model.edges.every((edge) => edge.name === '政策关联')).toBe(true);
+    expect(model.edges.every((edge) => edge.lineStyle === 'dotted')).toBe(true);
   });
 });
