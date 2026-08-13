@@ -419,7 +419,7 @@ def validate_challenge(ch: dict) -> None:
 - [ ] **Step 5: 运行确认通过**
 
 Run: `python3 -m unittest policytown.investment.tests.test_meeting -v`
-Expected: PASS（10 例：TestConflictDetection 7 例 + TestChallengeValidator 3 例）。
+Expected: PASS（11 例：TestConflictDetection 8 例 + TestChallengeValidator 3 例）。
 
 - [ ] **Step 6: 提交**
 
