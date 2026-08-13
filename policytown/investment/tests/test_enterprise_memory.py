@@ -159,3 +159,45 @@ class TestBeliefLedger(unittest.TestCase):
         data = ledger.to_dict()
         self.assertEqual(len(data), 4)
         self.assertEqual([d["update_rule"] for d in data], ["bounded_evidence_blend_v1"] * 4)
+
+
+from ..memory.commitment_ledger import CommitmentLedger, CommitmentRecord, STATUSES
+
+
+class TestCommitmentLedger(unittest.TestCase):
+    def test_lifecycle(self):
+        ledger = CommitmentLedger()
+        rec = CommitmentRecord(commitment_id="C-S1-001", party="company_a",
+                               promise="complete_pilot_line", due_stage="S2",
+                               condition="second_tranche_release")
+        ledger.add(rec)
+        self.assertEqual([r.commitment_id for r in ledger.due_in("S2")], ["C-S1-001"])
+        self.assertEqual(ledger.due_in("S3"), [])
+        ledger.mark("C-S1-001", "fulfilled")
+        self.assertEqual(ledger.due_in("S2"), [], "已履约承诺不再到期")
+        self.assertEqual(rec.status, "fulfilled")
+
+    def test_mark_invalid_status_rejected(self):
+        ledger = CommitmentLedger()
+        ledger.add(CommitmentRecord(commitment_id="C-1", party="government",
+                                    promise="provide_capital", due_stage="S2",
+                                    condition="agreement"))
+        with self.assertRaises(ValueError):
+            ledger.mark("C-1", "nonsense")
+        with self.assertRaises(KeyError):
+            ledger.mark("C-9", "pending")
+
+    def test_statuses_enum(self):
+        self.assertEqual(set(STATUSES),
+                         {"pending", "fulfilled", "delayed", "breached",
+                          "insufficient_evidence"})
+
+    def test_machine_readable(self):
+        ledger = CommitmentLedger()
+        ledger.add(CommitmentRecord(commitment_id="C-1", party="government",
+                                    promise="provide_capital", due_stage="S2",
+                                    condition="agreement", source_ids=["agreement:S1-001"]))
+        data = ledger.to_dict()
+        self.assertEqual(data[0]["condition"], "agreement")
+        self.assertEqual(data[0]["status"], "pending")
+        self.assertIn("source_ids", data[0])
