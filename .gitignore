@@ -31,6 +31,12 @@ data/hefei_industry_simulation.sqlite3
 data/hefei_mvp_runs/
 data/hefei_mvp/real_backend_run.json
 data/source_archive/
+output/*.json
+
+# --- 本地浏览器、工作树与测试临时目录 ---
+.playwright-cli/
+.worktrees/
+tmp/
 
 # --- IDE / Superpowers 临时文件 ---
 .superpowers/

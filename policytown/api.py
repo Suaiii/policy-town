@@ -46,7 +46,10 @@ def _load_local_env() -> None:
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, value = line.split("=", 1)
-        os.environ.setdefault(key.strip(), value.strip())
+        key = key.strip()
+        if key in {"INVESTMENT_AGENT_LLM", "INVESTMENT_AGENT_REQUIRE_LLM"}:
+            continue
+        os.environ.setdefault(key, value.strip())
 
 
 _load_local_env()
@@ -99,7 +102,7 @@ class CompareProposalsRequest(BaseModel):
 def _engine() -> InvestmentEngine:
     global _ENGINE
     if _ENGINE is None:
-        _ENGINE = InvestmentEngine(use_agent_api=None)
+        _ENGINE = InvestmentEngine(use_agent_api=bool(os.getenv("LLM_API_KEY")))
     return _ENGINE
 
 
