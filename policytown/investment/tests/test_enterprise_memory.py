@@ -295,6 +295,9 @@ class TestAgentMemorySeparation(unittest.TestCase):
         orch.start(["proto_a", "proto_d", "proto_b"], "S1")
         view = orch.open_stage()
         blob = json.dumps(view["context"], ensure_ascii=False)
-        for token in ("beliefs", "commitments", "management_objectives",
-                      "expansion_appetite", "risk_preference"):
+        for token in ("beliefs", "management_objectives", "expansion_appetite",
+                      "risk_preference"):
             self.assertNotIn(token, blob, "Memory/底色泄漏进公开 Context：%s" % token)
+        # 政府承诺（government_commitments）是公开契约，允许出现；
+        # 企业侧私有承诺字段（键恰为 "commitments"）仍不得泄漏
+        self.assertNotIn('"commitments":', blob)

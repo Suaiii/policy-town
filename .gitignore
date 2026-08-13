@@ -103,3 +103,10 @@ ENV/
 
 # Rope project settings
 .ropeproject
+# InvestmentSimulation v0.1 — LLM 密钥与缓存（永不入库）
+policytown/investment/.secrets.json
+policytown/investment/.cache/
+
+# 产业推演引擎运行时产物与密钥
+sim/output/
+sim/config.yaml
