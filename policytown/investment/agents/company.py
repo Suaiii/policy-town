@@ -4,9 +4,11 @@
 """
 from __future__ import annotations
 
-from typing import Callable, Optional
+from typing import Callable, Dict, Optional
 
 from .base import BaseAgent
+from ..memory import EnterpriseMemory
+from ..core.private_state import CompanyPrivateState
 from ..fallback import deterministic
 from ..core.context import slim_context
 
@@ -25,6 +27,10 @@ class CompanyAgent(BaseAgent):
         # 企业档案（enterprise_agents.json 中的单条）：system_prompt 为第一阶段
         # 唯一输入；stage_contexts 随阶段推进注入（enter_stage 及之前不注入）。
         self.enterprise = enterprise
+        self.private_state: Optional[CompanyPrivateState] = None
+        self.memory = EnterpriseMemory(risk_preference=float(
+            (enterprise or {}).get("decision_baseline", {}).get("risk_preference", 0.5)))
+        self._counter_made: Dict[str, bool] = {}
 
     def plan(self, company_view: dict, ctx: dict, funded_points: float,
              stage_id: str = "S1") -> dict:
@@ -38,6 +44,10 @@ class CompanyAgent(BaseAgent):
             items = [c for c in items if c.get("as_of", "9999-12-31") <= cutoff]
             payload["enterprise_identity"] = self.enterprise["system_prompt"]
             payload["injected_stage_context"] = items
+            payload["decision_baseline"] = self.enterprise.get("decision_baseline", {})
+            payload["memory"] = self.memory.to_dict()
+            if self.private_state is not None:
+                payload["private_state"] = self.private_state.to_dict()
         return self.run(
             payload,
             lambda: deterministic.company_plan(company_view, ctx, funded_points))

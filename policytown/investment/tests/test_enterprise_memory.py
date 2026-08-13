@@ -201,3 +201,100 @@ class TestCommitmentLedger(unittest.TestCase):
         self.assertEqual(data[0]["condition"], "agreement")
         self.assertEqual(data[0]["status"], "pending")
         self.assertIn("source_ids", data[0])
+
+
+from ..agents.company import CompanyAgent
+
+
+class _CapturingLlm:
+    def __init__(self) -> None:
+        self.prompts: list = []
+
+    def __call__(self, prompt: str, validator=None) -> dict:
+        self.prompts.append(prompt)
+        return {"company_id": "company_a", "action": "wait",
+                "capital_request_next_round": 0.0,
+                "resource_allocation": {"construction": 0.2, "research": 0.2,
+                                        "market": 0.2, "cash_buffer": 0.4},
+                "milestone_target": "construction_done", "risk_response": "observe",
+                "competition_response": "wait", "evidence_ids": [], "confidence": 0.5}
+
+
+def _view(company_id="company_a"):
+    return {"company_id": company_id, "anon_label": "企业A", "industry": "display",
+            "status": "建设",
+            "metrics": {"financial_health": 50, "execution_ability": 50,
+                        "technology_readiness": 50, "customer_order_strength": 50,
+                        "construction_progress": 20, "production_ramp": 0,
+                        "project_cashflow": -10, "capital_intensity": 40},
+            "cash_band": "一般", "capital_request": 30,
+            "milestones_done": [], "evidence_ids": []}
+
+
+def _mini_ctx():
+    return {"cutoff_at": "2008-09-30", "market": {}, "city": {}, "companies": [],
+            "evidence_pack": {}, "fact_graph": []}
+
+
+class TestAgentMemorySeparation(unittest.TestCase):
+    def test_plan_prompt_has_baseline_private_memory(self):
+        import json
+        enterprise = {
+            "prototype_id": "proto_a", "enter_stage": "S1",
+            "decision_cutoff": "2008-08-31", "industry": "display",
+            "system_prompt": "你是京东方系企业决策代表。",
+            "stage_contexts": {},
+            "decision_baseline": {"management_objectives": ["扩代"], "expansion_appetite": 0.75,
+                                  "risk_preference": 0.45,
+                                  "financing_constraints": {"bank_credit": "strong"},
+                                  "negotiation_stance": "cooperative"},
+            "private_baseline": {"cash_reserve": {"min": 15, "max": 25, "basis": "年报口径"}},
+        }
+        from ..core.private_state import make_private_state
+        from ..core.state import CompanyState
+        comp = CompanyState(company_id="company_a", anon_label="企业A", industry="display",
+                            metrics={}, cash_points=0, debt_points=0)
+        llm = _CapturingLlm()
+        agent = CompanyAgent("company_a", enterprise=enterprise, llm_fn=llm)
+        agent.private_state = make_private_state(comp, enterprise, seed=42)
+        agent.plan(_view(), _mini_ctx(), 0.0, "S1")
+        blob = llm.prompts[-1]
+        for token in ('"decision_baseline"', '"private_state"', '"memory"',
+                      '"cash_reserve"', '"beliefs"', '"commitments"'):
+            self.assertIn(token, blob, "plan prompt 缺 %s" % token)
+
+    def test_identity_static_memory_dynamic(self):
+        """决策底色固定；判断账/承诺账是动态记忆，互不混淆。"""
+        enterprise = {
+            "prototype_id": "proto_a", "enter_stage": "S1",
+            "decision_cutoff": "2008-08-31", "industry": "display",
+            "system_prompt": "你是京东方系企业决策代表。", "stage_contexts": {},
+            "decision_baseline": {"management_objectives": ["扩代"], "expansion_appetite": 0.75,
+                                  "risk_preference": 0.45,
+                                  "financing_constraints": {"bank_credit": "strong"},
+                                  "negotiation_stance": "cooperative"},
+        }
+        from ..core.private_state import make_private_state
+        from ..core.state import CompanyState
+        comp = CompanyState(company_id="company_a", anon_label="企业A", industry="display",
+                            metrics={}, cash_points=0, debt_points=0)
+        agent = CompanyAgent("company_a", enterprise=enterprise, llm_fn=None)
+        agent.private_state = make_private_state(comp, enterprise, seed=42)
+        before = agent.memory.to_dict()
+        agent.memory.beliefs.update("financing_continuity", signal=0.2,
+                                    signal_weight=0.8, stage_id="S1", evidence_ids=["E1"])
+        after = agent.memory.to_dict()
+        self.assertNotEqual(before, after, "判断账必须随证据变化")
+        self.assertEqual(agent.enterprise["decision_baseline"]["expansion_appetite"], 0.75,
+                         "决策底色固定不变")
+
+    def test_public_context_has_no_memory_fields(self):
+        import json
+        from ..core.orchestrator import Orchestrator
+        orch = Orchestrator(seed=42)
+        orch.start(["proto_a", "proto_d", "proto_b"], "S1")
+        view = orch.open_stage()
+        blob = json.dumps(view["context"], ensure_ascii=False)
+        for token in ("beliefs", "commitments", "management_objectives",
+                      "expansion_appetite", "risk_preference"):
+            self.assertNotIn(token, blob, "Memory/底色泄漏进公开 Context：%s" % token)
