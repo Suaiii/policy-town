@@ -162,5 +162,19 @@ class TestPhasedPrompt(unittest.TestCase):
             self.assertNotIn(token, blob, "公开Context泄漏真实企业名：%s" % token)
 
 
+class TestDecisionBaseline(unittest.TestCase):
+    """决策底色 = 固定身份配置，不属于动态 Memory（文档 5.4）。"""
+
+    def test_baseline_defined_for_all(self):
+        for e in ENTERPRISES:
+            bl = e.get("decision_baseline")
+            self.assertTrue(bl and bl.get("management_objectives"), e["name"])
+            self.assertTrue(0.0 <= bl["expansion_appetite"] <= 1.0, e["name"])
+            self.assertTrue(0.0 <= bl["risk_preference"] <= 1.0, e["name"])
+            self.assertIn(bl["negotiation_stance"],
+                          ("cooperative", "guarded", "aggressive"), e["name"])
+            self.assertTrue(bl["financing_constraints"], e["name"])
+
+
 if __name__ == "__main__":
     unittest.main()
