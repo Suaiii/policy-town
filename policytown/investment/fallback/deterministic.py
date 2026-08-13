@@ -10,11 +10,46 @@ from __future__ import annotations
 from typing import List, Optional
 
 
+DEPARTMENT_LABELS = {"fiscal": "财政部门", "economy": "经信部门",
+                     "sci_tech": "科技部门", "development": "发改部门"}
+_RECOMMENDATION_BY_DIRECTION = {"positive": "support", "neutral": "conditional_support",
+                                "negative": "oppose"}
+
+
+def _recommendation(direction: str, missing_count: int = 0) -> str:
+    """方向→建议；缺失信息≥2 条时强制 hold（文档 4.4：缺失先暂缓）。"""
+    if missing_count >= 2:
+        return "hold"
+    return _RECOMMENDATION_BY_DIRECTION[direction]
+
+
+def _memorandum(kind: str, company: dict, score: float, direction: str,
+                confidence: float, factors: list, evidence_ids: list, summary: str,
+                claims: list, red_lines: list, conditions: list, missing: list) -> dict:
+    return {
+        "agent": kind,
+        "department": DEPARTMENT_LABELS[kind],
+        "company_id": company["company_id"] if company else None,
+        "recommendation": _recommendation(direction, len(missing)),
+        "direction": direction,
+        "score": score,
+        "confidence": confidence,
+        "core_claims": claims,
+        "red_lines": red_lines,
+        "acceptable_conditions": conditions,
+        "missing_info": missing,
+        "key_factors": factors,
+        "evidence_ids": evidence_ids,
+        "reasoning_summary": summary,
+    }
+
+
 # ---------- 四专业 Agent 的确定性研判 ----------
 
 def professional_assessment(kind: str, ctx: dict, company: Optional[dict]) -> dict:
     m = company["metrics"] if company else None
     market = ctx["market"].get(company["industry"]) if company else None
+    ev = company["evidence_ids"] if company else []
 
     if kind == "fiscal":
         city = ctx["city"]
@@ -28,51 +63,123 @@ def professional_assessment(kind: str, ctx: dict, company: Optional[dict]) -> di
         summary = "财政余量 %d 点，已承诺 %d 点；%s" % (
             city["budget_points"], city["committed_capital"],
             "仍可承接新项目" if direction == "positive" else "追加空间有限，需防锁定")
-        ev = company["evidence_ids"] if company else []
-        return {"agent": "fiscal", "company_id": company["company_id"] if company else None,
-                "direction": direction, "score": score, "confidence": 0.8,
-                "key_factors": factors, "evidence_ids": ev, "reasoning_summary": summary}
+        claims = [
+            {"claim_id": "FISCAL-1", "claim_type": "positive",
+             "statement": "当期财政余量 %d 点，具备承接能力" % city["budget_points"],
+             "evidence_ids": ev},
+            {"claim_id": "FISCAL-2", "claim_type": "risk",
+             "statement": "已承诺资本 %d 点，继续追加将压缩未来阶段空间" % city["committed_capital"],
+             "evidence_ids": ev},
+        ]
+        red_lines = [
+            {"redline_id": "FISCAL-R1",
+             "condition": "当期支出不得超过预算上限 %d 点" % city["budget_points"],
+             "reason": "财政点数守恒"},
+            {"redline_id": "FISCAL-R2",
+             "condition": "企业资金来源未证实前不承诺后续追加上限",
+             "reason": "防止财政暴露不可控"},
+        ]
+        conditions = [
+            {"condition_id": "FISCAL-C1", "condition": "分期拨付，首期不超过方案的 50%",
+             "reason": "以里程碑控制支出节奏"},
+            {"condition_id": "FISCAL-C2", "condition": "资金证明或同比例出资作为放款前置条件",
+             "reason": "确认企业真实出资能力"},
+        ]
+        missing = [{"info_id": "FISCAL-M1", "severity": "medium",
+                    "description": "企业融资方案未完全披露",
+                    "impact": "财政暴露测算存在缺口"}]
+        return _memorandum(kind, company, score, direction, 0.8, factors, ev, summary,
+                           claims, red_lines, conditions, missing)
 
     if kind == "economy":
         base = ctx["city"]["industrial_base"].get(company["industry"], 20.0)
         talent = ctx["city"]["talent_supply"]
-        score = round(0.6 * base + 0.4 * talent, 1)
+        infra = ctx["city"]["infrastructure_capacity"]
+        score = round(0.5 * base + 0.3 * talent + 0.2 * infra, 1)
         direction = _dir(score)
-        return {"agent": "economy", "company_id": company["company_id"],
-                "direction": direction, "score": score, "confidence": 0.7,
-                "key_factors": [
-                    {"metric_id": "industrial_base", "effect": "positive" if base >= 40 else "negative"},
-                    {"metric_id": "talent_supply", "effect": "positive" if talent >= 50 else "neutral"}],
-                "evidence_ids": company["evidence_ids"],
-                "reasoning_summary": "本地产业基础 %d、人才 %d：%s" % (
-                    base, talent, "具备承接条件" if direction == "positive" else "配套存在缺口")}
+        claims = [
+            {"claim_id": "ECON-1", "claim_type": "positive",
+             "statement": "本地产业基础 %d / 人才 %d / 基础设施 %d"
+                          % (base, talent, infra),
+             "evidence_ids": ev},
+            {"claim_id": "ECON-2", "claim_type": "assumption",
+             "statement": "供应链承接能力按本地产业基础水平估算",
+             "evidence_ids": []},
+        ]
+        red_lines = [{"redline_id": "ECON-R1",
+                      "condition": "配套不足时不建议一次性全额投入",
+                      "reason": "落地效果依赖配套"}]
+        conditions = [{"condition_id": "ECON-C1",
+                       "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                       "reason": "保障项目落地与产业链协同"}]
+        missing = [{"info_id": "ECON-M1", "severity": "medium",
+                    "description": "本地供应链承接能力尚无测算",
+                    "impact": "协同收益可能高估"}]
+        summary = "本地产业基础 %d、人才 %d：%s" % (
+            base, talent, "具备承接条件" if direction == "positive" else "配套存在缺口")
+        return _memorandum(kind, company, score, direction, 0.7, [
+            {"metric_id": "industrial_base", "effect": "positive" if base >= 40 else "negative"},
+            {"metric_id": "talent_supply", "effect": "positive" if talent >= 50 else "neutral"}],
+            ev, summary, claims, red_lines, conditions, missing)
 
     if kind == "sci_tech":
         score = round(0.5 * m["execution_ability"] + 0.5 * m["technology_readiness"], 1)
         direction = _dir(score)
-        return {"agent": "sci_tech", "company_id": company["company_id"],
-                "direction": direction, "score": score, "confidence": 0.65,
-                "key_factors": [
-                    {"metric_id": "execution_ability", "effect": "positive" if m["execution_ability"] >= 55 else "negative"},
-                    {"metric_id": "technology_readiness", "effect": "positive" if m["technology_readiness"] >= 55 else "neutral"}],
-                "evidence_ids": company["evidence_ids"],
-                "reasoning_summary": "执行 %d / 技术成熟 %d：%s" % (
-                    m["execution_ability"], m["technology_readiness"],
-                    "能把钱变成产能" if direction == "positive" else "兑现风险需关注")}
+        claims = [
+            {"claim_id": "TECH-1", "claim_type": "positive",
+             "statement": "执行能力 %d / 技术成熟度 %d" % (m["execution_ability"], m["technology_readiness"]),
+             "evidence_ids": ev},
+            {"claim_id": "TECH-2", "claim_type": "risk",
+             "statement": "量产证据未完整披露，里程碑兑现存在不确定性",
+             "evidence_ids": []},
+        ]
+        red_lines = [{"redline_id": "TECH-R1",
+                      "condition": "技术里程碑未达标时暂停后续拨付",
+                      "reason": "防止资金沉淀在未验证环节"}]
+        conditions = [{"condition_id": "TECH-C1",
+                       "condition": "设置建设、试产、量产里程碑并绑定放款",
+                       "reason": "按阶段验证技术兑现"}]
+        missing = [{"info_id": "TECH-M1", "severity": "high",
+                    "description": "量产与良率数据缺失",
+                    "impact": "产业化路径未证实"}]
+        summary = "执行 %d / 技术成熟 %d：%s" % (
+            m["execution_ability"], m["technology_readiness"],
+            "能把钱变成产能" if direction == "positive" else "兑现风险需关注")
+        return _memorandum(kind, company, score, direction, 0.65, [
+            {"metric_id": "execution_ability", "effect": "positive" if m["execution_ability"] >= 55 else "negative"},
+            {"metric_id": "technology_readiness", "effect": "positive" if m["technology_readiness"] >= 55 else "neutral"}],
+            ev, summary, claims, red_lines, conditions, missing)
 
-    # development
+    # development（发改）
     score = round(50 + 0.5 * market["cycle"] + 0.3 * market["price_trend"], 1)
     score = max(0, min(100, score))
     direction = _dir(score)
-    return {"agent": "development", "company_id": company["company_id"],
-            "direction": direction, "score": score, "confidence": 0.7,
-            "key_factors": [
-                {"metric_id": "market_cycle", "effect": "positive" if market["cycle"] > 0 else "negative"},
-                {"metric_id": "supply_pressure", "effect": "negative" if market["supply_pressure"] >= 60 else "neutral"}],
-            "evidence_ids": company["evidence_ids"],
-            "reasoning_summary": "景气 %d / 价格趋势 %d / 供给压力 %d：%s" % (
-                market["cycle"], market["price_trend"], market["supply_pressure"],
-                "时点有利" if direction == "positive" else "下行风险主导，宜逆周期评估")}
+    claims = [
+        {"claim_id": "DEV-1",
+         "claim_type": "positive" if market["cycle"] > 0 else "risk",
+         "statement": "行业景气 %d / 价格趋势 %d / 供给压力 %d"
+                      % (market["cycle"], market["price_trend"], market["supply_pressure"]),
+         "evidence_ids": ev},
+        {"claim_id": "DEV-2", "claim_type": "risk",
+         "statement": "产能竞争与政策窗口并存，周期位置决定投入时机",
+         "evidence_ids": []},
+    ]
+    red_lines = [{"redline_id": "DEV-R1",
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收"}]
+    conditions = [{"condition_id": "DEV-C1",
+                   "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                   "reason": "管理周期风险"}]
+    missing = [{"info_id": "DEV-M1", "severity": "medium",
+                "description": "后续需求与政策窗口的定量预测缺失",
+                "impact": "周期判断依赖定性证据"}]
+    summary = "景气 %d / 价格趋势 %d / 供给压力 %d：%s" % (
+        market["cycle"], market["price_trend"], market["supply_pressure"],
+        "时点有利" if direction == "positive" else "下行风险主导，宜逆周期评估")
+    return _memorandum(kind, company, score, direction, 0.7, [
+        {"metric_id": "market_cycle", "effect": "positive" if market["cycle"] > 0 else "negative"},
+        {"metric_id": "supply_pressure", "effect": "negative" if market["supply_pressure"] >= 60 else "neutral"}],
+        ev, summary, claims, red_lines, conditions, missing)
 
 
 # ---------- 企业 Agent 的确定性策略 ----------

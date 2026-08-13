@@ -62,5 +62,48 @@ class TestMemorandumValidator(unittest.TestCase):
             validate_memorandum(memo)
 
 
+# ---------- Task 3：确定性 fallback 产出完整部门备忘录 ----------
+
+import json
+import os
+
+from ..core.orchestrator import Orchestrator
+from ..fallback import deterministic
+
+
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                        "data", "hefei_mvp")
+STAGES = {s["stage_id"]: s for s in
+          json.load(open(os.path.join(DATA_DIR, "stages.json"), encoding="utf-8"))["stages"]}
+
+
+def _open_view(company_ids):
+    orch = Orchestrator(seed=42)
+    orch.start(company_ids, "S1")
+    return orch.open_stage()
+
+
+class TestMemorandumFallback(unittest.TestCase):
+    def test_fallback_emits_full_memorandum(self):
+        view = _open_view(["proto_a", "proto_d"])
+        memos = view["agent_assessments"]
+        self.assertEqual(len(memos), 1 + 2 * 3, "财政全局1份 + 三部门×2企业")
+        for memo in memos:
+            validate_memorandum(memo)
+            self.assertIn("财政", deterministic.DEPARTMENT_LABELS["fiscal"])
+
+    def test_fiscal_is_global(self):
+        view = _open_view(["proto_a"])
+        memos = [m for m in view["agent_assessments"] if m["agent"] == "fiscal"]
+        self.assertEqual(len(memos), 1)
+        self.assertIsNone(memos[0]["company_id"])
+
+    def test_recommendation_mapping(self):
+        self.assertEqual(deterministic._recommendation("positive"), "support")
+        self.assertEqual(deterministic._recommendation("neutral"), "conditional_support")
+        self.assertEqual(deterministic._recommendation("negative"), "oppose")
+        self.assertEqual(deterministic._recommendation("negative", missing_count=2), "hold")
+
+
 if __name__ == "__main__":
     unittest.main()
