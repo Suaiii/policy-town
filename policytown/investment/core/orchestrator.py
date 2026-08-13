@@ -19,6 +19,7 @@ from .message import Inbox
 from .context import build_context
 from .engine import RulesEngine
 from .graph_projection import project
+from .private_state import make_private_state
 from ..agents.professional import make_professional_agents, run_assessments
 from ..agents.company import CompanyAgent
 
@@ -86,6 +87,10 @@ class Orchestrator:
             proto_id = "proto_%s" % cid.split("_")[-1]
             self.company_agents[cid] = CompanyAgent(
                 cid, enterprise=self.enterprises.get(proto_id), llm_fn=self.llm_fn)
+        for cid in companies:
+            proto_id = "proto_%s" % cid.split("_")[-1]
+            self.company_agents[cid].private_state = make_private_state(
+                companies[cid], self.enterprises.get(proto_id), self.seed)
 
     # ---------- ①②：开局视图（Context + 专业研判 + 图投影） ----------
 
