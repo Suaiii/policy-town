@@ -13,7 +13,7 @@ import { TableMapDiorama } from './TableMapDiorama';
 import { FrameCorners } from './ui/ParlorUI';
 
 function PanoramaRoom() {
-  const texture = useTexture('/assets/v3 360_upscayl_4x_ultrasharp-4x.png');
+  const texture = useTexture('/assets/v3 360_upscayl_4x_ultrasharp-4x.webp');
 
   useEffect(() => {
     texture.colorSpace = THREE.SRGBColorSpace;
