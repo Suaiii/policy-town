@@ -11253,6 +11253,540 @@
         "company_id": "company_b",
         "status": "承压"
       }
+    ],
+    "timeline": [
+      {
+        "stage_id": "S1",
+        "window": "2007—2008",
+        "worried": [
+          "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+          "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+        ],
+        "negotiated": "range",
+        "committed": [
+          {
+            "company_id": "company_a",
+            "capital_points": 25.0,
+            "risk_conditions": [
+              "milestones",
+              "exit_terms",
+              "follow_on_cap",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ]
+          },
+          {
+            "company_id": "company_b",
+            "capital_points": 20.0,
+            "risk_conditions": [
+              "milestones",
+              "exit_terms",
+              "follow_on_cap",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ]
+          },
+          {
+            "company_id": "company_d",
+            "capital_points": 15.0,
+            "risk_conditions": [
+              "milestones",
+              "exit_terms",
+              "follow_on_cap",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ]
+          }
+        ],
+        "followed_up": [],
+        "result": {
+          "spent": 60.0,
+          "statuses": {
+            "company_a": "建设",
+            "company_d": "建设",
+            "company_b": "建设"
+          }
+        }
+      },
+      {
+        "stage_id": "S2",
+        "window": "2009—2011",
+        "worried": [
+          "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+          "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+        ],
+        "negotiated": "range",
+        "committed": [
+          {
+            "company_id": "company_a",
+            "capital_points": 25.0,
+            "risk_conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ]
+          },
+          {
+            "company_id": "company_b",
+            "capital_points": 20.0,
+            "risk_conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ]
+          },
+          {
+            "company_id": "company_d",
+            "capital_points": 15.0,
+            "risk_conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ]
+          }
+        ],
+        "followed_up": [
+          {
+            "commitment_id": "CO-CS-PLAN-A-company_a",
+            "company_id": "company_a",
+            "stage_id": "S2",
+            "promise": "meet_conditions",
+            "status": "breached",
+            "status_label": "未完成",
+            "explanation": "未完成：建设进度 31 / 产能爬坡 0",
+            "evidence_ids": [
+              "CS-PLAN-A-company_a"
+            ]
+          },
+          {
+            "commitment_id": "CO-CS-PLAN-A-company_d",
+            "company_id": "company_d",
+            "stage_id": "S2",
+            "promise": "meet_conditions",
+            "status": "breached",
+            "status_label": "未完成",
+            "explanation": "未完成：建设进度 33 / 产能爬坡 10",
+            "evidence_ids": [
+              "CS-PLAN-A-company_d"
+            ]
+          }
+        ],
+        "result": {
+          "spent": 60.0,
+          "statuses": {
+            "company_a": "建设",
+            "company_d": "建设",
+            "company_b": "建设"
+          }
+        }
+      },
+      {
+        "stage_id": "S3",
+        "window": "2012—2014",
+        "worried": [
+          "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+          "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+        ],
+        "negotiated": "range",
+        "committed": [
+          {
+            "company_id": "company_a",
+            "capital_points": 25.0,
+            "risk_conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ]
+          },
+          {
+            "company_id": "company_b",
+            "capital_points": 20.0,
+            "risk_conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ]
+          },
+          {
+            "company_id": "company_d",
+            "capital_points": 15.0,
+            "risk_conditions": [
+              "milestones",
+              "exit_terms",
+              "follow_on_cap",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ]
+          }
+        ],
+        "followed_up": [
+          {
+            "commitment_id": "CO-CS-PLAN-A-company_a",
+            "company_id": "company_a",
+            "stage_id": "S3",
+            "promise": "meet_conditions",
+            "status": "breached",
+            "status_label": "未完成",
+            "explanation": "未完成：建设进度 35 / 产能爬坡 0",
+            "evidence_ids": [
+              "CS-PLAN-A-company_a"
+            ]
+          },
+          {
+            "commitment_id": "CO-CS-PLAN-A-company_a",
+            "company_id": "company_a",
+            "stage_id": "S3",
+            "promise": "meet_conditions",
+            "status": "breached",
+            "status_label": "未完成",
+            "explanation": "未完成：建设进度 35 / 产能爬坡 0",
+            "evidence_ids": [
+              "CS-PLAN-A-company_a"
+            ]
+          }
+        ],
+        "result": {
+          "spent": 60.0,
+          "statuses": {
+            "company_a": "建设",
+            "company_d": "承压",
+            "company_b": "承压"
+          }
+        }
+      },
+      {
+        "stage_id": "S4",
+        "window": "2015—2016",
+        "worried": [
+          "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+          "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+        ],
+        "negotiated": "range",
+        "committed": [
+          {
+            "company_id": "company_a",
+            "capital_points": 25.0,
+            "risk_conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ]
+          },
+          {
+            "company_id": "company_b",
+            "capital_points": 20.0,
+            "risk_conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ]
+          },
+          {
+            "company_id": "company_d",
+            "capital_points": 15.0,
+            "risk_conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ]
+          }
+        ],
+        "followed_up": [
+          {
+            "commitment_id": "CO-CS-PLAN-A-company_a",
+            "company_id": "company_a",
+            "stage_id": "S4",
+            "promise": "meet_conditions",
+            "status": "insufficient_evidence",
+            "status_label": "证据不足",
+            "explanation": "证据不足：建设进度 56 / 产能爬坡 0",
+            "evidence_ids": [
+              "CS-PLAN-A-company_a"
+            ]
+          },
+          {
+            "commitment_id": "CO-CS-PLAN-A-company_a",
+            "company_id": "company_a",
+            "stage_id": "S4",
+            "promise": "meet_conditions",
+            "status": "insufficient_evidence",
+            "status_label": "证据不足",
+            "explanation": "证据不足：建设进度 56 / 产能爬坡 0",
+            "evidence_ids": [
+              "CS-PLAN-A-company_a"
+            ]
+          }
+        ],
+        "result": {
+          "spent": 60.0,
+          "statuses": {
+            "company_a": "建设",
+            "company_d": "承压",
+            "company_b": "承压"
+          }
+        }
+      }
+    ],
+    "proposition_review": [
+      {
+        "company_id": "company_a",
+        "proposition": "企业是否具备建线、融资和持续扩代的真实能力",
+        "evidence_status_at_decision": "partial",
+        "handling": [
+          {
+            "stage": "S1",
+            "conditions": [
+              "milestones",
+              "exit_terms",
+              "follow_on_cap",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ],
+            "capital_points": 25.0
+          },
+          {
+            "stage": "S2",
+            "conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ],
+            "capital_points": 25.0
+          },
+          {
+            "stage": "S3",
+            "conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ],
+            "capital_points": 25.0
+          },
+          {
+            "stage": "S4",
+            "conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ],
+            "capital_points": 25.0
+          }
+        ],
+        "assumptions": [
+          {
+            "key": "cash_reserve",
+            "basis": "2007年末货币资金约17亿元",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "financing_capacity",
+            "basis": "2008年7月定增完成、多元融资渠道已验证",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "parent_support",
+            "basis": "集团运营现金流与北京国资支持记录",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "tech_team_depth",
+            "basis": "北京5代线工程团队已验证建线良率能力",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "ip_pathway_risk",
+            "basis": "TFT-LCD成熟路线，专利授权体系已建立",
+            "assumption_class": "latent_scenario_variable"
+          }
+        ],
+        "worldline_outcome": {
+          "status": "建设",
+          "milestones_done": [
+            "construction_done"
+          ]
+        },
+        "terminal_outcome": "capability_confirmed"
+      },
+      {
+        "company_id": "company_d",
+        "proposition": "母公司能否在价格下降和高负债下持续提供运营资金、采购信用和技术人员",
+        "evidence_status_at_decision": "partial",
+        "handling": [
+          {
+            "stage": "S1",
+            "conditions": [
+              "milestones",
+              "exit_terms",
+              "follow_on_cap",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ],
+            "capital_points": 15.0
+          },
+          {
+            "stage": "S2",
+            "conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ],
+            "capital_points": 15.0
+          },
+          {
+            "stage": "S3",
+            "conditions": [
+              "milestones",
+              "exit_terms",
+              "follow_on_cap",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ],
+            "capital_points": 15.0
+          },
+          {
+            "stage": "S4",
+            "conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ],
+            "capital_points": 15.0
+          }
+        ],
+        "assumptions": [
+          {
+            "key": "cash_reserve",
+            "basis": "2009年末现金及等价物3.85亿美元",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "financing_capacity",
+            "basis": "2010年4月获银行豁免后才恢复，续贷依赖高",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "parent_support",
+            "basis": "2009年净亏损2.34亿美元+短贷9.8亿美元",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "tech_team_depth",
+            "basis": "多晶硅铸锭/硅片团队成熟，组件新团队组建中",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "ip_pathway_risk",
+            "basis": "光伏技术壁垒低于半导体，风险主要在价格与融资",
+            "assumption_class": "latent_scenario_variable"
+          }
+        ],
+        "worldline_outcome": {
+          "status": "承压",
+          "milestones_done": []
+        },
+        "terminal_outcome": "parent_support_failed"
+      },
+      {
+        "company_id": "company_b",
+        "proposition": "技术团队、知识产权路径和长期资本能否按阶段形成闭环",
+        "evidence_status_at_decision": "unverified",
+        "handling": [
+          {
+            "stage": "S1",
+            "conditions": [
+              "milestones",
+              "exit_terms",
+              "follow_on_cap",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ],
+            "capital_points": 20.0
+          },
+          {
+            "stage": "S2",
+            "conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ],
+            "capital_points": 20.0
+          },
+          {
+            "stage": "S3",
+            "conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ],
+            "capital_points": 20.0
+          },
+          {
+            "stage": "S4",
+            "conditions": [
+              "milestones",
+              "tranches",
+              "audit",
+              "fund_proof"
+            ],
+            "capital_points": 20.0
+          }
+        ],
+        "assumptions": [
+          {
+            "key": "cash_reserve",
+            "basis": "17天新设项目公司，无经营现金流",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "financing_capacity",
+            "basis": "依赖合肥国资与政策性产业资本体系持续注资",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "parent_support",
+            "basis": "地方平台承担融资主体角色，持续能力未验证",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "tech_team_depth",
+            "basis": "早期团队组建中，量产与良率经验待验证",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "ip_pathway_risk",
+            "basis": "DRAM IP壁垒极高，国际龙头已推进20nm级DDR4",
+            "assumption_class": "latent_scenario_variable"
+          }
+        ],
+        "worldline_outcome": {
+          "status": "承压",
+          "milestones_done": []
+        },
+        "terminal_outcome": "long_capital_sustained"
+      }
     ]
   }
 }

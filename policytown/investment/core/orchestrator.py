@@ -24,6 +24,7 @@ from .meeting import (build_challenges, detect_conflicts, find_memorandum,
                       make_minutes, position_revision)
 from .questions import build_question_cards, validate_question_card
 from .negotiation import validate_condition_sheet
+from .follow_up import SIGNAL, build_timeline, resolve_follow_up, select_follow_up
 from ..memory.fact_graph import FactRecord
 from ..memory.commitment_ledger import CommitmentRecord
 from ..agents.professional import (make_challenge_responders, make_professional_agents,
@@ -59,6 +60,8 @@ class Orchestrator:
         self._verifications: Dict[str, dict] = {}
         self._pending_sheets: List[dict] = []
         self._last_deltas: List[dict] = []
+        self._follow_ups: List[dict] = []
+        self._stage_records: Dict[str, dict] = {}
 
     # ---------- 开局 ----------
 
@@ -122,6 +125,8 @@ class Orchestrator:
     def open_stage(self) -> dict:
         st = self._state()
         stage = self.stages[st.stage_id]
+        # P2.5：随访先于 Context 构建，履约事实进入本轮 Context
+        follow_up = self._run_follow_up(st.stage_id)
         ctx = build_context(st, self.inbox, stage["events"])
         assessments = run_assessments(self.pro_agents, ctx)
         communication = self._communicate(assessments, ctx)
@@ -131,13 +136,15 @@ class Orchestrator:
         graph = project(st, self.inbox, stage["events"])
         self._pending_view = {"context": ctx, "assessments": assessments,
                               "communication": communication,
-                              "question_cards": cards}
+                              "question_cards": cards,
+                              "follow_up": follow_up}
         return {"stage": {"stage_id": st.stage_id, "label": stage["label"],
                           "window": stage["window"], "core_tension": stage["core_tension"]},
                 "context": ctx, "department_memoranda": assessments,
                 "department_communication": communication,
                 "meeting_minutes": communication["minutes"],
                 "question_cards": cards,
+                "follow_up": follow_up,
                 "graph_view": graph}
 
     # ---------- ④⑤⑥：提交决策 → 企业响应 → 结算 ----------
@@ -309,6 +316,19 @@ class Orchestrator:
                                   or d["company_id"] in confirmed]
         self._last_deltas = result.get("state_deltas", [])
         result["negotiation"] = self._negotiation_trace(final_sheets, confirmations)
+        view = self._pending_view or self._stage_view(st)
+        minutes = view["communication"]["minutes"]
+        verification = self._verifications.get(st.stage_id)
+        self._stage_records[st.stage_id] = {
+            "worries": [d["summary"] for d in minutes.get("disagreements", [])][:2],
+            "negotiation": verification["response_type"] if verification else None,
+            "committed": [{"company_id": s["company_id"],
+                           "capital_points": s["capital_points"],
+                           "risk_conditions": s["risk_conditions"]}
+                          for s in final_sheets],
+            "result": {"spent": result["budget"]["spent"],
+                       "statuses": {cid: c.status for cid, c in st.companies.items()}},
+        }
         return result
 
     # ---------- P2：联席方案接入玩家决策 ----------
@@ -325,6 +345,65 @@ class Orchestrator:
         return sheets
 
     # ---------- 私有助手 ----------
+
+    def _run_follow_up(self, stage_id: str) -> Optional[dict]:
+        """P2.5：每阶段只随访承诺账中最重要的一项到期承诺。
+
+        判定履约 → 写回现实图谱 → 更新企业判断账 → mark 账目状态。
+        """
+        st = self._state()
+        for agent in self.company_agents.values():
+            rec = select_follow_up(agent.memory.commitments, stage_id)
+            if rec is None:
+                continue
+            comp = st.companies.get(agent.company_id)
+            fu = resolve_follow_up(rec, comp)
+            fu["stage_id"] = stage_id
+            st.fact_graph.add(FactRecord(
+                fact_id="FU-%s" % rec.commitment_id,
+                subject=rec.party, predicate="commitment_%s" % fu["status"],
+                value=fu["status"], effective_at=st.cutoff_at,
+                available_at=st.cutoff_at, visibility="public",
+                source_ids=list(rec.source_ids) + [rec.commitment_id]))
+            agent.memory.beliefs.update(
+                "financing_continuity", signal=SIGNAL[fu["status"]],
+                signal_weight=0.4, stage_id=stage_id,
+                evidence_ids=[rec.commitment_id])
+            agent.memory.commitments.mark(rec.commitment_id, fu["status"])
+            self._follow_ups.append(fu)
+            return fu
+        return None
+
+    def _proposition_review(self) -> List[dict]:
+        """终局关键命题复盘（文档 4.9.2）：决策时证据状态 vs 玩家处理 vs 结果 vs 终局揭示。"""
+        st = self._state()
+        out: List[dict] = []
+        for cid, agent in self.company_agents.items():
+            kp = (agent.enterprise or {}).get("key_proposition") or {}
+            if not kp:
+                continue
+            comp = st.companies[cid]
+            handling = []
+            for sid, rec in self._stage_records.items():
+                for c in rec.get("committed", []):
+                    if c["company_id"] == cid:
+                        handling.append({"stage": sid,
+                                         "conditions": c["risk_conditions"],
+                                         "capital_points": c["capital_points"]})
+            out.append({
+                "company_id": cid,
+                "proposition": kp["proposition"],
+                "evidence_status_at_decision": kp["evidence_status"],
+                "handling": handling,
+                "assumptions": [{"key": a.key, "basis": a.basis,
+                                 "assumption_class": a.assumption_class}
+                                for a in agent.private_state.assumptions]
+                if agent.private_state is not None else [],
+                "worldline_outcome": {"status": comp.status,
+                                      "milestones_done": list(comp.milestones_done)},
+                "terminal_outcome": kp.get("terminal_verification", {}).get("outcome"),
+            })
+        return out
 
     def _stage_view(self, st) -> dict:
         stage = self.stages[st.stage_id]
@@ -405,7 +484,9 @@ class Orchestrator:
                     "committed_capital": round(st.city.committed_capital, 2),
                     "industrial_base": dict(st.city.industrial_base)},
                 "historical_replay": scores,
-                "branch_points": _branch_points(st)}
+                "branch_points": _branch_points(st),
+                "timeline": build_timeline(self._stage_records, self._follow_ups, self.stages),
+                "proposition_review": self._proposition_review()}
 
     def _state(self) -> WorldState:
         if self.state is None:
