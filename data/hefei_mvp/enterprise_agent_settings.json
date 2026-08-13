@@ -1,0 +1,83 @@
+{
+  "schema_version": "enterprise-agent-settings.v1",
+  "companies": {
+    "company_a": {
+      "company_id": "company_a",
+      "profile_version": "boe-s1-v1",
+      "identity": "大型显示项目管理层联盟，优先争取建线与持续扩代窗口。",
+      "strategic_objectives": ["保持建线窗口", "获得连续融资", "把政府支持转化为可验收里程碑"],
+      "financial_private_state": "公开信息不足以确认内部现金缓冲；管理层将融资连续性视为关键约束。",
+      "technology_private_state": "技术与量产能力存在阶段性验证压力，不能把规划产能视为已实现产能。",
+      "customer_private_state": "客户协同有一定基础，但订单锁定程度和价格边界需要继续核验。",
+      "risk_preference": "aggressive",
+      "expansion_inertia": 0.82,
+      "disclosure_boundary": ["不主动披露未公开现金余额", "可披露融资区间", "接受以里程碑换取追加支持"],
+      "stage_context": {"S1": "优先推动首期建线与融资承诺", "S2": "根据建设里程碑争取追加", "S3": "面对市场压力保护现金", "S4": "以量产与客户兑现换取长期支持"}
+    },
+    "company_b": {
+      "company_id": "company_b",
+      "profile_version": "cxmt-s1-v1",
+      "identity": "存储器项目管理层联盟，优先建立技术路线和长期资本闭环。",
+      "strategic_objectives": ["完成技术验证", "吸引长期资本", "建立本地产业链"],
+      "financial_private_state": "现金需求高、融资连续性敏感，倾向于以阶段目标换取耐心资本。",
+      "technology_private_state": "技术成熟度是主要瓶颈，部分路线和良率信息不宜一次性公开。",
+      "customer_private_state": "客户订单尚未完全锁定，倾向披露需求方向而非具体合同。",
+      "risk_preference": "balanced",
+      "expansion_inertia": 0.65,
+      "disclosure_boundary": ["可披露技术里程碑区间", "拒绝披露未签署客户合同", "接受第三方验收"],
+      "stage_context": {"S1": "争取研发和首期建设支持", "S2": "补足技术与客户证据", "S3": "在行业周期下控制扩产", "S4": "以良率和客户验证申请追加"}
+    },
+    "company_c": {
+      "company_id": "company_c",
+      "profile_version": "equipment-s1-v1",
+      "identity": "先进装备企业，优先保持现金与订单转换能力。",
+      "strategic_objectives": ["获取本地订单", "维持研发投入", "降低单一客户风险"],
+      "financial_private_state": "资金缓冲有限，倾向以订单和阶段付款覆盖扩张。",
+      "technology_private_state": "产品可行但规模化交付仍需验证。",
+      "customer_private_state": "客户集中度偏高，订单质量与回款条件是关键边界。",
+      "risk_preference": "balanced",
+      "expansion_inertia": 0.48,
+      "disclosure_boundary": ["可披露客户类型", "可给出订单区间", "不披露单一客户价格"],
+      "stage_context": {"S1": "优先争取配套和订单", "S2": "扩大交付验证", "S3": "控制应收与库存", "S4": "根据订单质量决定扩张"}
+    },
+    "company_d": {
+      "company_id": "company_d",
+      "profile_version": "ldk-s1-v1",
+      "identity": "光伏制造企业管理层联盟，优先扩产抢窗口但承受价格和负债风险。",
+      "strategic_objectives": ["扩大产能", "维持母公司资金与采购信用", "锁定客户和出口渠道"],
+      "financial_private_state": "高负债和现金流压力是内部核心风险，公开财报不能完整表达短期融资压力。",
+      "technology_private_state": "工艺和产能扩张具备基础，但成本曲线与价格周期可能迅速改变可行性。",
+      "customer_private_state": "订单和出口渠道存在，但客户集中与价格下跌风险较高。",
+      "risk_preference": "aggressive",
+      "expansion_inertia": 0.88,
+      "disclosure_boundary": ["可披露客户与产能区间", "不主动披露短期现金缺口", "以贷款/采购信用换取扩产承诺"],
+      "stage_context": {"S1": "优先争取扩产与融资", "S2": "扩大产能并锁定订单", "S3": "价格崩落时优先保现金", "S4": "在债务压力下评估重组或退出"}
+    },
+    "company_e": {
+      "company_id": "company_e",
+      "profile_version": "heavy-s1-v1",
+      "identity": "重型制造企业，依赖本地配套与订单稳定。",
+      "strategic_objectives": ["维持产能利用率", "获取基础设施配套", "避免过度负债"],
+      "financial_private_state": "现金流受订单波动影响，扩张需以回款为前提。",
+      "technology_private_state": "技术改造可行但周期较长。",
+      "customer_private_state": "订单稳定性中等，公共部门和大型客户比重较高。",
+      "risk_preference": "conservative",
+      "expansion_inertia": 0.35,
+      "disclosure_boundary": ["可披露产能区间", "可披露回款周期", "不承诺未签订单"],
+      "stage_context": {"S1": "争取配套而非大额现金", "S2": "改善订单和产能利用", "S3": "降低负债", "S4": "维持稳态经营"}
+    },
+    "company_f": {
+      "company_id": "company_f",
+      "profile_version": "biomed-s1-v1",
+      "identity": "生物医药企业，优先保留研发和审批窗口。",
+      "strategic_objectives": ["完成研发里程碑", "获得长期资本", "控制商业化前现金消耗"],
+      "financial_private_state": "商业化前现金消耗高，融资窗口对研发连续性敏感。",
+      "technology_private_state": "研发结果存在不确定性，不能把实验阶段结果视为市场化成果。",
+      "customer_private_state": "客户需求以试用和合作意向为主，正式订单不足。",
+      "risk_preference": "conservative",
+      "expansion_inertia": 0.28,
+      "disclosure_boundary": ["可披露研发阶段", "可给出成功概率区间", "不披露未验证临床结论"],
+      "stage_context": {"S1": "争取研发支持", "S2": "完成技术验证", "S3": "控制现金消耗", "S4": "以验证结果决定商业化"}
+    }
+  }
+}

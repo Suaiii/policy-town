@@ -1,0 +1,10 @@
+- target_id: historical_outcome
+  target_type: directional
+  weight: 1.0
+  expected: failure
+  metric_path: decision.expected_outcome
+- target_id: project_action
+  target_type: behavior_pattern
+  weight: 1.0
+  expected: invest
+  metric_path: decision.action

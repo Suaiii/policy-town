@@ -1,16 +1,33 @@
-node_modules/
-dist/
-dist-map/
-
-*.tsbuildinfo
-vite.config.js
-vite.config.d.ts
-
+.incoming-policy-town-H0/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
 .DS_Store
-**/.DS_Store
+Thumbs.db
 
-# Product and planning documents kept locally.
-/*.md
+# Dependencies
+node_modules/
 
-# Local macOS launcher (not part of the frontend source).
-/*.command
+# Build outputs
+dist/
+build/
+tsconfig.tsbuildinfo
+
+# Generated Hefei simulation artifacts
+data/hefei_industry_simulation.sqlite3
+data/hefei_mvp_runs/
+data/hefei_mvp/real_backend_run.json
+data/source_archive/
+
+# IDE / Superpowers temp files
+.superpowers/
