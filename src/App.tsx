@@ -8,7 +8,7 @@ import { AnnouncementOverlay } from './components/AnnouncementOverlay';
 import { ResourceBar } from './components/ResourceBar';
 import { StageContextPanel } from './components/StageContextPanel';
 import { ActionButton, FramedCard, FramedPanel, NoticeDetailPopover, PanelHeading, SectionLabel } from './components/ui/ParlorUI';
-import { createBackendRun, fetchDeliberation, resumeBackendRun, selectPolicyPackage, type BackendResult, type BackendStage, type Deliberation, type PolicyPackage } from './integration/investmentBackend';
+import { createBackendRun, fetchDeliberation, fetchHistoricalReplay, resumeBackendRun, selectPolicyPackage, type BackendResult, type BackendStage, type Deliberation, type HistoricalReplay, type PolicyPackage } from './integration/investmentBackend';
 import { clearBackendRunId, readBackendRunId, writeBackendRunId } from './integration/backendRunPersistence';
 import { createDecisionReviewExport } from './game/exportRun';
 import { restoreInteractiveSimulationState } from './game/persistence';
@@ -122,9 +122,10 @@ function IntroExperience({ state, setState, mapCanvas, onMapCanvas, onNewRun, on
       <div className="opening-boundary"><i />真实结果已隔离 · 你是最终决策者</div>
       <section className="opening-copy" aria-live="polite">
         {beat === 'cover' ? <>
-          <p className="opening-kicker">HEFEI · INDUSTRIAL DECISION SANDBOX</p>
-          <h1>合肥产业投资决策沙盘</h1>
-          <p className="opening-lead">坐到政府决策桌前，在当时可知的信息中决定有限资源投向何处。</p>
+          <p className="opening-kicker">HEFEI · HISTORICAL DECISION REPLAY</p>
+          <h1>合肥历史决策复演场</h1>
+          <p className="opening-lead">结果已经被封存。坐到政府决策桌前，在当时可知的信息中重新做一次选择。</p>
+          <div className="opening-proof-line"><span>重新决策</span><i>→</i><span>规则推演</span><i>→</i><span>历史解封</span></div>
           <button className="opening-action" onClick={() => setBeat('history')}>进入决策时点 <span>→</span></button>
           {hasSavedRun && <button className="opening-resume" onClick={onComplete}>
             <span>继续上一次推演</span>
@@ -134,7 +135,7 @@ function IntroExperience({ state, setState, mapCanvas, onMapCanvas, onNewRun, on
         </> : <>
           <p className="opening-kicker">CHOOSE THE HISTORICAL WINDOW</p>
           <h1>回到决策发生之前</h1>
-          <p className="opening-lead">选择一个历史窗口。系统只会载入截止日之前能够获得的材料。</p>
+          <p className="opening-lead">选择一个历史窗口。系统只会载入截止日之前能够获得的材料，真实结果在终局前不会出现。</p>
           <div className="opening-stage-switch" aria-label="历史决策起点">
             {stages.map((stage, index) => {
               const selected = selectedStageIndex === index;
@@ -513,6 +514,7 @@ function App() {
   const [backendRun, setBackendRun] = useState<BackendStage | null>(null);
   const [deliberation, setDeliberation] = useState<Deliberation | null>(null);
   const [backendResult, setBackendResult] = useState<BackendResult | null>(null);
+  const [historicalReplay, setHistoricalReplay] = useState<HistoricalReplay | null>(null);
   const [backendBusy, setBackendBusy] = useState('');
   const [backendError, setBackendError] = useState('');
   const [stageTransition, setStageTransition] = useState<{ from: number; to: number } | null>(null);
@@ -684,6 +686,8 @@ function App() {
     setNegotiationRecords({});
     setDeliberation(null);
     setBackendResult(null);
+    setHistoricalReplay(null);
+    setBackendError('');
     window.localStorage.removeItem('hefei-sandbox-run-v1');
     window.localStorage.removeItem('hefei-negotiation-drafts-v1');
     clearBackendRunId(window.localStorage);
@@ -695,6 +699,13 @@ function App() {
   const advanceToNextStage = () => {
     if (state.stageIndex >= stages.length - 1) {
       setState((current) => continueSimulation(current));
+      if (backendRun) {
+        setBackendBusy('正在解封真实历史…');
+        void fetchHistoricalReplay(backendRun.run_id)
+          .then(setHistoricalReplay)
+          .catch((reason) => setBackendError(reason instanceof Error ? reason.message : String(reason)))
+          .finally(() => setBackendBusy(''));
+      }
       return;
     }
     const from = state.stageIndex;
@@ -703,6 +714,7 @@ function App() {
     window.setTimeout(() => {
       setDeliberation(null);
       setBackendResult(null);
+      setHistoricalReplay(null);
       setBackendError('');
       setState((current) => continueSimulation(current));
     }, 900);
@@ -883,7 +895,7 @@ function App() {
       />}
 
       {state.cameraMode !== 'panorama' && state.phase !== 'applications' && <FramedPanel as="aside" className="decision-panel layout-operation-panel enterprise-ui-theme" style={enterpriseThemeStyle(selected.id)}>
-        <PanelContent state={state} setState={setState} comparisonDimension={comparisonDimension} onComparisonDimensionChange={setComparisonDimension} onRestart={restart} onStartMeeting={chooseEnterprise} onBeginVerification={beginVerification} onContinueStage={advanceToNextStage} onExport={exportRun} />
+        <PanelContent state={state} setState={setState} comparisonDimension={comparisonDimension} onComparisonDimensionChange={setComparisonDimension} onRestart={restart} onStartMeeting={chooseEnterprise} onBeginVerification={beginVerification} onContinueStage={advanceToNextStage} onExport={exportRun} historicalReplay={historicalReplay} backendBusy={backendBusy} />
       </FramedPanel>}
 
       {state.cameraMode !== 'panorama' && <FramedPanel as="footer" className="resource-bar layout-data-bar">
@@ -1188,7 +1200,7 @@ function ApplicationPhasePanel({ state, setState, dimension, onDimensionChange }
   </>;
 }
 
-function PanelContent({ state, setState, comparisonDimension, onComparisonDimensionChange, onRestart, onStartMeeting, onBeginVerification, onContinueStage, onExport }: {
+function PanelContent({ state, setState, comparisonDimension, onComparisonDimensionChange, onRestart, onStartMeeting, onBeginVerification, onContinueStage, onExport, historicalReplay, backendBusy }: {
   state: SimulationState;
   setState: React.Dispatch<React.SetStateAction<SimulationState>>;
   comparisonDimension: ComparisonDimension;
@@ -1198,6 +1210,8 @@ function PanelContent({ state, setState, comparisonDimension, onComparisonDimens
   onBeginVerification: (id: EnterpriseId) => void | Promise<void>;
   onContinueStage: () => void;
   onExport: () => void;
+  historicalReplay: HistoricalReplay | null;
+  backendBusy: string;
 }) {
   const selected = state.enterprises.find((enterprise) => enterprise.id === state.selectedEnterpriseId)!;
   const profile = getEnterprise(selected.id);
@@ -1326,8 +1340,22 @@ function PanelContent({ state, setState, comparisonDimension, onComparisonDimens
   }
 
   return <>
-    <PanelHeading index="09" kicker="HISTORICAL REPLAY">查看历史路径与关键分叉</PanelHeading>
-    <p className="panel-intro">终局不判断你是否“押中答案”，而是解释政府动作如何改变企业变量，并进一步改变城市路径。</p>
+    <PanelHeading index="09" kicker="HISTORICAL REPLAY">历史解封：现实是否重现</PanelHeading>
+    <FramedCard className="historical-reveal-hero" tone="amber">
+      <small>THE RESULT WAS SEALED UNTIL NOW</small>
+      <h2>先做决策，最后才看答案。</h2>
+      <p>系统只使用决策截止日前的信息。现在解封真实政府动作，检验这条推演是否走出了相近的历史方向。</p>
+      {backendBusy && <b className="historical-reveal-loading">{backendBusy}</b>}
+    </FramedCard>
+    {historicalReplay ? <>
+      {historicalReplay.historical_replay.decision_baselines.map((baseline) => <FramedCard className="historical-verdict-card" key={baseline.baseline_id}>
+        <div className="historical-verdict-head"><span>CASE {baseline.case_id}</span><b>{baseline.action_match && baseline.timing_match ? '方向与时点一致' : '存在差异，保留复盘'}</b></div>
+        <h3>现实政府动作：{baseline.action_match ? '投资' : '与现实动作不同'}</h3>
+        <div className="historical-verdict-grid"><div><small>决策方向</small><strong>{baseline.action_match ? '一致' : '不一致'}</strong></div><div><small>决策时点</small><strong>{baseline.timing_match ? '一致' : '不一致'}</strong></div><div><small>信息纪律</small><strong>{historicalReplay.historical_replay.leakage_audit_passed ? '通过' : '未通过'}</strong></div></div>
+        <p>现实基线 {baseline.baseline_id} 已从封存区解锁。金额、持股与精确里程碑仅在同口径时比较，不进行虚假换算。</p>
+      </FramedCard>)}
+      <FramedCard className="historical-scoreline"><small>推演证据，不是胜负分</small><div><span>方向 {Math.round(historicalReplay.historical_replay.direction_score * 100)}%</span><span>机制 {Math.round(historicalReplay.historical_replay.mechanism_score * 100)}%</span><span>泄漏审计 {historicalReplay.historical_replay.leakage_audit_passed ? '通过' : '失败'}</span></div></FramedCard>
+    </> : <FramedCard className="notice"><b>历史结果仍处于封存状态。</b><span>完成四个阶段后，系统才会打开真实政府动作与后续里程碑。</span></FramedCard>}
     <div className="reveal-list">
       {state.enterprises.map((enterprise) => {
         const company = getEnterprise(enterprise.id);
@@ -1337,7 +1365,7 @@ function PanelContent({ state, setState, comparisonDimension, onComparisonDimens
     <div className="replay-timeline">
       {state.stageSnapshots.map((snapshot) => <FramedCard key={snapshot.decisionId}><small>{snapshot.stageCode}</small><b>财政 {snapshot.resources.fiscal} · 产业 {snapshot.resources.industry}</b><p>{snapshot.contextHash}</p></FramedCard>)}
     </div>
-    <FramedCard className="path-summary" tone="amber"><small>用户世界线 × 历史对照</small><b>财政余度 {state.resources.fiscal} · 产业基础 {state.resources.industry}</b><p>方向、时序与机制分别记录；关键分叉来自条件单、承诺兑现和物理资产路径，不使用简单胜负排名。</p></FramedCard>
+    <FramedCard className="path-summary" tone="amber"><small>这不是数据展示</small><b>这是一次封存历史后的重新决策</b><p>用户世界线保留政府动作、企业回应和状态变化；真实基线只在终局解封，用于验证方向、时点与机制。</p></FramedCard>
     <div className="replay-audit-grid">
       <FramedCard><small>关键命题复盘</small><b>{jointReviewSummaries[state.enterprises[0].id].unresolved}</b><p>当时证据、企业回应、你的条件与后来发生的结果已按阶段快照关联。</p></FramedCard>
       <FramedCard><small>信息泄漏审计</small><b>未来证据 0 · 私有 Prompt 0</b><p>导出仅包含玩家可见信息、结构化决策和场景假设标签。</p></FramedCard>

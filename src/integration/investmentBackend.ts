@@ -93,6 +93,43 @@ export type BackendResult = {
   comparison_available_at: string;
 };
 
+export type HistoricalReplay = {
+  run_id: string;
+  portfolio_result: Record<string, number | string>;
+  historical_replay: {
+    direction_score: number;
+    sequence_score: number;
+    mechanism_score: number;
+    path_feedback_score: number;
+    leakage_audit_passed: boolean;
+    calibrated_case_count: number;
+    decision_baselines: Array<{
+      baseline_id: string;
+      case_id: string;
+      stage_id: string;
+      baseline_completeness: number;
+      action_match: boolean;
+      timing_match: boolean;
+      milestone_sequence_status: string;
+      capital_match_status: string;
+      condition_match_status: string;
+      limitations: string[];
+    }>;
+    limitations: string[];
+  };
+  replay_evidence?: {
+    mode: string;
+    visible_evidence_ids: string[];
+    decisions: Array<{
+      evidence_id: string;
+      title: string;
+      decision: string;
+      reason_code: string;
+      source_id?: string;
+    }>;
+  };
+};
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     ...init,
@@ -125,3 +162,6 @@ export const selectPolicyPackage = (run: BackendStage, companyId: string, propos
   });
 
 export const resumeBackendRun = (runId: string) => request<BackendStage>(`/api/runs/${runId}`);
+
+export const fetchHistoricalReplay = (runId: string) =>
+  request<HistoricalReplay>(`/api/runs/${runId}/historical-replay`);

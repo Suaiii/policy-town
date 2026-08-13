@@ -167,3 +167,8 @@ class TestInvestmentApi(unittest.TestCase):
         # Comparing branches must not settle or advance the player's real run.
         resumed = self.client.get(f"/api/runs/{stage['run_id']}").json()
         self.assertEqual("S1", resumed["stage_id"])
+
+    def test_historical_replay_stays_sealed_before_four_stages(self):
+        stage = self.client.post("/api/runs", json={"seed": 10}).json()
+        response = self.client.get(f"/api/runs/{stage['run_id']}/historical-replay")
+        self.assertEqual(response.status_code, 409)
