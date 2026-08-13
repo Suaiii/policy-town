@@ -338,6 +338,16 @@ class DepartmentMemo(BaseModel):
     acceptable_conditions: list[str]
     confidence: float = Field(ge=0, le=1)
     most_important_risk: str
+    key_page: str = Field(
+        min_length=12,
+        max_length=120,
+        description="现场研判主屏只展示的部门关键结论",
+    )
+    independent_view: str = Field(
+        min_length=60,
+        max_length=220,
+        description="点击部门后展示的独立判断，目标约一百个中文字符",
+    )
     input_hash: str
     generation_mode: Literal["model", "deterministic_fallback"] = "deterministic_fallback"
     fallback_reason: str | None = None
@@ -415,6 +425,14 @@ class DepartmentChallenge(BaseModel):
     fallback_reason: str | None = None
 
 
+class DepartmentReviewUpdate(BaseModel):
+    department: DepartmentId
+    recommendation_before: Recommendation
+    recommendation_after: Recommendation
+    reason: str
+    added_conditions: list[str] = Field(default_factory=list)
+
+
 class MeetingProposal(BaseModel):
     proposal_id: str
     company_id: str
@@ -428,11 +446,33 @@ class MeetingProposal(BaseModel):
     rationale: str
     supporting_departments: list[DepartmentId]
     dissenting_departments: list[DepartmentId] = Field(default_factory=list)
+    package_parameters: "PolicyPackageParameters"
+    compiler_version: str = "policy-package-compiler-v1"
+    compile_basis: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def tranches_reconcile(self) -> "MeetingProposal":
         if self.tranches and sum(self.tranches) != self.capital_points:
             raise ValueError("proposal tranches must sum to capital_points")
+        if self.package_parameters.funding_points != self.capital_points:
+            raise ValueError("policy package funding must equal proposal capital_points")
+        return self
+
+
+class PolicyPackageParameters(BaseModel):
+    """政策包的确定性执行参数；均为场景点数或强度，不冒充现实金额。"""
+
+    funding_points: int = Field(ge=0, le=100)
+    land_support: int = Field(ge=0, le=100)
+    financing_support: int = Field(ge=0, le=100)
+    energy_support: int = Field(ge=0, le=100)
+    talent_support: int = Field(ge=0, le=100)
+    research_support: int = Field(ge=0, le=100)
+    milestone_strictness: int = Field(ge=0, le=100)
+    audit_frequency: Literal["monthly", "quarterly", "stage_end"]
+
+    @model_validator(mode="after")
+    def funding_matches_proposal(self) -> "PolicyPackageParameters":
         return self
 
 
@@ -540,6 +580,9 @@ class DeliberationRound(BaseModel):
     meeting: JointMeetingSummary
     verification_question: VerificationQuestionCard
     enterprise_disclosure: EnterpriseDisclosure
+    department_review_updates: list[DepartmentReviewUpdate] = Field(
+        default_factory=list, min_length=4, max_length=4,
+    )
     enterprise_intent: EnterpriseAgentIntent | None = None
     selected_proposal_id: str | None = None
     condition_sheet: GovernmentConditionSheet | None = None

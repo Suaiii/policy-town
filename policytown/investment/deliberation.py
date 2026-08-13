@@ -24,6 +24,7 @@ from contracts.investment_simulation_v0_1 import (
     DeliberationRound,
     DepartmentMemo,
     DepartmentMemoryState,
+    DepartmentReviewUpdate,
     EnterpriseAgentIntent,
     EnterpriseBeliefState,
     EnterpriseMemoryState,
@@ -37,6 +38,7 @@ from contracts.investment_simulation_v0_1 import (
     NegotiationEvent,
     NegotiationChoice,
     Recommendation,
+    PolicyPackageParameters,
     StageId,
     SupportFocus,
     VerificationQuestionCard,
@@ -124,6 +126,7 @@ class OpenCodeGoDepartmentProvider:
                 "opposing_evidence_ids", "assumptions", "missing_information",
                 "red_lines", "acceptable_conditions", "confidence",
                 "most_important_risk",
+                "key_page", "independent_view",
             ]
         )
         task = (
@@ -211,13 +214,18 @@ class DepartmentAgentRuntime:
             if require_model is not None
             else os.getenv("INVESTMENT_AGENT_REQUIRE_LLM", "").lower() in {"1", "true", "yes", "on"}
         )
-        self.memo_cache: dict[tuple[str, str, str], DepartmentMemo] = {}
-        self.challenge_cache: dict[tuple[str, str, str, str], DepartmentChallenge] = {}
+        self.memo_cache: dict[tuple[str, str, str, str], DepartmentMemo] = {}
+        self.challenge_cache: dict[tuple[str, str, str, str, str], DepartmentChallenge] = {}
 
     def resolve(self, brief: DepartmentBrief, fallback: DepartmentMemo) -> DepartmentMemo:
         if self.provider is None:
             return fallback
-        cache_key = (brief.context_hash, brief.company_id, brief.department)
+        # The same frozen Context can lead to a different judgment after a
+        # department has accumulated history.  Include state_summary so a
+        # cached first-stage answer cannot erase memory effects.
+        cache_key = (
+            brief.context_hash, brief.company_id, brief.department, brief.state_summary,
+        )
         if cache_key in self.memo_cache:
             return self.memo_cache[cache_key]
         try:
@@ -225,6 +233,17 @@ class DepartmentAgentRuntime:
             payload = json.loads(raw) if isinstance(raw, str) else raw
             if not isinstance(payload, dict):
                 raise TypeError("department provider must return a JSON object")
+            key_page = str(payload.get("key_page") or payload.get("core_claim") or fallback.key_page)
+            if len(key_page) < 12:
+                key_page = str(payload.get("core_claim") or fallback.key_page)
+            independent_view = str(payload.get("independent_view") or "").strip()
+            if len(independent_view) < 60:
+                independent_view = (
+                    independent_view
+                    + f" 本部门的核心判断是：{payload.get('core_claim') or fallback.core_claim}"
+                    + f" 最需要控制的风险是：{payload.get('most_important_risk') or fallback.most_important_risk}"
+                    + f" 建议至少落实：{';'.join(self._normalize_list(payload.get('acceptable_conditions')) or fallback.acceptable_conditions[:2])}。"
+                ).strip()
             memo = DepartmentMemo.model_validate({
                 **payload,
                 "memo_id": fallback.memo_id,
@@ -233,6 +252,8 @@ class DepartmentAgentRuntime:
                 "input_hash": brief.context_hash,
                 "generation_mode": "model",
                 "fallback_reason": None,
+                "key_page": key_page[:120],
+                "independent_view": independent_view[:220],
                 "assumptions": self._normalize_list(payload.get("assumptions")),
                 "missing_information": self._normalize_list(payload.get("missing_information")),
                 "red_lines": self._normalize_list(payload.get("red_lines")),
@@ -241,7 +262,7 @@ class DepartmentAgentRuntime:
             memo = memo.model_copy(update={
                 "supporting_evidence_ids": self._normalize_evidence_ids(
                     memo.supporting_evidence_ids, brief.visible_evidence_ids,
-                ),
+                ) or brief.visible_evidence_ids[-4:],
                 "opposing_evidence_ids": self._normalize_evidence_ids(
                     memo.opposing_evidence_ids, brief.visible_evidence_ids,
                 ),
@@ -277,7 +298,10 @@ class DepartmentAgentRuntime:
                 or value in evidence_id.split(":", 1)[-1]
             ]
             if len(matches) != 1:
-                raise ValueError(f"model cited unknown evidence: {value}")
+                # Never pass an invented or ambiguous citation downstream.
+                # The caller will attach frozen visible evidence when every
+                # model citation is discarded.
+                continue
             normalized.append(matches[0])
         return list(dict.fromkeys(normalized))
 
@@ -330,6 +354,7 @@ class DepartmentAgentRuntime:
             fallback.company_id,
             sender.department,
             receiver.department,
+            brief.state_summary,
         )
         if cache_key in self.challenge_cache:
             return self.challenge_cache[cache_key]
@@ -389,6 +414,7 @@ class EnterpriseAgentRuntime:
             self.provider = OpenCodeGoDepartmentProvider()
         else:
             self.provider = None
+        self.intent_cache: dict[tuple[str, str, str], EnterpriseAgentIntent] = {}
 
     def resolve(
         self,
@@ -397,6 +423,10 @@ class EnterpriseAgentRuntime:
         evidence_ids: list[str],
         memory: EnterpriseMemoryState | None = None,
     ) -> EnterpriseAgentIntent:
+        memory_key = memory.beliefs.model_dump_json() if memory is not None else "initial"
+        cache_key = (private_state.company_id, question.question_id, memory_key)
+        if cache_key in self.intent_cache:
+            return self.intent_cache[cache_key]
         rule = ENTERPRISE_RESPONSE_RULES[private_state.risk_preference]
         stage_key = question.question_id.split("-", 1)[0] if question.question_id else "S1"
         beliefs = memory.beliefs if memory is not None else None
@@ -435,6 +465,7 @@ class EnterpriseAgentRuntime:
             ),
         )
         if self.provider is None:
+            self.intent_cache[cache_key] = fallback
             return fallback
         try:
             if isinstance(self.provider, OpenCodeGoDepartmentProvider):
@@ -462,7 +493,7 @@ class EnterpriseAgentRuntime:
                     return fallback
             if isinstance(payload, str):
                 payload = json.loads(payload)
-            return EnterpriseAgentIntent.model_validate({
+            intent = EnterpriseAgentIntent.model_validate({
                 **payload,
                 "action": DepartmentAgentRuntime._normalize_enterprise_action(payload.get("action")),
                 "company_id": private_state.company_id,
@@ -473,10 +504,14 @@ class EnterpriseAgentRuntime:
                 "generation_mode": "model",
                 "fallback_reason": None,
             })
+            self.intent_cache[cache_key] = intent
+            return intent
         except (TimeoutError, OSError, TypeError, ValueError, json.JSONDecodeError, ValidationError) as exc:
-            return fallback.model_copy(update={
+            intent = fallback.model_copy(update={
                 "fallback_reason": f"{type(exc).__name__}: {exc}",
             })
+            self.intent_cache[cache_key] = intent
+            return intent
 
 
 def build_enterprise_memory(
@@ -562,6 +597,35 @@ def build_department_memory(
         evidence_ids=sorted(memo.supporting_evidence_ids),
         update_rule="stance_tracking_v1",
     )
+
+
+def _apply_department_memory(
+    memo: DepartmentMemo,
+    previous: DepartmentMemoryState | None,
+) -> DepartmentMemo:
+    """Use prior cognition as bounded stance inertia in the current judgment.
+
+    Memory can move a stance by influencing the new memo, but it cannot add
+    evidence or bypass the current frozen brief.
+    """
+    if previous is None or not previous.stance_history:
+        return memo
+    rank = {"oppose": 0, "defer": 1, "conditional_support": 2, "support": 3}
+    stance_by_rank = {value: key for key, value in rank.items()}
+    prior = previous.stance_history[-1]
+    weight = 0.25 + 0.25 * previous.confidence
+    blended = round(rank[memo.recommendation] * (1 - weight) + rank[prior] * weight)
+    recommendation = stance_by_rank[max(0, min(3, blended))]
+    concern = previous.key_concerns[0] if previous.key_concerns else "无新增持续关切"
+    return memo.model_copy(update={
+        "recommendation": recommendation,
+        "core_claim": (
+            memo.core_claim
+            + f" 上期立场={prior}，经本期证据复核后立场={recommendation}。"
+        ),
+        "most_important_risk": f"{memo.most_important_risk} 上期持续关切：{concern}",
+        "confidence": round(min(0.95, memo.confidence * 0.7 + previous.confidence * 0.3), 4),
+    })
 
 
 def _recommendation(score: int, *, cautious: bool = False) -> Recommendation:
@@ -650,6 +714,12 @@ def _memo(
         acceptable_conditions=conditions,
         confidence=0.68 if recommendation in {"support", "conditional_support"} else 0.62,
         most_important_risk=risk,
+        key_page=f"{claim} 关键约束：{conditions[0]}。",
+        independent_view=(
+            f"本部门当前倾向为{recommendation}。{claim}"
+            f"我们最关注的是{risk}因此建议把{conditions[0]}写成可执行条件，"
+            f"并以{missing[0]}作为下一步核验重点；在材料补齐前，不应把规划目标直接当成已兑现能力。"
+        ),
         input_hash=input_hash,
         generation_mode="deterministic_fallback",
         fallback_reason="MVP 使用可复现的确定性研判；模型超时、断网或 Schema 失败时同样走此路径。",
@@ -717,15 +787,25 @@ def _challenge(company_id: str, sender: DepartmentMemo, receiver: DepartmentMemo
     )
 
 
-def _recommend_action(memos: list[DepartmentMemo]) -> tuple[str, str]:
+def _recommend_action(
+    memos: list[DepartmentMemo],
+    challenges: list[DepartmentChallenge] | None = None,
+) -> tuple[str, str]:
     """会议秘书把四部门判断透明聚合为“建议动作”；不做额外偏好判断。
 
     这是对已出现判断的整理（support / staged / defer / reject），
     对应联席摘要里的“建议动作”。它不替玩家拍板，玩家仍可从双方案中选择。
     """
+    effective = {
+        getattr(memo, "department", f"department-{index}"): memo.recommendation
+        for index, memo in enumerate(memos)
+    }
+    for challenge in challenges or []:
+        if challenge.status == "answered":
+            effective[challenge.to_department] = challenge.stance_after
     counts = {"support": 0, "conditional_support": 0, "defer": 0, "oppose": 0}
-    for memo in memos:
-        counts[memo.recommendation] += 1
+    for recommendation in effective.values():
+        counts[recommendation] += 1
     favorable = counts["support"] + counts["conditional_support"]
     unfavorable = counts["defer"] + counts["oppose"]
     if counts["oppose"] >= 2:
@@ -738,6 +818,131 @@ def _recommend_action(memos: list[DepartmentMemo]) -> tuple[str, str]:
         f"部门立场分歧（支持{favorable} vs 暂缓/反对{unfavorable}），"
         "建议分期并附加里程碑、审计与同比例出资条件。"
     )
+
+
+def _apply_enterprise_signal(
+    recommended_action: str,
+    rationale: str,
+    enterprise_intent: EnterpriseAgentIntent | None,
+) -> tuple[str, str]:
+    """让企业回应进入建议动作，但不允许企业直接决定政府投入。"""
+    if enterprise_intent is None:
+        return recommended_action, rationale
+    if enterprise_intent.action == "refuse" and recommended_action in {"support", "staged"}:
+        return "defer", rationale + " 企业拒绝关键披露，建议降级为暂缓。"
+    if enterprise_intent.action in {"range", "exchange_condition"} and recommended_action == "support":
+        return "staged", rationale + " 企业仅提供区间或附条件回应，建议改为分期支持。"
+    return recommended_action, rationale + " 企业回应未触发建议动作降级。"
+
+
+def compile_policy_packages(
+    *, company, budget, memos: list[DepartmentMemo],
+    challenges: list[DepartmentChallenge],
+    enterprise_intent: EnterpriseAgentIntent | None,
+    stage_id: StageId,
+) -> list[MeetingProposal]:
+    """把 Agent 结构化判断编译为两套可执行政策包。
+
+    Agent 只贡献倾向、条件和风险；金额、分期和支持强度由这里确定性计算。
+    相同输入必然得到相同政策包。
+    """
+    effective = {memo.department: memo.recommendation for memo in memos}
+    for challenge in challenges:
+        if challenge.status == "answered":
+            effective[challenge.to_department] = challenge.stance_after
+    stance_score = {
+        "support": 1.0, "conditional_support": 0.68, "defer": 0.25, "oppose": 0.0,
+    }
+    support_index = sum(stance_score[value] for value in effective.values()) / 4
+    confidence = sum(memo.confidence for memo in memos) / 4
+    disclosure = {
+        None: 0.72, "disclose": 1.0, "range": 0.78,
+        "exchange_condition": 0.66, "refuse": 0.25,
+    }[enterprise_intent.action if enterprise_intent else None]
+    request = min(100, max(0, company.capital_request))
+    affordable = min(request, budget.before)
+    prudent_ratio = max(0.20, min(0.55, 0.18 + support_index * 0.28 + disclosure * 0.09))
+    ambitious_ratio = max(0.45, min(0.90, 0.38 + support_index * 0.34 + disclosure * 0.14))
+    prudent = min(affordable, max(0, round(request * prudent_ratio)))
+    ambitious = min(affordable, max(prudent, round(request * ambitious_ratio)))
+    if affordable > 0:
+        prudent = max(1, prudent)
+        ambitious = max(prudent, ambitious)
+
+    concerns = list(dict.fromkeys(
+        condition for memo in memos for condition in memo.acceptable_conditions
+    ))
+    red_lines = list(dict.fromkeys(line for memo in memos for line in memo.red_lines))
+    requested = list(enterprise_intent.requested_changes if enterprise_intent else [])
+    conditions = list(dict.fromkeys([*concerns[:4], *requested[:2]]))
+    if not conditions:
+        conditions = ["按阶段里程碑释放资金"]
+
+    weakest = min(memos, key=lambda memo: stance_score[memo.recommendation]).department
+    focus = {
+        "finance": SupportFocus.FINANCING,
+        "industry_information": SupportFocus.SUPPLY_CHAIN,
+        "science_technology": SupportFocus.TALENT,
+        "development_reform": SupportFocus.INFRASTRUCTURE,
+    }[weakest]
+    supporters = [dept for dept, stance in effective.items() if stance in {"support", "conditional_support"}]
+    dissenters = [dept for dept, stance in effective.items() if stance in {"defer", "oppose"}]
+    basis = [
+        f"department:{dept}={stance}" for dept, stance in effective.items()
+    ] + [
+        f"enterprise_response={enterprise_intent.action if enterprise_intent else 'not_available'}",
+        f"support_index={support_index:.3f}", f"confidence={confidence:.3f}",
+        f"budget_cap={budget.before}", f"company_request={request}",
+    ]
+
+    def tranches(total: int, first_ratio: float) -> list[int]:
+        if total <= 0:
+            return []
+        first = max(1, min(total, round(total * first_ratio)))
+        return [first] if first == total else [first, total - first]
+
+    return [
+        MeetingProposal(
+            proposal_id=f"{stage_id.value}-{company.company_id}-prudent",
+            company_id=company.company_id,
+            label="稳健方案",
+            recommendation="conditional_support" if prudent else "defer",
+            capital_points=prudent,
+            support_focus=focus,
+            tranches=tranches(prudent, 0.42),
+            conditions=list(dict.fromkeys([*conditions, *red_lines[:2]])),
+            exit_condition="任一关键里程碑未通过则暂停下一笔资金并启动退出评估",
+            rationale="优先控制财政暴露，以核验结果和阶段里程碑换取后续支持。",
+            supporting_departments=supporters or ["finance"],
+            dissenting_departments=dissenters,
+            package_parameters=PolicyPackageParameters(
+                funding_points=prudent, land_support=25, financing_support=35,
+                energy_support=20, talent_support=25, research_support=25,
+                milestone_strictness=88, audit_frequency="quarterly",
+            ),
+            compile_basis=basis,
+        ),
+        MeetingProposal(
+            proposal_id=f"{stage_id.value}-{company.company_id}-ambitious",
+            company_id=company.company_id,
+            label="进取方案",
+            recommendation="conditional_support" if ambitious else "defer",
+            capital_points=ambitious,
+            support_focus=focus,
+            tranches=tranches(ambitious, 0.62),
+            conditions=conditions,
+            exit_condition="连续两次关键里程碑未通过则暂停追加并复核项目",
+            rationale="在财政上限内提高首期投入和配套完整度，同时保留高强度里程碑约束。",
+            supporting_departments=supporters or ["industry_information"],
+            dissenting_departments=dissenters,
+            package_parameters=PolicyPackageParameters(
+                funding_points=ambitious, land_support=60, financing_support=70,
+                energy_support=55, talent_support=65, research_support=60,
+                milestone_strictness=72, audit_frequency="quarterly",
+            ),
+            compile_basis=basis,
+        ),
+    ]
 
 
 def deliberate(
@@ -759,6 +964,9 @@ def deliberate(
     enterprise_memory: EnterpriseMemoryState | None = None,
     previous_department_memories: list[DepartmentMemoryState] | None = None,
 ):
+    previous_by_dept = {
+        memory.department: memory for memory in (previous_department_memories or [])
+    }
     fallback_memos = [
         _memo(
             company, city, budget, department, context_builder, context,
@@ -792,12 +1000,6 @@ def deliberate(
         memo.department: [fact_text(eid) for eid in memo.supporting_evidence_ids]
         for memo in fallback_memos
     }
-    frozen_visible_ids = list(dict.fromkeys(
-        evidence_id
-        for memo in fallback_memos
-        for evidence_id in memo.supporting_evidence_ids
-    ))
-    frozen_visible_facts = [fact_text(evidence_id) for evidence_id in frozen_visible_ids]
     state_summary = (
         f"city={city.model_dump(mode='json')}; company={company.model_dump(mode='json')}; "
         f"budget_before={budget.before}; context_hash={context_hash}"
@@ -805,32 +1007,25 @@ def deliberate(
     department_inputs = [
         _brief(
             run_id, seed, cutoff_at, context_hash, company.company_id, memo.department,
-            frozen_visible_ids, memo.missing_information, stage_id,
-            frozen_visible_facts, state_summary,
+            memo.supporting_evidence_ids, memo.missing_information, stage_id,
+            facts_by_department[memo.department],
+            state_summary + "; prior_department_memory=" + (
+                previous_by_dept[memo.department].model_dump_json()
+                if memo.department in previous_by_dept else "none"
+            ),
         )
         for memo in fallback_memos
     ]
     runtime = department_runtime or DepartmentAgentRuntime()
     memos = [
-        runtime.resolve(brief, fallback)
+        _apply_department_memory(
+            runtime.resolve(brief, fallback),
+            previous_by_dept.get(brief.department),
+        )
         for brief, fallback in zip(department_inputs, fallback_memos)
     ]
     by_dept = {memo.department: memo for memo in memos}
     brief_by_dept = {brief.department: brief for brief in department_inputs}
-    previous_by_dept = {
-        memory.department: memory for memory in (previous_department_memories or [])
-    }
-    department_memories = [
-        build_department_memory(
-            run_id=run_id,
-            stage_id=stage_id,
-            department=memo.department,
-            company_id=company.company_id,
-            memo=memo,
-            previous=previous_by_dept.get(memo.department),
-        )
-        for memo in memos
-    ]
     challenges: list[DepartmentChallenge] = []
     if by_dept["finance"].recommendation != by_dept["industry_information"].recommendation:
         fallback = _challenge(company.company_id, by_dept["finance"], by_dept["industry_information"], by_dept["finance"].supporting_evidence_ids[-4:], 1)
@@ -851,6 +1046,32 @@ def deliberate(
             fallback=fallback, brief=brief_by_dept["finance"],
         ))
 
+    # Store the post-challenge stance, so the next stage reads what the
+    # department actually concluded rather than its pre-meeting draft.
+    post_challenge = {memo.department: memo for memo in memos}
+    for challenge in challenges:
+        if challenge.status != "answered":
+            continue
+        current = post_challenge[challenge.to_department]
+        post_challenge[challenge.to_department] = current.model_copy(update={
+            "recommendation": challenge.stance_after,
+            "acceptable_conditions": list(dict.fromkeys([
+                *current.acceptable_conditions,
+                *([challenge.added_condition] if challenge.added_condition else []),
+            ])),
+        })
+    department_memories = [
+        build_department_memory(
+            run_id=run_id,
+            stage_id=stage_id,
+            department=memo.department,
+            company_id=company.company_id,
+            memo=memo,
+            previous=previous_by_dept.get(memo.department),
+        )
+        for memo in post_challenge.values()
+    ]
+
     request = min(100, max(10, company.capital_request))
     staged = max(1, round(request * 0.6))
     conservative = max(1, round(request * 0.35))
@@ -870,6 +1091,12 @@ def deliberate(
             rationale="保留产业窗口，同时将财政暴露切成可复核的阶段承诺。",
             supporting_departments=common or ["finance"],
             dissenting_departments=dissent,
+            package_parameters=PolicyPackageParameters(
+                funding_points=staged, land_support=40, financing_support=50,
+                energy_support=35, talent_support=40, research_support=35,
+                milestone_strictness=80, audit_frequency="quarterly",
+            ),
+            compile_basis=["pre_verification_placeholder=true"],
         ),
         MeetingProposal(
             proposal_id=f"{stage_id.value}-{company.company_id}-option",
@@ -884,10 +1111,16 @@ def deliberate(
             rationale="以较低成本保留项目落地选项，等待关键缺口被穿透。",
             supporting_departments=["finance", "science_technology"],
             dissenting_departments=[department for department in DEPARTMENTS if department not in {"finance", "science_technology"}],
+            package_parameters=PolicyPackageParameters(
+                funding_points=conservative, land_support=20, financing_support=25,
+                energy_support=20, talent_support=25, research_support=20,
+                milestone_strictness=90, audit_frequency="quarterly",
+            ),
+            compile_basis=["pre_verification_placeholder=true"],
         ),
     ]
     evidence_ids = list(dict.fromkeys([eid for memo in memos for eid in memo.supporting_evidence_ids]))
-    recommended_action, recommendation_rationale = _recommend_action(memos)
+    recommended_action, recommendation_rationale = _recommend_action(memos, challenges)
     meeting = JointMeetingSummary(
         company_id=company.company_id,
         consensus=["项目具有一定产业或战略价值", "公开信息不足以支持无条件一次性投入"],
@@ -942,6 +1175,45 @@ def deliberate(
             "statement": enterprise_intent.statement,
             "disclosed_evidence_ids": enterprise_intent.evidence_ids,
         })
+    recommended_action, recommendation_rationale = _apply_enterprise_signal(
+        meeting.recommended_action,
+        meeting.recommendation_rationale,
+        enterprise_intent,
+    )
+    proposals = compile_policy_packages(
+        company=company,
+        budget=budget,
+        memos=memos,
+        challenges=challenges,
+        enterprise_intent=enterprise_intent,
+        stage_id=stage_id,
+    )
+    response_downgrade = enterprise_intent is not None and enterprise_intent.action in {
+        "range", "exchange_condition", "refuse",
+    }
+    department_review_updates = []
+    for memo in memos:
+        after = memo.recommendation
+        added = list(enterprise_intent.requested_changes if enterprise_intent else [])[:1]
+        if response_downgrade and after == "support":
+            after = "conditional_support"
+        if enterprise_intent and enterprise_intent.action == "refuse" and after == "conditional_support":
+            after = "defer"
+        department_review_updates.append(DepartmentReviewUpdate(
+            department=memo.department,
+            recommendation_before=memo.recommendation,
+            recommendation_after=after,
+            reason=(
+                f"企业回应类型为 {enterprise_intent.action}；本部门据此复核原判断。"
+                if enterprise_intent else "企业 Agent 未提供新增信号，维持原判断。"
+            ),
+            added_conditions=added,
+        ))
+    meeting = meeting.model_copy(update={
+        "recommended_action": recommended_action,
+        "recommendation_rationale": recommendation_rationale,
+        "proposals": proposals,
+    })
     selected = next((proposal for proposal in proposals if choice and choice.proposal_id == proposal.proposal_id), None)
     condition_sheet = None
     counteroffer = None
@@ -1062,6 +1334,7 @@ def deliberate(
         meeting=meeting,
         verification_question=verification_question,
         enterprise_disclosure=enterprise_disclosure,
+        department_review_updates=department_review_updates,
         enterprise_intent=enterprise_intent,
         selected_proposal_id=selected_id,
         condition_sheet=condition_sheet,

@@ -139,7 +139,78 @@ class InvestmentEngine:
             raise KeyError(f"no persisted simulation run: {run_id}")
         return state
 
-    def run_stage(self, state: SimulationState, stage_input: StageInput) -> StageResult:
+    def preview_deliberation(self, state: SimulationState, stage_id: StageId, company_id: str):
+        """Run the selected company's Agent chain without advancing the stage.
+
+        This is the read-only HTTP boundary for department review → enterprise
+        verification → compiled policy packages.  Numeric settlement happens
+        only after the player selects a proposal.
+        """
+        if state.next_stage != stage_id:
+            raise ValueError(f"expected stage {state.next_stage}, got {stage_id}")
+        companies = [item.model_copy(deep=True) for item in state.companies]
+        company = next((item for item in companies if item.company_id == company_id), None)
+        if company is None or company.status == CompanyStatus.EXITED:
+            raise ValueError(f"company is unavailable: {company_id}")
+        city = state.city_metrics.model_copy(deep=True)
+        cutoff = self.loader.cutoff_at(stage_id)
+        assumption = self.loader.budget_assumption(stage_id)
+        gross = state.treasury_balance + assumption.new_fiscal_capacity + state.exits_and_returns
+        before = max(0, gross - state.committed_capital - state.maintenance_cost)
+        budget = BudgetState(
+            before=before, spent=0, after=before,
+            opening_balance=state.treasury_balance,
+            new_fiscal_capacity=assumption.new_fiscal_capacity,
+            stage_budget=assumption.new_fiscal_capacity,
+            gross_resources=gross,
+            exits_and_returns=state.exits_and_returns,
+            committed_capital=state.committed_capital,
+            maintenance_cost=state.maintenance_cost,
+            carry_out=before,
+            assumption=assumption,
+        )
+        adjustments, real_context = self.context_builder.adjustments(
+            [item.company_id for item in companies], self._previous_cutoff(stage_id), cutoff,
+        )
+        scratch_deltas = []
+        self._apply_real_context_adjustments(city, companies, adjustments, scratch_deltas)
+        event = self.loader.event(stage_id)
+        self._apply_city_stage_context(
+            city, stage_id, event.magnitude, scratch_deltas,
+            self._context_event_evidence(real_context, event.evidence_ids),
+        )
+        frozen = self.real_data.freeze_audit(
+            stage_id, cutoff, mode="player",
+            case_ids={self.loader.raw_company_config(company_id).get("historical_case_id")},
+        )
+        deliberation, _, _, _ = deliberate(
+            company, city, budget, self.context_builder, real_context, stage_id,
+            event.evidence_ids, state.run_id, state.seed, cutoff, frozen.context_hash,
+            department_runtime=self.department_runtime,
+            enterprise_private_state=self.loader.enterprise_private_state(company_id, stage_id),
+            enterprise_runtime=self.enterprise_runtime,
+            enterprise_memory=next(
+                (memory for memory in state.enterprise_memories if memory.company_id == company_id), None,
+            ),
+            previous_department_memories=[
+                memory for memory in state.department_memories if memory.company_id == company_id
+            ],
+        )
+        return deliberation, budget
+
+    def run_stage(
+        self,
+        state: SimulationState,
+        stage_input: StageInput,
+        *,
+        persist: bool | None = None,
+    ) -> StageResult:
+        """Settle one stage.
+
+        ``persist=False`` is reserved for controlled counterfactual branches:
+        they use the same player-visible Context and rule engine without
+        overwriting the player's real world line.
+        """
         self._validate_stage(state, stage_input)
         # The durable store is the source of continuity between requests.  If
         # a caller deliberately edits a state in memory (useful for previews or
@@ -331,6 +402,22 @@ class InvestmentEngine:
                 commitment, returned = self._apply_player_action(
                     company, city, player_action, deltas, stage_input.stage_id
                 )
+                selected_proposal = next(
+                    (
+                        proposal
+                        for proposal in deliberation.meeting.proposals
+                        if proposal.proposal_id == deliberation.selected_proposal_id
+                    ),
+                    None,
+                )
+                if selected_proposal is not None:
+                    self._apply_policy_package(
+                        company,
+                        city,
+                        selected_proposal,
+                        deltas,
+                        stage_input.stage_id,
+                    )
                 new_commitment += commitment
                 next_returns += returned
             company_action = self._choose_company_action(
@@ -437,7 +524,8 @@ class InvestmentEngine:
             self.loader.evidence_for(evidence_ids, cutoff),
             self.real_data.evidence_at(cutoff),
         )
-        if stage_input.context_mode != "replay":
+        should_persist = stage_input.context_mode != "replay" if persist is None else persist
+        if should_persist:
             self.memory_store.append_graph_records(reality_graph_updates)
             self.memory_store.save_memories(enterprise_memory_updates)
             self.memory_store.save_state(next_state, stage_id=stage_input.stage_id)
@@ -1159,6 +1247,77 @@ class InvestmentEngine:
         company.status = CompanyStatus.EXITED
         returned = min(25, round(company.cumulative_support * .25))
         return 0, returned
+
+    def _apply_policy_package(self, company, city, proposal, deltas, stage_id) -> None:
+        """Apply the non-cash dimensions of a compiled policy package.
+
+        The proposal's funding is already handled by ``_apply_player_action``.
+        This method makes land, financing, energy, talent and R&D support enter
+        the same deterministic world instead of remaining display-only fields.
+        """
+        package = proposal.package_parameters
+        evidence = [f"POLICY-PACKAGE-{stage_id.value}-{company.company_id}-{proposal.proposal_id}"]
+        self._record(
+            deltas,
+            company.company_id,
+            company,
+            "construction_progress",
+            round(package.land_support * .10),
+            "policy_land_support",
+            ["land_support", "construction_progress"],
+            evidence,
+        )
+        self._record(
+            deltas,
+            company.company_id,
+            company,
+            "financial_health",
+            round(package.financing_support * .08),
+            "policy_financing_support",
+            ["financing_support", "financial_health"],
+            evidence,
+        )
+        self._record(
+            deltas,
+            company.company_id,
+            company,
+            "project_cashflow",
+            round(package.energy_support * .05),
+            "policy_energy_support",
+            ["energy_support", "project_cashflow"],
+            evidence,
+            low=-100,
+        )
+        self._record(
+            deltas,
+            company.company_id,
+            company,
+            "technology_readiness",
+            round((package.talent_support + package.research_support) * .04),
+            "policy_research_talent_support",
+            ["talent_support", "research_support", "technology_readiness"],
+            evidence,
+        )
+        self._record(
+            deltas,
+            "city",
+            city,
+            "infrastructure_capacity",
+            round((package.land_support + package.energy_support) * .025),
+            "policy_infrastructure_support",
+            ["land_support", "energy_support", "infrastructure_capacity"],
+            evidence,
+        )
+        self._record(
+            deltas,
+            "city",
+            city,
+            "talent_supply",
+            round(package.talent_support * .03),
+            "policy_talent_support",
+            ["talent_support", "talent_supply"],
+            evidence,
+        )
 
     def _assess(self, company, city, budget, evidence_ids, real_context) -> list[AgentAssessment]:
         fiscal_capacity = self.context_builder.index(real_context, "city", "fiscal_capacity")
