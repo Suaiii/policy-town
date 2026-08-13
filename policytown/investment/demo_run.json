@@ -778,6 +778,1400 @@
           "reasoning_summary": "景气 0 / 价格趋势 0 / 供给压力 40：下行风险主导，宜逆周期评估"
         }
       ],
+      "department_communication": {
+        "conflicts": [
+          {
+            "stage_id": "S1",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 70 / 技术成熟度 60",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "conflict_id": "CF-S1-01"
+          },
+          {
+            "stage_id": "S1",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "development",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "DEV-1",
+              "kind": "claim",
+              "text": "行业景气 0 / 价格趋势 0 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "conflict_id": "CF-S1-02"
+          },
+          {
+            "stage_id": "S1",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 55 / 技术成熟度 55",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "conflict_id": "CF-S1-03"
+          },
+          {
+            "stage_id": "S1",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "development",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "DEV-1",
+              "kind": "claim",
+              "text": "行业景气 0 / 价格趋势 0 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "conflict_id": "CF-S1-04"
+          },
+          {
+            "stage_id": "S1",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 65 / 技术成熟度 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "conflict_id": "CF-S1-05"
+          },
+          {
+            "stage_id": "S1",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "development",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "DEV-1",
+              "kind": "claim",
+              "text": "行业景气 0 / 价格趋势 0 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "conflict_id": "CF-S1-06"
+          }
+        ],
+        "challenges": [
+          {
+            "stage_id": "S1",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 70 / 技术成熟度 60",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "conflict_id": "CF-S1-01",
+            "challenge_id": "CH-S1-01",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S1",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "development",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "DEV-1",
+              "kind": "claim",
+              "text": "行业景气 0 / 价格趋势 0 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "conflict_id": "CF-S1-02",
+            "challenge_id": "CH-S1-02",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S1",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 55 / 技术成熟度 55",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "conflict_id": "CF-S1-03",
+            "challenge_id": "CH-S1-03",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S1",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "development",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "DEV-1",
+              "kind": "claim",
+              "text": "行业景气 0 / 价格趋势 0 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "conflict_id": "CF-S1-04",
+            "challenge_id": "CH-S1-04",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S1",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 65 / 技术成熟度 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "conflict_id": "CF-S1-05",
+            "challenge_id": "CH-S1-05",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S1",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "development",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "DEV-1",
+              "kind": "claim",
+              "text": "行业景气 0 / 价格趋势 0 / 供给压力 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "conflict_id": "CF-S1-06",
+            "challenge_id": "CH-S1-06",
+            "status": "pending"
+          }
+        ],
+        "responses": [
+          {
+            "response_id": "RESP-S1-01",
+            "challenge_id": "CH-S1-01",
+            "stage_id": "S1",
+            "from": "sci_tech",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "confidence": 0.65
+          },
+          {
+            "response_id": "RESP-S1-02",
+            "challenge_id": "CH-S1-02",
+            "stage_id": "S1",
+            "from": "development",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "confidence": 0.7
+          },
+          {
+            "response_id": "RESP-S1-03",
+            "challenge_id": "CH-S1-03",
+            "stage_id": "S1",
+            "from": "sci_tech",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "confidence": 0.65
+          },
+          {
+            "response_id": "RESP-S1-04",
+            "challenge_id": "CH-S1-04",
+            "stage_id": "S1",
+            "from": "development",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "confidence": 0.7
+          },
+          {
+            "response_id": "RESP-S1-05",
+            "challenge_id": "CH-S1-05",
+            "stage_id": "S1",
+            "from": "sci_tech",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "confidence": 0.65
+          },
+          {
+            "response_id": "RESP-S1-06",
+            "challenge_id": "CH-S1-06",
+            "stage_id": "S1",
+            "from": "development",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "confidence": 0.7
+          }
+        ],
+        "position_revisions": [
+          {
+            "revision_id": "REV-S1-01",
+            "stage_id": "S1",
+            "agent": "sci_tech",
+            "company_id": "company_a",
+            "trigger_challenge_id": "CH-S1-01",
+            "trigger_evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02",
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "before": {
+              "recommendation": "support",
+              "score": 65.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 53.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S1-02",
+            "stage_id": "S1",
+            "agent": "development",
+            "company_id": "company_a",
+            "trigger_challenge_id": "CH-S1-02",
+            "trigger_evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02",
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "before": {
+              "recommendation": "conditional_support",
+              "score": 50.0,
+              "red_lines": [
+                {
+                  "redline_id": "DEV-R1",
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "DEV-C1",
+                  "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                  "reason": "管理周期风险"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "hold",
+              "score": 38.0,
+              "red_lines": [
+                {
+                  "redline_id": "DEV-R1",
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "DEV-C1",
+                  "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                  "reason": "管理周期风险"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S1-03",
+            "stage_id": "S1",
+            "agent": "sci_tech",
+            "company_id": "company_d",
+            "trigger_challenge_id": "CH-S1-03",
+            "trigger_evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02",
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "before": {
+              "recommendation": "support",
+              "score": 55.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 43.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S1-04",
+            "stage_id": "S1",
+            "agent": "development",
+            "company_id": "company_d",
+            "trigger_challenge_id": "CH-S1-04",
+            "trigger_evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02",
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "before": {
+              "recommendation": "conditional_support",
+              "score": 50.0,
+              "red_lines": [
+                {
+                  "redline_id": "DEV-R1",
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "DEV-C1",
+                  "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                  "reason": "管理周期风险"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "hold",
+              "score": 38.0,
+              "red_lines": [
+                {
+                  "redline_id": "DEV-R1",
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "DEV-C1",
+                  "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                  "reason": "管理周期风险"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S1-05",
+            "stage_id": "S1",
+            "agent": "sci_tech",
+            "company_id": "company_b",
+            "trigger_challenge_id": "CH-S1-05",
+            "trigger_evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02",
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "before": {
+              "recommendation": "conditional_support",
+              "score": 52.5,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 40.5,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S1-06",
+            "stage_id": "S1",
+            "agent": "development",
+            "company_id": "company_b",
+            "trigger_challenge_id": "CH-S1-06",
+            "trigger_evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02",
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "before": {
+              "recommendation": "conditional_support",
+              "score": 50.0,
+              "red_lines": [
+                {
+                  "redline_id": "DEV-R1",
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "DEV-C1",
+                  "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                  "reason": "管理周期风险"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "hold",
+              "score": 38.0,
+              "red_lines": [
+                {
+                  "redline_id": "DEV-R1",
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "DEV-C1",
+                  "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                  "reason": "管理周期风险"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          }
+        ],
+        "minutes": {
+          "stage_id": "S1",
+          "consensus": {
+            "shared_evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02",
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02",
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "majority_by_company": {
+              "company_a": "conditional_support",
+              "company_d": "conditional_support",
+              "company_b": "conditional_support"
+            }
+          },
+          "disagreements": [
+            {
+              "conflict_id": "CF-S1-01",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_a",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S1-02",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "development",
+              "company_id": "company_a",
+              "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S1-03",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_d",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S1-04",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "development",
+              "company_id": "company_d",
+              "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S1-05",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_b",
+              "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S1-06",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "development",
+              "company_id": "company_b",
+              "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            }
+          ],
+          "proposals": [
+            {
+              "proposal_id": "PLAN-A",
+              "title": "进取支持方案",
+              "basis": "支持与有条件支持部门的合并条件",
+              "conditions": [
+                {
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现",
+                  "proposing_department": "sci_tech",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                  "reason": "管理周期风险",
+                  "proposing_department": "development",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现",
+                  "proposing_department": "sci_tech",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                  "reason": "管理周期风险",
+                  "proposing_department": "development",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现",
+                  "proposing_department": "sci_tech",
+                  "company_id": "company_b"
+                },
+                {
+                  "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                  "reason": "管理周期风险",
+                  "proposing_department": "development",
+                  "company_id": "company_b"
+                },
+                {
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_b"
+                },
+                {
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_b"
+                }
+              ]
+            },
+            {
+              "proposal_id": "PLAN-B",
+              "title": "审慎风控方案",
+              "basis": "反对/暂缓部门红线转化及财政暴露上限",
+              "conditions": [
+                {
+                  "condition": "配套不足时不建议一次性全额投入",
+                  "reason": "落地效果依赖配套",
+                  "proposing_department": "economy",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "配套不足时不建议一次性全额投入",
+                  "reason": "落地效果依赖配套",
+                  "proposing_department": "economy",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "配套不足时不建议一次性全额投入",
+                  "reason": "落地效果依赖配套",
+                  "proposing_department": "economy",
+                  "company_id": "company_b"
+                }
+              ]
+            }
+          ],
+          "minority_opinions": [
+            {
+              "company_id": "company_a",
+              "agent": "economy",
+              "recommendation": "oppose",
+              "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+            },
+            {
+              "company_id": "company_a",
+              "agent": "sci_tech",
+              "recommendation": "support",
+              "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
+            },
+            {
+              "company_id": "company_a",
+              "agent": "fiscal",
+              "recommendation": "support",
+              "reasoning_summary": "财政余量 100 点，已承诺 0 点；仍可承接新项目"
+            },
+            {
+              "company_id": "company_d",
+              "agent": "economy",
+              "recommendation": "oppose",
+              "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+            },
+            {
+              "company_id": "company_d",
+              "agent": "sci_tech",
+              "recommendation": "support",
+              "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
+            },
+            {
+              "company_id": "company_d",
+              "agent": "fiscal",
+              "recommendation": "support",
+              "reasoning_summary": "财政余量 100 点，已承诺 0 点；仍可承接新项目"
+            },
+            {
+              "company_id": "company_b",
+              "agent": "economy",
+              "recommendation": "oppose",
+              "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+            },
+            {
+              "company_id": "company_b",
+              "agent": "fiscal",
+              "recommendation": "support",
+              "reasoning_summary": "财政余量 100 点，已承诺 0 点；仍可承接新项目"
+            }
+          ],
+          "open_questions": [
+            {
+              "challenge_id": "CH-S1-01",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_a",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S1-02",
+              "from": "economy",
+              "to": "development",
+              "company_id": "company_a",
+              "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S1-03",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_d",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S1-04",
+              "from": "economy",
+              "to": "development",
+              "company_id": "company_d",
+              "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S1-05",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_b",
+              "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S1-06",
+              "from": "economy",
+              "to": "development",
+              "company_id": "company_b",
+              "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            }
+          ],
+          "revision_count": 6
+        }
+      },
+      "meeting_minutes": {
+        "stage_id": "S1",
+        "consensus": {
+          "shared_evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02",
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02",
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "majority_by_company": {
+            "company_a": "conditional_support",
+            "company_d": "conditional_support",
+            "company_b": "conditional_support"
+          }
+        },
+        "disagreements": [
+          {
+            "conflict_id": "CF-S1-01",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_a",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S1-02",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "development",
+            "company_id": "company_a",
+            "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S1-03",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_d",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S1-04",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "development",
+            "company_id": "company_d",
+            "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S1-05",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_b",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S1-06",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "development",
+            "company_id": "company_b",
+            "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          }
+        ],
+        "proposals": [
+          {
+            "proposal_id": "PLAN-A",
+            "title": "进取支持方案",
+            "basis": "支持与有条件支持部门的合并条件",
+            "conditions": [
+              {
+                "condition": "设置建设、试产、量产里程碑并绑定放款",
+                "reason": "按阶段验证技术兑现",
+                "proposing_department": "sci_tech",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                "reason": "管理周期风险",
+                "proposing_department": "development",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "分期拨付，首期不超过方案的 50%",
+                "reason": "以里程碑控制支出节奏",
+                "proposing_department": "fiscal",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "资金证明或同比例出资作为放款前置条件",
+                "reason": "确认企业真实出资能力",
+                "proposing_department": "fiscal",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "设置建设、试产、量产里程碑并绑定放款",
+                "reason": "按阶段验证技术兑现",
+                "proposing_department": "sci_tech",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                "reason": "管理周期风险",
+                "proposing_department": "development",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "分期拨付，首期不超过方案的 50%",
+                "reason": "以里程碑控制支出节奏",
+                "proposing_department": "fiscal",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "资金证明或同比例出资作为放款前置条件",
+                "reason": "确认企业真实出资能力",
+                "proposing_department": "fiscal",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "设置建设、试产、量产里程碑并绑定放款",
+                "reason": "按阶段验证技术兑现",
+                "proposing_department": "sci_tech",
+                "company_id": "company_b"
+              },
+              {
+                "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                "reason": "管理周期风险",
+                "proposing_department": "development",
+                "company_id": "company_b"
+              },
+              {
+                "condition": "分期拨付，首期不超过方案的 50%",
+                "reason": "以里程碑控制支出节奏",
+                "proposing_department": "fiscal",
+                "company_id": "company_b"
+              },
+              {
+                "condition": "资金证明或同比例出资作为放款前置条件",
+                "reason": "确认企业真实出资能力",
+                "proposing_department": "fiscal",
+                "company_id": "company_b"
+              }
+            ]
+          },
+          {
+            "proposal_id": "PLAN-B",
+            "title": "审慎风控方案",
+            "basis": "反对/暂缓部门红线转化及财政暴露上限",
+            "conditions": [
+              {
+                "condition": "配套不足时不建议一次性全额投入",
+                "reason": "落地效果依赖配套",
+                "proposing_department": "economy",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "配套不足时不建议一次性全额投入",
+                "reason": "落地效果依赖配套",
+                "proposing_department": "economy",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "配套不足时不建议一次性全额投入",
+                "reason": "落地效果依赖配套",
+                "proposing_department": "economy",
+                "company_id": "company_b"
+              }
+            ]
+          }
+        ],
+        "minority_opinions": [
+          {
+            "company_id": "company_a",
+            "agent": "economy",
+            "recommendation": "oppose",
+            "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+          },
+          {
+            "company_id": "company_a",
+            "agent": "sci_tech",
+            "recommendation": "support",
+            "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
+          },
+          {
+            "company_id": "company_a",
+            "agent": "fiscal",
+            "recommendation": "support",
+            "reasoning_summary": "财政余量 100 点，已承诺 0 点；仍可承接新项目"
+          },
+          {
+            "company_id": "company_d",
+            "agent": "economy",
+            "recommendation": "oppose",
+            "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+          },
+          {
+            "company_id": "company_d",
+            "agent": "sci_tech",
+            "recommendation": "support",
+            "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
+          },
+          {
+            "company_id": "company_d",
+            "agent": "fiscal",
+            "recommendation": "support",
+            "reasoning_summary": "财政余量 100 点，已承诺 0 点；仍可承接新项目"
+          },
+          {
+            "company_id": "company_b",
+            "agent": "economy",
+            "recommendation": "oppose",
+            "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+          },
+          {
+            "company_id": "company_b",
+            "agent": "fiscal",
+            "recommendation": "support",
+            "reasoning_summary": "财政余量 100 点，已承诺 0 点；仍可承接新项目"
+          }
+        ],
+        "open_questions": [
+          {
+            "challenge_id": "CH-S1-01",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_a",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S1-02",
+            "from": "economy",
+            "to": "development",
+            "company_id": "company_a",
+            "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S1-03",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_d",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S1-04",
+            "from": "economy",
+            "to": "development",
+            "company_id": "company_d",
+            "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S1-05",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_b",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S1-06",
+            "from": "economy",
+            "to": "development",
+            "company_id": "company_b",
+            "question": "你（发改部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          }
+        ],
+        "revision_count": 6
+      },
       "state_deltas": [
         {
           "metric_id": "construction_progress",
@@ -1781,6 +3175,1166 @@
           "reasoning_summary": "景气 -35 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
         }
       ],
+      "department_communication": {
+        "conflicts": [
+          {
+            "stage_id": "S2",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 70 / 技术成熟度 60",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "conflict_id": "CF-S2-01"
+          },
+          {
+            "stage_id": "S2",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 100 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S2-02"
+          },
+          {
+            "stage_id": "S2",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 55 / 技术成熟度 55",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "conflict_id": "CF-S2-03"
+          },
+          {
+            "stage_id": "S2",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 100 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S2-04"
+          },
+          {
+            "stage_id": "S2",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 65 / 技术成熟度 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "conflict_id": "CF-S2-05"
+          },
+          {
+            "stage_id": "S2",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 100 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S2-06"
+          }
+        ],
+        "challenges": [
+          {
+            "stage_id": "S2",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 70 / 技术成熟度 60",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "conflict_id": "CF-S2-01",
+            "challenge_id": "CH-S2-01",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S2",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 100 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S2-02",
+            "challenge_id": "CH-S2-02",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S2",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 55 / 技术成熟度 55",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "conflict_id": "CF-S2-03",
+            "challenge_id": "CH-S2-03",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S2",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 100 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S2-04",
+            "challenge_id": "CH-S2-04",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S2",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 65 / 技术成熟度 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "conflict_id": "CF-S2-05",
+            "challenge_id": "CH-S2-05",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S2",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 100 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S2-06",
+            "challenge_id": "CH-S2-06",
+            "status": "pending"
+          }
+        ],
+        "responses": [
+          {
+            "response_id": "RESP-S2-01",
+            "challenge_id": "CH-S2-01",
+            "stage_id": "S2",
+            "from": "sci_tech",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "confidence": 0.65
+          },
+          {
+            "response_id": "RESP-S2-02",
+            "challenge_id": "CH-S2-02",
+            "stage_id": "S2",
+            "from": "fiscal",
+            "to": "economy",
+            "response_type": "maintain",
+            "statement": "维持原立场：主张有证据支撑，并说明缺失信息的处理方式",
+            "evidence_ids": [],
+            "confidence": 0.8
+          },
+          {
+            "response_id": "RESP-S2-03",
+            "challenge_id": "CH-S2-03",
+            "stage_id": "S2",
+            "from": "sci_tech",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "confidence": 0.65
+          },
+          {
+            "response_id": "RESP-S2-04",
+            "challenge_id": "CH-S2-04",
+            "stage_id": "S2",
+            "from": "fiscal",
+            "to": "economy",
+            "response_type": "maintain",
+            "statement": "维持原立场：主张有证据支撑，并说明缺失信息的处理方式",
+            "evidence_ids": [],
+            "confidence": 0.8
+          },
+          {
+            "response_id": "RESP-S2-05",
+            "challenge_id": "CH-S2-05",
+            "stage_id": "S2",
+            "from": "sci_tech",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "confidence": 0.65
+          },
+          {
+            "response_id": "RESP-S2-06",
+            "challenge_id": "CH-S2-06",
+            "stage_id": "S2",
+            "from": "fiscal",
+            "to": "economy",
+            "response_type": "maintain",
+            "statement": "维持原立场：主张有证据支撑，并说明缺失信息的处理方式",
+            "evidence_ids": [],
+            "confidence": 0.8
+          }
+        ],
+        "position_revisions": [
+          {
+            "revision_id": "REV-S2-01",
+            "stage_id": "S2",
+            "agent": "sci_tech",
+            "company_id": "company_a",
+            "trigger_challenge_id": "CH-S2-01",
+            "trigger_evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02",
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "before": {
+              "recommendation": "support",
+              "score": 65.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 53.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S2-03",
+            "stage_id": "S2",
+            "agent": "sci_tech",
+            "company_id": "company_d",
+            "trigger_challenge_id": "CH-S2-03",
+            "trigger_evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02",
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "before": {
+              "recommendation": "support",
+              "score": 55.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 43.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S2-05",
+            "stage_id": "S2",
+            "agent": "sci_tech",
+            "company_id": "company_b",
+            "trigger_challenge_id": "CH-S2-05",
+            "trigger_evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02",
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "before": {
+              "recommendation": "conditional_support",
+              "score": 52.5,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 40.5,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          }
+        ],
+        "minutes": {
+          "stage_id": "S2",
+          "consensus": {
+            "shared_evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02",
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02",
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "majority_by_company": {
+              "company_a": "oppose",
+              "company_d": "oppose",
+              "company_b": "oppose"
+            }
+          },
+          "disagreements": [
+            {
+              "conflict_id": "CF-S2-01",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_a",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S2-02",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_a",
+              "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "maintain",
+              "resolved": false,
+              "summary": "维持原立场：主张有证据支撑，并说明缺失信息的处理方式"
+            },
+            {
+              "conflict_id": "CF-S2-03",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_d",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S2-04",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_d",
+              "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "maintain",
+              "resolved": false,
+              "summary": "维持原立场：主张有证据支撑，并说明缺失信息的处理方式"
+            },
+            {
+              "conflict_id": "CF-S2-05",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_b",
+              "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S2-06",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_b",
+              "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "maintain",
+              "resolved": false,
+              "summary": "维持原立场：主张有证据支撑，并说明缺失信息的处理方式"
+            }
+          ],
+          "proposals": [
+            {
+              "proposal_id": "PLAN-A",
+              "title": "进取支持方案",
+              "basis": "支持与有条件支持部门的合并条件",
+              "conditions": [
+                {
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现",
+                  "proposing_department": "sci_tech",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现",
+                  "proposing_department": "sci_tech",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现",
+                  "proposing_department": "sci_tech",
+                  "company_id": "company_b"
+                },
+                {
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_b"
+                },
+                {
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_b"
+                }
+              ]
+            },
+            {
+              "proposal_id": "PLAN-B",
+              "title": "审慎风控方案",
+              "basis": "反对/暂缓部门红线转化及财政暴露上限",
+              "conditions": [
+                {
+                  "condition": "配套不足时不建议一次性全额投入",
+                  "reason": "落地效果依赖配套",
+                  "proposing_department": "economy",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收",
+                  "proposing_department": "development",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "配套不足时不建议一次性全额投入",
+                  "reason": "落地效果依赖配套",
+                  "proposing_department": "economy",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收",
+                  "proposing_department": "development",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "配套不足时不建议一次性全额投入",
+                  "reason": "落地效果依赖配套",
+                  "proposing_department": "economy",
+                  "company_id": "company_b"
+                },
+                {
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收",
+                  "proposing_department": "development",
+                  "company_id": "company_b"
+                }
+              ]
+            }
+          ],
+          "minority_opinions": [
+            {
+              "company_id": "company_a",
+              "agent": "sci_tech",
+              "recommendation": "support",
+              "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
+            },
+            {
+              "company_id": "company_a",
+              "agent": "fiscal",
+              "recommendation": "support",
+              "reasoning_summary": "财政余量 100 点，已承诺 50 点；仍可承接新项目"
+            },
+            {
+              "company_id": "company_d",
+              "agent": "sci_tech",
+              "recommendation": "support",
+              "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
+            },
+            {
+              "company_id": "company_d",
+              "agent": "fiscal",
+              "recommendation": "support",
+              "reasoning_summary": "财政余量 100 点，已承诺 50 点；仍可承接新项目"
+            },
+            {
+              "company_id": "company_b",
+              "agent": "sci_tech",
+              "recommendation": "conditional_support",
+              "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
+            },
+            {
+              "company_id": "company_b",
+              "agent": "fiscal",
+              "recommendation": "support",
+              "reasoning_summary": "财政余量 100 点，已承诺 50 点；仍可承接新项目"
+            }
+          ],
+          "open_questions": [
+            {
+              "challenge_id": "CH-S2-01",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_a",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S2-02",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_a",
+              "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S2-03",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_d",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S2-04",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_d",
+              "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S2-05",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_b",
+              "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S2-06",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_b",
+              "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            }
+          ],
+          "revision_count": 3
+        }
+      },
+      "meeting_minutes": {
+        "stage_id": "S2",
+        "consensus": {
+          "shared_evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02",
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02",
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "majority_by_company": {
+            "company_a": "oppose",
+            "company_d": "oppose",
+            "company_b": "oppose"
+          }
+        },
+        "disagreements": [
+          {
+            "conflict_id": "CF-S2-01",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_a",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S2-02",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_a",
+            "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "maintain",
+            "resolved": false,
+            "summary": "维持原立场：主张有证据支撑，并说明缺失信息的处理方式"
+          },
+          {
+            "conflict_id": "CF-S2-03",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_d",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S2-04",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_d",
+            "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "maintain",
+            "resolved": false,
+            "summary": "维持原立场：主张有证据支撑，并说明缺失信息的处理方式"
+          },
+          {
+            "conflict_id": "CF-S2-05",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_b",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S2-06",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_b",
+            "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "maintain",
+            "resolved": false,
+            "summary": "维持原立场：主张有证据支撑，并说明缺失信息的处理方式"
+          }
+        ],
+        "proposals": [
+          {
+            "proposal_id": "PLAN-A",
+            "title": "进取支持方案",
+            "basis": "支持与有条件支持部门的合并条件",
+            "conditions": [
+              {
+                "condition": "设置建设、试产、量产里程碑并绑定放款",
+                "reason": "按阶段验证技术兑现",
+                "proposing_department": "sci_tech",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "分期拨付，首期不超过方案的 50%",
+                "reason": "以里程碑控制支出节奏",
+                "proposing_department": "fiscal",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "资金证明或同比例出资作为放款前置条件",
+                "reason": "确认企业真实出资能力",
+                "proposing_department": "fiscal",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "设置建设、试产、量产里程碑并绑定放款",
+                "reason": "按阶段验证技术兑现",
+                "proposing_department": "sci_tech",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "分期拨付，首期不超过方案的 50%",
+                "reason": "以里程碑控制支出节奏",
+                "proposing_department": "fiscal",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "资金证明或同比例出资作为放款前置条件",
+                "reason": "确认企业真实出资能力",
+                "proposing_department": "fiscal",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "设置建设、试产、量产里程碑并绑定放款",
+                "reason": "按阶段验证技术兑现",
+                "proposing_department": "sci_tech",
+                "company_id": "company_b"
+              },
+              {
+                "condition": "分期拨付，首期不超过方案的 50%",
+                "reason": "以里程碑控制支出节奏",
+                "proposing_department": "fiscal",
+                "company_id": "company_b"
+              },
+              {
+                "condition": "资金证明或同比例出资作为放款前置条件",
+                "reason": "确认企业真实出资能力",
+                "proposing_department": "fiscal",
+                "company_id": "company_b"
+              }
+            ]
+          },
+          {
+            "proposal_id": "PLAN-B",
+            "title": "审慎风控方案",
+            "basis": "反对/暂缓部门红线转化及财政暴露上限",
+            "conditions": [
+              {
+                "condition": "配套不足时不建议一次性全额投入",
+                "reason": "落地效果依赖配套",
+                "proposing_department": "economy",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                "reason": "周期反转损失难回收",
+                "proposing_department": "development",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "配套不足时不建议一次性全额投入",
+                "reason": "落地效果依赖配套",
+                "proposing_department": "economy",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                "reason": "周期反转损失难回收",
+                "proposing_department": "development",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "配套不足时不建议一次性全额投入",
+                "reason": "落地效果依赖配套",
+                "proposing_department": "economy",
+                "company_id": "company_b"
+              },
+              {
+                "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                "reason": "周期反转损失难回收",
+                "proposing_department": "development",
+                "company_id": "company_b"
+              }
+            ]
+          }
+        ],
+        "minority_opinions": [
+          {
+            "company_id": "company_a",
+            "agent": "sci_tech",
+            "recommendation": "support",
+            "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
+          },
+          {
+            "company_id": "company_a",
+            "agent": "fiscal",
+            "recommendation": "support",
+            "reasoning_summary": "财政余量 100 点，已承诺 50 点；仍可承接新项目"
+          },
+          {
+            "company_id": "company_d",
+            "agent": "sci_tech",
+            "recommendation": "support",
+            "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
+          },
+          {
+            "company_id": "company_d",
+            "agent": "fiscal",
+            "recommendation": "support",
+            "reasoning_summary": "财政余量 100 点，已承诺 50 点；仍可承接新项目"
+          },
+          {
+            "company_id": "company_b",
+            "agent": "sci_tech",
+            "recommendation": "conditional_support",
+            "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
+          },
+          {
+            "company_id": "company_b",
+            "agent": "fiscal",
+            "recommendation": "support",
+            "reasoning_summary": "财政余量 100 点，已承诺 50 点；仍可承接新项目"
+          }
+        ],
+        "open_questions": [
+          {
+            "challenge_id": "CH-S2-01",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_a",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S2-02",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_a",
+            "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S2-03",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_d",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S2-04",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_d",
+            "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S2-05",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_b",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S2-06",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_b",
+            "question": "你（财政部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          }
+        ],
+        "revision_count": 3
+      },
       "state_deltas": [
         {
           "metric_id": "construction_progress",
@@ -2840,6 +5394,1388 @@
           "reasoning_summary": "景气 -15 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
         }
       ],
+      "department_communication": {
+        "conflicts": [
+          {
+            "stage_id": "S3",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 70 / 技术成熟度 60",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "conflict_id": "CF-S3-01"
+          },
+          {
+            "stage_id": "S3",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 90 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S3-02"
+          },
+          {
+            "stage_id": "S3",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 55 / 技术成熟度 55",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "conflict_id": "CF-S3-03"
+          },
+          {
+            "stage_id": "S3",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "development",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "DEV-1",
+              "kind": "claim",
+              "text": "行业景气 15 / 价格趋势 5 / 供给压力 60",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（发改部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "conflict_id": "CF-S3-04"
+          },
+          {
+            "stage_id": "S3",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 65 / 技术成熟度 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "conflict_id": "CF-S3-05"
+          },
+          {
+            "stage_id": "S3",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 90 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S3-06"
+          }
+        ],
+        "challenges": [
+          {
+            "stage_id": "S3",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 70 / 技术成熟度 60",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "conflict_id": "CF-S3-01",
+            "challenge_id": "CH-S3-01",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S3",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 90 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S3-02",
+            "challenge_id": "CH-S3-02",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S3",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 55 / 技术成熟度 55",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "conflict_id": "CF-S3-03",
+            "challenge_id": "CH-S3-03",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S3",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "development",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "DEV-1",
+              "kind": "claim",
+              "text": "行业景气 15 / 价格趋势 5 / 供给压力 60",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（发改部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "conflict_id": "CF-S3-04",
+            "challenge_id": "CH-S3-04",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S3",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 65 / 技术成熟度 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "conflict_id": "CF-S3-05",
+            "challenge_id": "CH-S3-05",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S3",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 90 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S3-06",
+            "challenge_id": "CH-S3-06",
+            "status": "pending"
+          }
+        ],
+        "responses": [
+          {
+            "response_id": "RESP-S3-01",
+            "challenge_id": "CH-S3-01",
+            "stage_id": "S3",
+            "from": "sci_tech",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "confidence": 0.65
+          },
+          {
+            "response_id": "RESP-S3-02",
+            "challenge_id": "CH-S3-02",
+            "stage_id": "S3",
+            "from": "fiscal",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [],
+            "confidence": 0.8
+          },
+          {
+            "response_id": "RESP-S3-03",
+            "challenge_id": "CH-S3-03",
+            "stage_id": "S3",
+            "from": "sci_tech",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "confidence": 0.65
+          },
+          {
+            "response_id": "RESP-S3-04",
+            "challenge_id": "CH-S3-04",
+            "stage_id": "S3",
+            "from": "development",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "confidence": 0.7
+          },
+          {
+            "response_id": "RESP-S3-05",
+            "challenge_id": "CH-S3-05",
+            "stage_id": "S3",
+            "from": "sci_tech",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "confidence": 0.65
+          },
+          {
+            "response_id": "RESP-S3-06",
+            "challenge_id": "CH-S3-06",
+            "stage_id": "S3",
+            "from": "fiscal",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [],
+            "confidence": 0.8
+          }
+        ],
+        "position_revisions": [
+          {
+            "revision_id": "REV-S3-01",
+            "stage_id": "S3",
+            "agent": "sci_tech",
+            "company_id": "company_a",
+            "trigger_challenge_id": "CH-S3-01",
+            "trigger_evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02",
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "before": {
+              "recommendation": "support",
+              "score": 65.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 53.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S3-02",
+            "stage_id": "S3",
+            "agent": "fiscal",
+            "company_id": null,
+            "trigger_challenge_id": "CH-S3-02",
+            "trigger_evidence_ids": [],
+            "before": {
+              "recommendation": "conditional_support",
+              "score": 45.0,
+              "red_lines": [
+                {
+                  "redline_id": "FISCAL-R1",
+                  "condition": "当期支出不得超过预算上限 90 点",
+                  "reason": "财政点数守恒"
+                },
+                {
+                  "redline_id": "FISCAL-R2",
+                  "condition": "企业资金来源未证实前不承诺后续追加上限",
+                  "reason": "防止财政暴露不可控"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "FISCAL-C1",
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏"
+                },
+                {
+                  "condition_id": "FISCAL-C2",
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "hold",
+              "score": 33.0,
+              "red_lines": [
+                {
+                  "redline_id": "FISCAL-R1",
+                  "condition": "当期支出不得超过预算上限 90 点",
+                  "reason": "财政点数守恒"
+                },
+                {
+                  "redline_id": "FISCAL-R2",
+                  "condition": "企业资金来源未证实前不承诺后续追加上限",
+                  "reason": "防止财政暴露不可控"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "FISCAL-C1",
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏"
+                },
+                {
+                  "condition_id": "FISCAL-C2",
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S3-03",
+            "stage_id": "S3",
+            "agent": "sci_tech",
+            "company_id": "company_d",
+            "trigger_challenge_id": "CH-S3-03",
+            "trigger_evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02",
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "before": {
+              "recommendation": "support",
+              "score": 55.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 43.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S3-04",
+            "stage_id": "S3",
+            "agent": "development",
+            "company_id": "company_d",
+            "trigger_challenge_id": "CH-S3-04",
+            "trigger_evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02",
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "before": {
+              "recommendation": "support",
+              "score": 59.0,
+              "red_lines": [
+                {
+                  "redline_id": "DEV-R1",
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "DEV-C1",
+                  "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                  "reason": "管理周期风险"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 47.0,
+              "red_lines": [
+                {
+                  "redline_id": "DEV-R1",
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "DEV-C1",
+                  "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                  "reason": "管理周期风险"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S3-05",
+            "stage_id": "S3",
+            "agent": "sci_tech",
+            "company_id": "company_b",
+            "trigger_challenge_id": "CH-S3-05",
+            "trigger_evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02",
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "before": {
+              "recommendation": "conditional_support",
+              "score": 52.5,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 40.5,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S3-06",
+            "stage_id": "S3",
+            "agent": "fiscal",
+            "company_id": null,
+            "trigger_challenge_id": "CH-S3-06",
+            "trigger_evidence_ids": [],
+            "before": {
+              "recommendation": "conditional_support",
+              "score": 45.0,
+              "red_lines": [
+                {
+                  "redline_id": "FISCAL-R1",
+                  "condition": "当期支出不得超过预算上限 90 点",
+                  "reason": "财政点数守恒"
+                },
+                {
+                  "redline_id": "FISCAL-R2",
+                  "condition": "企业资金来源未证实前不承诺后续追加上限",
+                  "reason": "防止财政暴露不可控"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "FISCAL-C1",
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏"
+                },
+                {
+                  "condition_id": "FISCAL-C2",
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "hold",
+              "score": 33.0,
+              "red_lines": [
+                {
+                  "redline_id": "FISCAL-R1",
+                  "condition": "当期支出不得超过预算上限 90 点",
+                  "reason": "财政点数守恒"
+                },
+                {
+                  "redline_id": "FISCAL-R2",
+                  "condition": "企业资金来源未证实前不承诺后续追加上限",
+                  "reason": "防止财政暴露不可控"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "FISCAL-C1",
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏"
+                },
+                {
+                  "condition_id": "FISCAL-C2",
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          }
+        ],
+        "minutes": {
+          "stage_id": "S3",
+          "consensus": {
+            "shared_evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02",
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02",
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "majority_by_company": {
+              "company_a": "oppose",
+              "company_d": "conditional_support",
+              "company_b": "oppose"
+            }
+          },
+          "disagreements": [
+            {
+              "conflict_id": "CF-S3-01",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_a",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S3-02",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_a",
+              "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S3-03",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_d",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S3-04",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "development",
+              "company_id": "company_d",
+              "question": "你（发改部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S3-05",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_b",
+              "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S3-06",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_b",
+              "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            }
+          ],
+          "proposals": [
+            {
+              "proposal_id": "PLAN-A",
+              "title": "进取支持方案",
+              "basis": "支持与有条件支持部门的合并条件",
+              "conditions": [
+                {
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现",
+                  "proposing_department": "sci_tech",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现",
+                  "proposing_department": "sci_tech",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                  "reason": "管理周期风险",
+                  "proposing_department": "development",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现",
+                  "proposing_department": "sci_tech",
+                  "company_id": "company_b"
+                },
+                {
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_b"
+                },
+                {
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_b"
+                }
+              ]
+            },
+            {
+              "proposal_id": "PLAN-B",
+              "title": "审慎风控方案",
+              "basis": "反对/暂缓部门红线转化及财政暴露上限",
+              "conditions": [
+                {
+                  "condition": "配套不足时不建议一次性全额投入",
+                  "reason": "落地效果依赖配套",
+                  "proposing_department": "economy",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收",
+                  "proposing_department": "development",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "配套不足时不建议一次性全额投入",
+                  "reason": "落地效果依赖配套",
+                  "proposing_department": "economy",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "配套不足时不建议一次性全额投入",
+                  "reason": "落地效果依赖配套",
+                  "proposing_department": "economy",
+                  "company_id": "company_b"
+                },
+                {
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收",
+                  "proposing_department": "development",
+                  "company_id": "company_b"
+                }
+              ]
+            }
+          ],
+          "minority_opinions": [
+            {
+              "company_id": "company_a",
+              "agent": "sci_tech",
+              "recommendation": "support",
+              "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
+            },
+            {
+              "company_id": "company_a",
+              "agent": "fiscal",
+              "recommendation": "conditional_support",
+              "reasoning_summary": "财政余量 90 点，已承诺 110 点；追加空间有限，需防锁定"
+            },
+            {
+              "company_id": "company_d",
+              "agent": "economy",
+              "recommendation": "oppose",
+              "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+            },
+            {
+              "company_id": "company_d",
+              "agent": "sci_tech",
+              "recommendation": "support",
+              "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
+            },
+            {
+              "company_id": "company_d",
+              "agent": "development",
+              "recommendation": "support",
+              "reasoning_summary": "景气 15 / 价格趋势 5 / 供给压力 60：时点有利"
+            },
+            {
+              "company_id": "company_b",
+              "agent": "sci_tech",
+              "recommendation": "conditional_support",
+              "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
+            },
+            {
+              "company_id": "company_b",
+              "agent": "fiscal",
+              "recommendation": "conditional_support",
+              "reasoning_summary": "财政余量 90 点，已承诺 110 点；追加空间有限，需防锁定"
+            }
+          ],
+          "open_questions": [
+            {
+              "challenge_id": "CH-S3-01",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_a",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S3-02",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_a",
+              "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S3-03",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_d",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S3-04",
+              "from": "economy",
+              "to": "development",
+              "company_id": "company_d",
+              "question": "你（发改部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S3-05",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_b",
+              "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S3-06",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_b",
+              "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            }
+          ],
+          "revision_count": 6
+        }
+      },
+      "meeting_minutes": {
+        "stage_id": "S3",
+        "consensus": {
+          "shared_evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02",
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02",
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "majority_by_company": {
+            "company_a": "oppose",
+            "company_d": "conditional_support",
+            "company_b": "oppose"
+          }
+        },
+        "disagreements": [
+          {
+            "conflict_id": "CF-S3-01",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_a",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S3-02",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_a",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S3-03",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_d",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S3-04",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "development",
+            "company_id": "company_d",
+            "question": "你（发改部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S3-05",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_b",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S3-06",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_b",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          }
+        ],
+        "proposals": [
+          {
+            "proposal_id": "PLAN-A",
+            "title": "进取支持方案",
+            "basis": "支持与有条件支持部门的合并条件",
+            "conditions": [
+              {
+                "condition": "设置建设、试产、量产里程碑并绑定放款",
+                "reason": "按阶段验证技术兑现",
+                "proposing_department": "sci_tech",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "分期拨付，首期不超过方案的 50%",
+                "reason": "以里程碑控制支出节奏",
+                "proposing_department": "fiscal",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "资金证明或同比例出资作为放款前置条件",
+                "reason": "确认企业真实出资能力",
+                "proposing_department": "fiscal",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "设置建设、试产、量产里程碑并绑定放款",
+                "reason": "按阶段验证技术兑现",
+                "proposing_department": "sci_tech",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "按市场窗口分阶段投入，保留暂停追加条款",
+                "reason": "管理周期风险",
+                "proposing_department": "development",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "分期拨付，首期不超过方案的 50%",
+                "reason": "以里程碑控制支出节奏",
+                "proposing_department": "fiscal",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "资金证明或同比例出资作为放款前置条件",
+                "reason": "确认企业真实出资能力",
+                "proposing_department": "fiscal",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "设置建设、试产、量产里程碑并绑定放款",
+                "reason": "按阶段验证技术兑现",
+                "proposing_department": "sci_tech",
+                "company_id": "company_b"
+              },
+              {
+                "condition": "分期拨付，首期不超过方案的 50%",
+                "reason": "以里程碑控制支出节奏",
+                "proposing_department": "fiscal",
+                "company_id": "company_b"
+              },
+              {
+                "condition": "资金证明或同比例出资作为放款前置条件",
+                "reason": "确认企业真实出资能力",
+                "proposing_department": "fiscal",
+                "company_id": "company_b"
+              }
+            ]
+          },
+          {
+            "proposal_id": "PLAN-B",
+            "title": "审慎风控方案",
+            "basis": "反对/暂缓部门红线转化及财政暴露上限",
+            "conditions": [
+              {
+                "condition": "配套不足时不建议一次性全额投入",
+                "reason": "落地效果依赖配套",
+                "proposing_department": "economy",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                "reason": "周期反转损失难回收",
+                "proposing_department": "development",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "配套不足时不建议一次性全额投入",
+                "reason": "落地效果依赖配套",
+                "proposing_department": "economy",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "配套不足时不建议一次性全额投入",
+                "reason": "落地效果依赖配套",
+                "proposing_department": "economy",
+                "company_id": "company_b"
+              },
+              {
+                "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                "reason": "周期反转损失难回收",
+                "proposing_department": "development",
+                "company_id": "company_b"
+              }
+            ]
+          }
+        ],
+        "minority_opinions": [
+          {
+            "company_id": "company_a",
+            "agent": "sci_tech",
+            "recommendation": "support",
+            "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
+          },
+          {
+            "company_id": "company_a",
+            "agent": "fiscal",
+            "recommendation": "conditional_support",
+            "reasoning_summary": "财政余量 90 点，已承诺 110 点；追加空间有限，需防锁定"
+          },
+          {
+            "company_id": "company_d",
+            "agent": "economy",
+            "recommendation": "oppose",
+            "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+          },
+          {
+            "company_id": "company_d",
+            "agent": "sci_tech",
+            "recommendation": "support",
+            "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
+          },
+          {
+            "company_id": "company_d",
+            "agent": "development",
+            "recommendation": "support",
+            "reasoning_summary": "景气 15 / 价格趋势 5 / 供给压力 60：时点有利"
+          },
+          {
+            "company_id": "company_b",
+            "agent": "sci_tech",
+            "recommendation": "conditional_support",
+            "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
+          },
+          {
+            "company_id": "company_b",
+            "agent": "fiscal",
+            "recommendation": "conditional_support",
+            "reasoning_summary": "财政余量 90 点，已承诺 110 点；追加空间有限，需防锁定"
+          }
+        ],
+        "open_questions": [
+          {
+            "challenge_id": "CH-S3-01",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_a",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S3-02",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_a",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S3-03",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_d",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S3-04",
+            "from": "economy",
+            "to": "development",
+            "company_id": "company_d",
+            "question": "你（发改部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S3-05",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_b",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S3-06",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_b",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          }
+        ],
+        "revision_count": 6
+      },
       "state_deltas": [
         {
           "metric_id": "construction_progress",
@@ -3962,6 +7898,1334 @@
           "reasoning_summary": "景气 -15 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
         }
       ],
+      "department_communication": {
+        "conflicts": [
+          {
+            "stage_id": "S4",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 70 / 技术成熟度 60",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "conflict_id": "CF-S4-01"
+          },
+          {
+            "stage_id": "S4",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 90 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S4-02"
+          },
+          {
+            "stage_id": "S4",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 55 / 技术成熟度 55",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "conflict_id": "CF-S4-03"
+          },
+          {
+            "stage_id": "S4",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 90 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S4-04"
+          },
+          {
+            "stage_id": "S4",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 65 / 技术成熟度 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "conflict_id": "CF-S4-05"
+          },
+          {
+            "stage_id": "S4",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 90 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S4-06"
+          }
+        ],
+        "challenges": [
+          {
+            "stage_id": "S4",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 70 / 技术成熟度 60",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "conflict_id": "CF-S4-01",
+            "challenge_id": "CH-S4-01",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S4",
+            "company_id": "company_a",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 2 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_A-PRE-01",
+                "PROTO_A-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 90 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S4-02",
+            "challenge_id": "CH-S4-02",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S4",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 55 / 技术成熟度 55",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "conflict_id": "CF-S4-03",
+            "challenge_id": "CH-S4-03",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S4",
+            "company_id": "company_d",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_D-PRE-01",
+                "PROTO_D-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 90 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S4-04",
+            "challenge_id": "CH-S4-04",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S4",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "TECH-1",
+              "kind": "claim",
+              "text": "执行能力 65 / 技术成熟度 40",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "severity": "high",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "conflict_id": "CF-S4-05",
+            "challenge_id": "CH-S4-05",
+            "status": "pending"
+          },
+          {
+            "stage_id": "S4",
+            "company_id": "company_b",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "from_ref": {
+              "ref_id": "ECON-1",
+              "kind": "claim",
+              "text": "本地产业基础 20 / 人才 45 / 基础设施 50",
+              "evidence_ids": [
+                "PROTO_B-PRE-01",
+                "PROTO_B-PRE-02"
+              ]
+            },
+            "to_ref": {
+              "ref_id": "FISCAL-1",
+              "kind": "claim",
+              "text": "当期财政余量 90 点，具备承接能力",
+              "evidence_ids": []
+            },
+            "severity": "high",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "evidence_ids": [],
+            "conflict_id": "CF-S4-06",
+            "challenge_id": "CH-S4-06",
+            "status": "pending"
+          }
+        ],
+        "responses": [
+          {
+            "response_id": "RESP-S4-01",
+            "challenge_id": "CH-S4-01",
+            "stage_id": "S4",
+            "from": "sci_tech",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "confidence": 0.65
+          },
+          {
+            "response_id": "RESP-S4-02",
+            "challenge_id": "CH-S4-02",
+            "stage_id": "S4",
+            "from": "fiscal",
+            "to": "economy",
+            "response_type": "change",
+            "statement": "接受质询：原判断依据不足，调整为审慎立场并补充条件",
+            "evidence_ids": [],
+            "confidence": 0.8
+          },
+          {
+            "response_id": "RESP-S4-03",
+            "challenge_id": "CH-S4-03",
+            "stage_id": "S4",
+            "from": "sci_tech",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "confidence": 0.65
+          },
+          {
+            "response_id": "RESP-S4-04",
+            "challenge_id": "CH-S4-04",
+            "stage_id": "S4",
+            "from": "fiscal",
+            "to": "economy",
+            "response_type": "change",
+            "statement": "接受质询：原判断依据不足，调整为审慎立场并补充条件",
+            "evidence_ids": [],
+            "confidence": 0.8
+          },
+          {
+            "response_id": "RESP-S4-05",
+            "challenge_id": "CH-S4-05",
+            "stage_id": "S4",
+            "from": "sci_tech",
+            "to": "economy",
+            "response_type": "soften",
+            "statement": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件",
+            "evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "confidence": 0.65
+          },
+          {
+            "response_id": "RESP-S4-06",
+            "challenge_id": "CH-S4-06",
+            "stage_id": "S4",
+            "from": "fiscal",
+            "to": "economy",
+            "response_type": "change",
+            "statement": "接受质询：原判断依据不足，调整为审慎立场并补充条件",
+            "evidence_ids": [],
+            "confidence": 0.8
+          }
+        ],
+        "position_revisions": [
+          {
+            "revision_id": "REV-S4-01",
+            "stage_id": "S4",
+            "agent": "sci_tech",
+            "company_id": "company_a",
+            "trigger_challenge_id": "CH-S4-01",
+            "trigger_evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02",
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02"
+            ],
+            "before": {
+              "recommendation": "support",
+              "score": 65.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 53.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S4-02",
+            "stage_id": "S4",
+            "agent": "fiscal",
+            "company_id": null,
+            "trigger_challenge_id": "CH-S4-02",
+            "trigger_evidence_ids": [],
+            "before": {
+              "recommendation": "conditional_support",
+              "score": 39.1,
+              "red_lines": [
+                {
+                  "redline_id": "FISCAL-R1",
+                  "condition": "当期支出不得超过预算上限 90 点",
+                  "reason": "财政点数守恒"
+                },
+                {
+                  "redline_id": "FISCAL-R2",
+                  "condition": "企业资金来源未证实前不承诺后续追加上限",
+                  "reason": "防止财政暴露不可控"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "FISCAL-C1",
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏"
+                },
+                {
+                  "condition_id": "FISCAL-C2",
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "oppose",
+              "score": 14.1,
+              "red_lines": [
+                {
+                  "redline_id": "FISCAL-R1",
+                  "condition": "当期支出不得超过预算上限 90 点",
+                  "reason": "财政点数守恒"
+                },
+                {
+                  "redline_id": "FISCAL-R2",
+                  "condition": "企业资金来源未证实前不承诺后续追加上限",
+                  "reason": "防止财政暴露不可控"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "FISCAL-C1",
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏"
+                },
+                {
+                  "condition_id": "FISCAL-C2",
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "change：接受质询：原判断依据不足，调整为审慎立场并补充条件"
+          },
+          {
+            "revision_id": "REV-S4-03",
+            "stage_id": "S4",
+            "agent": "sci_tech",
+            "company_id": "company_d",
+            "trigger_challenge_id": "CH-S4-03",
+            "trigger_evidence_ids": [
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02",
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "before": {
+              "recommendation": "support",
+              "score": 55.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 43.0,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S4-04",
+            "stage_id": "S4",
+            "agent": "fiscal",
+            "company_id": null,
+            "trigger_challenge_id": "CH-S4-04",
+            "trigger_evidence_ids": [],
+            "before": {
+              "recommendation": "conditional_support",
+              "score": 39.1,
+              "red_lines": [
+                {
+                  "redline_id": "FISCAL-R1",
+                  "condition": "当期支出不得超过预算上限 90 点",
+                  "reason": "财政点数守恒"
+                },
+                {
+                  "redline_id": "FISCAL-R2",
+                  "condition": "企业资金来源未证实前不承诺后续追加上限",
+                  "reason": "防止财政暴露不可控"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "FISCAL-C1",
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏"
+                },
+                {
+                  "condition_id": "FISCAL-C2",
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "oppose",
+              "score": 14.1,
+              "red_lines": [
+                {
+                  "redline_id": "FISCAL-R1",
+                  "condition": "当期支出不得超过预算上限 90 点",
+                  "reason": "财政点数守恒"
+                },
+                {
+                  "redline_id": "FISCAL-R2",
+                  "condition": "企业资金来源未证实前不承诺后续追加上限",
+                  "reason": "防止财政暴露不可控"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "FISCAL-C1",
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏"
+                },
+                {
+                  "condition_id": "FISCAL-C2",
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "change：接受质询：原判断依据不足，调整为审慎立场并补充条件"
+          },
+          {
+            "revision_id": "REV-S4-05",
+            "stage_id": "S4",
+            "agent": "sci_tech",
+            "company_id": "company_b",
+            "trigger_challenge_id": "CH-S4-05",
+            "trigger_evidence_ids": [
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02",
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02"
+            ],
+            "before": {
+              "recommendation": "conditional_support",
+              "score": 52.5,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "conditional_support",
+              "score": 40.5,
+              "red_lines": [
+                {
+                  "redline_id": "TECH-R1",
+                  "condition": "技术里程碑未达标时暂停后续拨付",
+                  "reason": "防止资金沉淀在未验证环节"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "TECH-C1",
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "soften：部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "revision_id": "REV-S4-06",
+            "stage_id": "S4",
+            "agent": "fiscal",
+            "company_id": null,
+            "trigger_challenge_id": "CH-S4-06",
+            "trigger_evidence_ids": [],
+            "before": {
+              "recommendation": "conditional_support",
+              "score": 39.1,
+              "red_lines": [
+                {
+                  "redline_id": "FISCAL-R1",
+                  "condition": "当期支出不得超过预算上限 90 点",
+                  "reason": "财政点数守恒"
+                },
+                {
+                  "redline_id": "FISCAL-R2",
+                  "condition": "企业资金来源未证实前不承诺后续追加上限",
+                  "reason": "防止财政暴露不可控"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "FISCAL-C1",
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏"
+                },
+                {
+                  "condition_id": "FISCAL-C2",
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力"
+                }
+              ]
+            },
+            "after": {
+              "recommendation": "oppose",
+              "score": 14.1,
+              "red_lines": [
+                {
+                  "redline_id": "FISCAL-R1",
+                  "condition": "当期支出不得超过预算上限 90 点",
+                  "reason": "财政点数守恒"
+                },
+                {
+                  "redline_id": "FISCAL-R2",
+                  "condition": "企业资金来源未证实前不承诺后续追加上限",
+                  "reason": "防止财政暴露不可控"
+                }
+              ],
+              "acceptable_conditions": [
+                {
+                  "condition_id": "FISCAL-C1",
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏"
+                },
+                {
+                  "condition_id": "FISCAL-C2",
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力"
+                },
+                {
+                  "condition_id": "ECON-C1",
+                  "condition": "基础设施/人才/供应链配套与项目建设同步安排",
+                  "reason": "保障项目落地与产业链协同"
+                }
+              ]
+            },
+            "reason": "change：接受质询：原判断依据不足，调整为审慎立场并补充条件"
+          }
+        ],
+        "minutes": {
+          "stage_id": "S4",
+          "consensus": {
+            "shared_evidence_ids": [
+              "PROTO_A-PRE-01",
+              "PROTO_A-PRE-02",
+              "PROTO_B-PRE-01",
+              "PROTO_B-PRE-02",
+              "PROTO_D-PRE-01",
+              "PROTO_D-PRE-02"
+            ],
+            "majority_by_company": {
+              "company_a": "oppose",
+              "company_d": "oppose",
+              "company_b": "oppose"
+            }
+          },
+          "disagreements": [
+            {
+              "conflict_id": "CF-S4-01",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_a",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S4-02",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_a",
+              "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "change",
+              "resolved": true,
+              "summary": "接受质询：原判断依据不足，调整为审慎立场并补充条件"
+            },
+            {
+              "conflict_id": "CF-S4-03",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_d",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S4-04",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_d",
+              "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "change",
+              "resolved": true,
+              "summary": "接受质询：原判断依据不足，调整为审慎立场并补充条件"
+            },
+            {
+              "conflict_id": "CF-S4-05",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_b",
+              "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "soften",
+              "resolved": false,
+              "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+            },
+            {
+              "conflict_id": "CF-S4-06",
+              "kind": "recommendation_gap",
+              "from": "economy",
+              "to": "fiscal",
+              "company_id": "company_b",
+              "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+              "response_type": "change",
+              "resolved": true,
+              "summary": "接受质询：原判断依据不足，调整为审慎立场并补充条件"
+            }
+          ],
+          "proposals": [
+            {
+              "proposal_id": "PLAN-A",
+              "title": "进取支持方案",
+              "basis": "支持与有条件支持部门的合并条件",
+              "conditions": [
+                {
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现",
+                  "proposing_department": "sci_tech",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现",
+                  "proposing_department": "sci_tech",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "设置建设、试产、量产里程碑并绑定放款",
+                  "reason": "按阶段验证技术兑现",
+                  "proposing_department": "sci_tech",
+                  "company_id": "company_b"
+                },
+                {
+                  "condition": "分期拨付，首期不超过方案的 50%",
+                  "reason": "以里程碑控制支出节奏",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_b"
+                },
+                {
+                  "condition": "资金证明或同比例出资作为放款前置条件",
+                  "reason": "确认企业真实出资能力",
+                  "proposing_department": "fiscal",
+                  "company_id": "company_b"
+                }
+              ]
+            },
+            {
+              "proposal_id": "PLAN-B",
+              "title": "审慎风控方案",
+              "basis": "反对/暂缓部门红线转化及财政暴露上限",
+              "conditions": [
+                {
+                  "condition": "配套不足时不建议一次性全额投入",
+                  "reason": "落地效果依赖配套",
+                  "proposing_department": "economy",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收",
+                  "proposing_department": "development",
+                  "company_id": "company_a"
+                },
+                {
+                  "condition": "配套不足时不建议一次性全额投入",
+                  "reason": "落地效果依赖配套",
+                  "proposing_department": "economy",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收",
+                  "proposing_department": "development",
+                  "company_id": "company_d"
+                },
+                {
+                  "condition": "配套不足时不建议一次性全额投入",
+                  "reason": "落地效果依赖配套",
+                  "proposing_department": "economy",
+                  "company_id": "company_b"
+                },
+                {
+                  "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                  "reason": "周期反转损失难回收",
+                  "proposing_department": "development",
+                  "company_id": "company_b"
+                }
+              ]
+            }
+          ],
+          "minority_opinions": [
+            {
+              "company_id": "company_a",
+              "agent": "sci_tech",
+              "recommendation": "support",
+              "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
+            },
+            {
+              "company_id": "company_a",
+              "agent": "fiscal",
+              "recommendation": "conditional_support",
+              "reasoning_summary": "财政余量 90 点，已承诺 140 点；追加空间有限，需防锁定"
+            },
+            {
+              "company_id": "company_d",
+              "agent": "sci_tech",
+              "recommendation": "support",
+              "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
+            },
+            {
+              "company_id": "company_d",
+              "agent": "fiscal",
+              "recommendation": "conditional_support",
+              "reasoning_summary": "财政余量 90 点，已承诺 140 点；追加空间有限，需防锁定"
+            },
+            {
+              "company_id": "company_b",
+              "agent": "sci_tech",
+              "recommendation": "conditional_support",
+              "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
+            },
+            {
+              "company_id": "company_b",
+              "agent": "fiscal",
+              "recommendation": "conditional_support",
+              "reasoning_summary": "财政余量 90 点，已承诺 140 点；追加空间有限，需防锁定"
+            }
+          ],
+          "open_questions": [
+            {
+              "challenge_id": "CH-S4-01",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_a",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S4-03",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_d",
+              "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            },
+            {
+              "challenge_id": "CH-S4-05",
+              "from": "economy",
+              "to": "sci_tech",
+              "company_id": "company_b",
+              "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+            }
+          ],
+          "revision_count": 6
+        }
+      },
+      "meeting_minutes": {
+        "stage_id": "S4",
+        "consensus": {
+          "shared_evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02",
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02",
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "majority_by_company": {
+            "company_a": "oppose",
+            "company_d": "oppose",
+            "company_b": "oppose"
+          }
+        },
+        "disagreements": [
+          {
+            "conflict_id": "CF-S4-01",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_a",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S4-02",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_a",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "change",
+            "resolved": true,
+            "summary": "接受质询：原判断依据不足，调整为审慎立场并补充条件"
+          },
+          {
+            "conflict_id": "CF-S4-03",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_d",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S4-04",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_d",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "change",
+            "resolved": true,
+            "summary": "接受质询：原判断依据不足，调整为审慎立场并补充条件"
+          },
+          {
+            "conflict_id": "CF-S4-05",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_b",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "soften",
+            "resolved": false,
+            "summary": "部分接受质询：维持基本立场，但接受对方条件约束并更新可接受条件"
+          },
+          {
+            "conflict_id": "CF-S4-06",
+            "kind": "recommendation_gap",
+            "from": "economy",
+            "to": "fiscal",
+            "company_id": "company_b",
+            "question": "你（财政部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。",
+            "response_type": "change",
+            "resolved": true,
+            "summary": "接受质询：原判断依据不足，调整为审慎立场并补充条件"
+          }
+        ],
+        "proposals": [
+          {
+            "proposal_id": "PLAN-A",
+            "title": "进取支持方案",
+            "basis": "支持与有条件支持部门的合并条件",
+            "conditions": [
+              {
+                "condition": "设置建设、试产、量产里程碑并绑定放款",
+                "reason": "按阶段验证技术兑现",
+                "proposing_department": "sci_tech",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "分期拨付，首期不超过方案的 50%",
+                "reason": "以里程碑控制支出节奏",
+                "proposing_department": "fiscal",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "资金证明或同比例出资作为放款前置条件",
+                "reason": "确认企业真实出资能力",
+                "proposing_department": "fiscal",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "设置建设、试产、量产里程碑并绑定放款",
+                "reason": "按阶段验证技术兑现",
+                "proposing_department": "sci_tech",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "分期拨付，首期不超过方案的 50%",
+                "reason": "以里程碑控制支出节奏",
+                "proposing_department": "fiscal",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "资金证明或同比例出资作为放款前置条件",
+                "reason": "确认企业真实出资能力",
+                "proposing_department": "fiscal",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "设置建设、试产、量产里程碑并绑定放款",
+                "reason": "按阶段验证技术兑现",
+                "proposing_department": "sci_tech",
+                "company_id": "company_b"
+              },
+              {
+                "condition": "分期拨付，首期不超过方案的 50%",
+                "reason": "以里程碑控制支出节奏",
+                "proposing_department": "fiscal",
+                "company_id": "company_b"
+              },
+              {
+                "condition": "资金证明或同比例出资作为放款前置条件",
+                "reason": "确认企业真实出资能力",
+                "proposing_department": "fiscal",
+                "company_id": "company_b"
+              }
+            ]
+          },
+          {
+            "proposal_id": "PLAN-B",
+            "title": "审慎风控方案",
+            "basis": "反对/暂缓部门红线转化及财政暴露上限",
+            "conditions": [
+              {
+                "condition": "配套不足时不建议一次性全额投入",
+                "reason": "落地效果依赖配套",
+                "proposing_department": "economy",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                "reason": "周期反转损失难回收",
+                "proposing_department": "development",
+                "company_id": "company_a"
+              },
+              {
+                "condition": "配套不足时不建议一次性全额投入",
+                "reason": "落地效果依赖配套",
+                "proposing_department": "economy",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                "reason": "周期反转损失难回收",
+                "proposing_department": "development",
+                "company_id": "company_d"
+              },
+              {
+                "condition": "配套不足时不建议一次性全额投入",
+                "reason": "落地效果依赖配套",
+                "proposing_department": "economy",
+                "company_id": "company_b"
+              },
+              {
+                "condition": "需求周期未确认改善前不鼓励逆周期重仓",
+                "reason": "周期反转损失难回收",
+                "proposing_department": "development",
+                "company_id": "company_b"
+              }
+            ]
+          }
+        ],
+        "minority_opinions": [
+          {
+            "company_id": "company_a",
+            "agent": "sci_tech",
+            "recommendation": "support",
+            "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
+          },
+          {
+            "company_id": "company_a",
+            "agent": "fiscal",
+            "recommendation": "conditional_support",
+            "reasoning_summary": "财政余量 90 点，已承诺 140 点；追加空间有限，需防锁定"
+          },
+          {
+            "company_id": "company_d",
+            "agent": "sci_tech",
+            "recommendation": "support",
+            "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
+          },
+          {
+            "company_id": "company_d",
+            "agent": "fiscal",
+            "recommendation": "conditional_support",
+            "reasoning_summary": "财政余量 90 点，已承诺 140 点；追加空间有限，需防锁定"
+          },
+          {
+            "company_id": "company_b",
+            "agent": "sci_tech",
+            "recommendation": "conditional_support",
+            "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
+          },
+          {
+            "company_id": "company_b",
+            "agent": "fiscal",
+            "recommendation": "conditional_support",
+            "reasoning_summary": "财政余量 90 点，已承诺 140 点；追加空间有限，需防锁定"
+          }
+        ],
+        "open_questions": [
+          {
+            "challenge_id": "CH-S4-01",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_a",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S4-03",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_d",
+            "question": "你（科技部门）建议support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          },
+          {
+            "challenge_id": "CH-S4-05",
+            "from": "economy",
+            "to": "sci_tech",
+            "company_id": "company_b",
+            "question": "你（科技部门）建议conditional_support，而经信部门建议oppose。请引用证据说明你支持的判断依据，并回应对方主张。"
+          }
+        ],
+        "revision_count": 6
+      },
       "state_deltas": [
         {
           "metric_id": "construction_progress",
@@ -4300,6 +9564,123 @@
         "company_id": "company_b",
         "status": "承压"
       }
+    ],
+    "timeline": [],
+    "proposition_review": [
+      {
+        "company_id": "company_a",
+        "proposition": "企业是否具备建线、融资和持续扩代的真实能力",
+        "evidence_status_at_decision": "partial",
+        "handling": [],
+        "assumptions": [
+          {
+            "key": "cash_reserve",
+            "basis": "2007年末货币资金约17亿元",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "financing_capacity",
+            "basis": "2008年7月定增完成、多元融资渠道已验证",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "parent_support",
+            "basis": "集团运营现金流与北京国资支持记录",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "tech_team_depth",
+            "basis": "北京5代线工程团队已验证建线良率能力",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "ip_pathway_risk",
+            "basis": "TFT-LCD成熟路线，专利授权体系已建立",
+            "assumption_class": "latent_scenario_variable"
+          }
+        ],
+        "worldline_outcome": {
+          "status": "建设",
+          "milestones_done": []
+        },
+        "terminal_outcome": "capability_confirmed"
+      },
+      {
+        "company_id": "company_d",
+        "proposition": "母公司能否在价格下降和高负债下持续提供运营资金、采购信用和技术人员",
+        "evidence_status_at_decision": "partial",
+        "handling": [],
+        "assumptions": [
+          {
+            "key": "cash_reserve",
+            "basis": "2009年末现金及等价物3.85亿美元",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "financing_capacity",
+            "basis": "2010年4月获银行豁免后才恢复，续贷依赖高",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "parent_support",
+            "basis": "2009年净亏损2.34亿美元+短贷9.8亿美元",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "tech_team_depth",
+            "basis": "多晶硅铸锭/硅片团队成熟，组件新团队组建中",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "ip_pathway_risk",
+            "basis": "光伏技术壁垒低于半导体，风险主要在价格与融资",
+            "assumption_class": "latent_scenario_variable"
+          }
+        ],
+        "worldline_outcome": {
+          "status": "承压",
+          "milestones_done": []
+        },
+        "terminal_outcome": "parent_support_failed"
+      },
+      {
+        "company_id": "company_b",
+        "proposition": "技术团队、知识产权路径和长期资本能否按阶段形成闭环",
+        "evidence_status_at_decision": "unverified",
+        "handling": [],
+        "assumptions": [
+          {
+            "key": "cash_reserve",
+            "basis": "17天新设项目公司，无经营现金流",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "financing_capacity",
+            "basis": "依赖合肥国资与政策性产业资本体系持续注资",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "parent_support",
+            "basis": "地方平台承担融资主体角色，持续能力未验证",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "tech_team_depth",
+            "basis": "早期团队组建中，量产与良率经验待验证",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "ip_pathway_risk",
+            "basis": "DRAM IP壁垒极高，国际龙头已推进20nm级DDR4",
+            "assumption_class": "latent_scenario_variable"
+          }
+        ],
+        "worldline_outcome": {
+          "status": "承压",
+          "milestones_done": []
+        },
+        "terminal_outcome": "long_capital_sustained"
+      }
     ]
   },
   "historical_replay_baseline": {
@@ -4357,6 +9738,127 @@
         "stage_id": "S4",
         "company_id": "company_b",
         "status": "承压"
+      }
+    ],
+    "timeline": [],
+    "proposition_review": [
+      {
+        "company_id": "company_a",
+        "proposition": "企业是否具备建线、融资和持续扩代的真实能力",
+        "evidence_status_at_decision": "partial",
+        "handling": [],
+        "assumptions": [
+          {
+            "key": "cash_reserve",
+            "basis": "2007年末货币资金约17亿元",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "financing_capacity",
+            "basis": "2008年7月定增完成、多元融资渠道已验证",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "parent_support",
+            "basis": "集团运营现金流与北京国资支持记录",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "tech_team_depth",
+            "basis": "北京5代线工程团队已验证建线良率能力",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "ip_pathway_risk",
+            "basis": "TFT-LCD成熟路线，专利授权体系已建立",
+            "assumption_class": "latent_scenario_variable"
+          }
+        ],
+        "worldline_outcome": {
+          "status": "建设",
+          "milestones_done": [
+            "construction_done"
+          ]
+        },
+        "terminal_outcome": "capability_confirmed"
+      },
+      {
+        "company_id": "company_d",
+        "proposition": "母公司能否在价格下降和高负债下持续提供运营资金、采购信用和技术人员",
+        "evidence_status_at_decision": "partial",
+        "handling": [],
+        "assumptions": [
+          {
+            "key": "cash_reserve",
+            "basis": "2009年末现金及等价物3.85亿美元",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "financing_capacity",
+            "basis": "2010年4月获银行豁免后才恢复，续贷依赖高",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "parent_support",
+            "basis": "2009年净亏损2.34亿美元+短贷9.8亿美元",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "tech_team_depth",
+            "basis": "多晶硅铸锭/硅片团队成熟，组件新团队组建中",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "ip_pathway_risk",
+            "basis": "光伏技术壁垒低于半导体，风险主要在价格与融资",
+            "assumption_class": "latent_scenario_variable"
+          }
+        ],
+        "worldline_outcome": {
+          "status": "退出",
+          "milestones_done": []
+        },
+        "terminal_outcome": "parent_support_failed"
+      },
+      {
+        "company_id": "company_b",
+        "proposition": "技术团队、知识产权路径和长期资本能否按阶段形成闭环",
+        "evidence_status_at_decision": "unverified",
+        "handling": [],
+        "assumptions": [
+          {
+            "key": "cash_reserve",
+            "basis": "17天新设项目公司，无经营现金流",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "financing_capacity",
+            "basis": "依赖合肥国资与政策性产业资本体系持续注资",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "parent_support",
+            "basis": "地方平台承担融资主体角色，持续能力未验证",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "tech_team_depth",
+            "basis": "早期团队组建中，量产与良率经验待验证",
+            "assumption_class": "latent_scenario_variable"
+          },
+          {
+            "key": "ip_pathway_risk",
+            "basis": "DRAM IP壁垒极高，国际龙头已推进20nm级DDR4",
+            "assumption_class": "latent_scenario_variable"
+          }
+        ],
+        "worldline_outcome": {
+          "status": "承压",
+          "milestones_done": [
+            "construction_done"
+          ]
+        },
+        "terminal_outcome": "long_capital_sustained"
       }
     ]
   }
