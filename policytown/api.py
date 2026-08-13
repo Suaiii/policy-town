@@ -359,13 +359,6 @@ def select_proposal(run_id: str, request: SelectProposalRequest) -> dict:
     if proposal is None:
         raise HTTPException(status_code=422, detail="proposal does not exist in the compiled meeting result")
     try:
-        comparison = _compare_from_state(
-            engine,
-            state,
-            request.stage_id,
-            request.company_id,
-            preview.meeting.proposals,
-        )
         result = engine.run_stage(state, StageInput(
             run_id=run_id,
             stage_id=request.stage_id,
@@ -385,10 +378,29 @@ def select_proposal(run_id: str, request: SelectProposalRequest) -> dict:
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     payload = result.model_dump(mode="json")
-    comparison["historical_alignment"] = _historical_alignment(
-        engine, request.company_id, preview.meeting.proposals,
-    )
-    payload["policy_package_comparison"] = comparison
+    payload["settlement_trace"] = [
+        {
+            "step": "proposal_validation",
+            "label": "政策包校验",
+            "detail": "确认 proposal_id 来自本轮编译结果，且阶段、企业与运行状态一致。",
+        },
+        {
+            "step": "budget_validation",
+            "label": "财政与条件校验",
+            "detail": f"核对可用财政、投入 {proposal.capital_points} 点、分期总额和必要约束。",
+        },
+        {
+            "step": "enterprise_action",
+            "label": "企业行动生成",
+            "detail": "企业依据已选政策包、私有状态与 Memory 形成行动意图。",
+        },
+        {
+            "step": "deterministic_settlement",
+            "label": "确定性规则结算",
+            "detail": "将政府行动、企业行动与本阶段外部事件写入规则引擎，生成状态变化和承诺账。",
+        },
+    ]
+    payload["comparison_available_at"] = f"/api/runs/{run_id}/compare-proposals"
     path.write_text(json.dumps({
         "idempotency_key": request.idempotency_key, "result": payload,
     }, ensure_ascii=False, indent=2), encoding="utf-8")

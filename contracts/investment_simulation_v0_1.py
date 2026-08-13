@@ -431,6 +431,10 @@ class DepartmentReviewUpdate(BaseModel):
     recommendation_after: Recommendation
     reason: str
     added_conditions: list[str] = Field(default_factory=list)
+    key_page: str = Field(min_length=12, max_length=120)
+    independent_view: str = Field(min_length=60, max_length=220)
+    confidence: float = Field(ge=0, le=1)
+    generation_mode: Literal["model", "deterministic_fallback"] = "deterministic_fallback"
 
 
 class MeetingProposal(BaseModel):

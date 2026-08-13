@@ -105,13 +105,9 @@ class TestInvestmentApi(unittest.TestCase):
         self.assertEqual(result["budget"]["spent"], proposal["capital_points"])
         selected = next(item for item in result["deliberations"] if item["company_id"] == company_id)
         self.assertEqual(selected["selected_proposal_id"], proposal["proposal_id"])
-        comparison = result["policy_package_comparison"]
-        self.assertEqual(2, len(comparison["branches"]))
-        self.assertTrue(comparison["historical_alignment"]["revealed_after_decision"])
-        self.assertIn(
-            comparison["historical_alignment"]["history_like_proposal_id"],
-            [item["proposal_id"] for item in comparison["branches"]],
-        )
+        self.assertEqual(4, len(result["settlement_trace"]))
+        self.assertEqual("proposal_validation", result["settlement_trace"][0]["step"])
+        self.assertTrue(result["comparison_available_at"].endswith("/compare-proposals"))
 
     def test_two_policy_packages_form_a_controlled_ablation(self):
         stage = self.client.post("/api/runs", json={"seed": 9}).json()

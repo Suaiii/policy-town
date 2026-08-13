@@ -108,7 +108,8 @@ class OpenCodeGoDepartmentProvider:
             raise ValueError("LLM_API_KEY is required for OpenCode Go provider")
 
     def __call__(self, brief: DepartmentBrief) -> dict:
-        is_challenge = "interaction=" in brief.state_summary
+        is_challenge = "output_override=返回 DepartmentChallenge JSON" in brief.state_summary
+        is_review = "interaction=企业回应后的部门第二轮独立复盘" in brief.state_summary
         system = (
             "你是合肥产业投资推演中的政府部门 Agent。"
             "只输出一个 JSON 对象，不要 Markdown，不要臆造证据或数字。"
@@ -132,7 +133,12 @@ class OpenCodeGoDepartmentProvider:
         task = (
             "根据 state_summary 中的 interaction 完成一次部门间定向质询。status 只能是 answered 或 insufficient_evidence；stance_after 只能是 support、conditional_support、defer、oppose。"
             if is_challenge
-            else "完成本部门独立初审，recommendation 只能是 support、conditional_support、defer、oppose。"
+            else (
+                "完成本部门独立初审，recommendation 只能是 support、conditional_support、defer、oppose。"
+                + ("这是企业回应后的第二轮复盘，必须结合 first_round_memo 和 enterprise_response 形成新的判断。" if is_review else "")
+                + "key_page 必须是一句可直接在会议中说出的中文关键判断，不能输出字段名、标签、证据索引或资料引用。"
+                + "independent_view 必须用约100字中文解释本部门依据、风险与条件。"
+            )
         )
         user = {
             "task": task + " 仅引用 visible_facts 中的 evidence_id。",
@@ -234,8 +240,20 @@ class DepartmentAgentRuntime:
             if not isinstance(payload, dict):
                 raise TypeError("department provider must return a JSON object")
             key_page = str(payload.get("key_page") or payload.get("core_claim") or fallback.key_page)
-            if len(key_page) < 12:
+            key_page_is_placeholder = (
+                len(key_page) < 12
+                or not any("\u4e00" <= char <= "\u9fff" for char in key_page)
+                or key_page.endswith(("_page", "_review"))
+                or key_page.startswith(("详见", "参考", "参见"))
+            )
+            if key_page_is_placeholder:
                 key_page = str(payload.get("core_claim") or fallback.key_page)
+            if (
+                len(key_page) < 12
+                or not any("\u4e00" <= char <= "\u9fff" for char in key_page)
+                or key_page.startswith(("详见", "参考", "参见"))
+            ):
+                key_page = fallback.key_page
             independent_view = str(payload.get("independent_view") or "").strip()
             if len(independent_view) < 60:
                 independent_view = (
@@ -1180,35 +1198,76 @@ def deliberate(
         meeting.recommendation_rationale,
         enterprise_intent,
     )
+    # Round two: every department independently reads the enterprise response
+    # together with its own first-round memo and memory. This is a real second
+    # model invocation, not a shared rule-generated sentence.
+    department_review_updates = []
+    reviewed_memos = []
+    for memo in memos:
+        fallback_after = memo.recommendation
+        if enterprise_intent and enterprise_intent.action in {"range", "exchange_condition"} and fallback_after == "support":
+            fallback_after = "conditional_support"
+        if enterprise_intent and enterprise_intent.action == "refuse" and fallback_after in {"support", "conditional_support"}:
+            fallback_after = "defer"
+        response_statement = enterprise_disclosure.statement
+        fallback_review = memo.model_copy(update={
+            "memo_id": f"{memo.memo_id}-review",
+            "recommendation": fallback_after,
+            "core_claim": f"企业回应后，本部门将原判断复核为{fallback_after}。{memo.core_claim}",
+            "key_page": f"企业回应后，本部门将立场复核为{fallback_after}，并继续约束{memo.most_important_risk}。"[:120],
+            "independent_view": (
+                f"企业回应为：{response_statement} 本部门结合首轮判断重新审查后，立场为{fallback_after}。"
+                f"回应尚未自动消除{memo.most_important_risk}，因此仍需落实{memo.acceptable_conditions[0]}；"
+                "若后续证据不能满足该条件，应暂停支持或下调投入强度。"
+            )[:220],
+            "generation_mode": "deterministic_fallback",
+            "fallback_reason": "second-round deterministic fallback",
+        })
+        first_brief = brief_by_dept[memo.department]
+        review_brief = first_brief.model_copy(update={
+            "brief_id": f"{first_brief.brief_id}-post-disclosure",
+            "state_summary": (
+                state_summary
+                + "; interaction=企业回应后的部门第二轮独立复盘"
+                + f"; first_round_memo={memo.model_dump_json()}"
+                + f"; enterprise_response_type={enterprise_disclosure.response_type}"
+                + f"; enterprise_response={enterprise_disclosure.statement}"
+                + "; output_requirement=重新输出完整DepartmentMemo，key_page是一句新的现场复盘判断，independent_view约100字解释回应改变了什么、仍缺什么、增加什么条件"
+            ),
+        })
+        reviewed = runtime.resolve(review_brief, fallback_review)
+        reviewed_memos.append(reviewed)
+        added = list(reviewed.acceptable_conditions[:1])
+        department_review_updates.append(DepartmentReviewUpdate(
+            department=memo.department,
+            recommendation_before=memo.recommendation,
+            recommendation_after=reviewed.recommendation,
+            reason=reviewed.core_claim,
+            added_conditions=added,
+            key_page=reviewed.key_page,
+            independent_view=reviewed.independent_view,
+            confidence=reviewed.confidence,
+            generation_mode=reviewed.generation_mode,
+        ))
     proposals = compile_policy_packages(
         company=company,
         budget=budget,
-        memos=memos,
+        memos=reviewed_memos,
         challenges=challenges,
         enterprise_intent=enterprise_intent,
         stage_id=stage_id,
     )
-    response_downgrade = enterprise_intent is not None and enterprise_intent.action in {
-        "range", "exchange_condition", "refuse",
-    }
-    department_review_updates = []
-    for memo in memos:
-        after = memo.recommendation
-        added = list(enterprise_intent.requested_changes if enterprise_intent else [])[:1]
-        if response_downgrade and after == "support":
-            after = "conditional_support"
-        if enterprise_intent and enterprise_intent.action == "refuse" and after == "conditional_support":
-            after = "defer"
-        department_review_updates.append(DepartmentReviewUpdate(
+    department_memories = [
+        build_department_memory(
+            run_id=run_id,
+            stage_id=stage_id,
             department=memo.department,
-            recommendation_before=memo.recommendation,
-            recommendation_after=after,
-            reason=(
-                f"企业回应类型为 {enterprise_intent.action}；本部门据此复核原判断。"
-                if enterprise_intent else "企业 Agent 未提供新增信号，维持原判断。"
-            ),
-            added_conditions=added,
-        ))
+            company_id=company.company_id,
+            memo=memo,
+            previous=previous_by_dept.get(memo.department),
+        )
+        for memo in reviewed_memos
+    ]
     meeting = meeting.model_copy(update={
         "recommended_action": recommended_action,
         "recommendation_rationale": recommendation_rationale,
