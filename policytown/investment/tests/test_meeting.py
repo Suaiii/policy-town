@@ -257,36 +257,19 @@ from ..core.meeting import (build_challenges, make_minutes, position_revision,
 from ..fallback import deterministic
 
 
-def _memo2(agent, reco, score=60, confidence=0.7, claims=None, red_lines=None,
-           conditions=None, missing=None, company_id="company_a", evidence=None):
-    ev = ["E1"] if evidence is None else evidence
-    return {
-        "agent": agent, "department": agent, "company_id": company_id,
-        "recommendation": reco, "direction": "neutral", "score": score,
-        "confidence": confidence,
-        "core_claims": claims or [{"claim_id": "C-1", "claim_type": "positive",
-                                   "statement": "%s 的主张" % agent, "evidence_ids": ["E1"]}],
-        "red_lines": red_lines or [{"redline_id": "R-1", "condition": "红线", "reason": "原因"}],
-        "acceptable_conditions": conditions or [{"condition_id": "C-1", "condition": "条件",
-                                                 "reason": "原因"}],
-        "missing_info": missing or [], "key_factors": [], "evidence_ids": ev,
-        "reasoning_summary": "理由",
-    }
-
-
 class TestMeetingMinutes2(unittest.TestCase):
     def _memos(self):
-        return [_memo2("fiscal", "support", company_id=None,
-                       red_lines=[{"redline_id": "F-R2",
-                                   "condition": "企业资金来源未证实前不承诺后续追加上限",
-                                   "reason": "防暴露"}]),
-                _memo2("economy", "oppose", score=30),
-                _memo2("sci_tech", "support", score=65, confidence=0.65,
-                       conditions=[{"condition_id": "T-C1", "condition": "里程碑绑定放款",
-                                    "reason": "按阶段验证"}]),
-                _memo2("development", "conditional_support", score=50, confidence=0.7,
-                       conditions=[{"condition_id": "D-C1", "condition": "保留暂停追加条款",
-                                    "reason": "管理周期风险"}])]
+        return [_memo("fiscal", "support", company_id=None,
+                      red_lines=[{"redline_id": "F-R2",
+                                  "condition": "企业资金来源未证实前不承诺后续追加上限",
+                                  "reason": "防暴露"}]),
+                _memo("economy", "oppose", score=30),
+                _memo("sci_tech", "support", score=65, confidence=0.65,
+                      conditions=[{"condition_id": "T-C1", "condition": "里程碑绑定放款",
+                                   "reason": "按阶段验证"}]),
+                _memo("development", "conditional_support", score=50, confidence=0.7,
+                      conditions=[{"condition_id": "D-C1", "condition": "保留暂停追加条款",
+                                   "reason": "管理周期风险"}])]
 
     def _minutes(self, memos=None):
         memos = memos or self._memos()
@@ -464,3 +447,13 @@ class TestChallengeResponderAgent(unittest.TestCase):
             {"market": {}, "city": {"budget_points": 100}})
         self.assertEqual(responses[0]["response_type"], "soften")   # 走确定性 fallback
         validate_challenge_response(responses[0])
+
+    def test_empty_challenges_returns_empty(self):
+        from ..agents.professional import make_challenge_responders, run_challenge_responses
+        responders = make_challenge_responders()
+        memos = [_memo("economy", "oppose", score=30, company_id="company_a"),
+                 _memo("sci_tech", "support", score=70, company_id="company_a")]
+        responses = run_challenge_responses(
+            responders, [], memos,
+            {"market": {}, "city": {"budget_points": 100}})
+        self.assertEqual(responses, [])

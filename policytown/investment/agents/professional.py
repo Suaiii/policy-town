@@ -197,20 +197,17 @@ def run_challenge_responses(responders: dict, challenges: List[dict],
                             memoranda: List[dict], ctx: dict) -> List[dict]:
     """每个挑战触发一次定向质询回应：LLM 优先，超时/校验失败回退确定性规则。"""
     from ..core.meeting import find_memorandum
-    from ..core.context import slim_context
-    from ..fallback import deterministic as _det
 
     def _respond(ch: dict) -> dict:
         memo = find_memorandum(memoranda, ch["to"], ch["company_id"]) or {}
-        slim = slim_context(ctx, ch["to"], ch["company_id"] or "")
         out = responders[ch["to"]].run(
-            {"challenge": ch, "memo": memo, "ctx": slim},
-            lambda: _det.challenge_response(ch, memo, ctx),
+            {"challenge": ch, "memo": memo},
+            lambda: deterministic.challenge_response(ch, memo, ctx),
             validator=validate_challenge_response)
         # 身份以挑战为准：回应方 = 被质询方
         out["from"] = ch["to"]
         out["to"] = ch["from"]
         return out
 
-    with ThreadPoolExecutor(max_workers=min(4, len(challenges))) as pool:
+    with ThreadPoolExecutor(max_workers=max(1, min(4, len(challenges)))) as pool:
         return list(pool.map(_respond, challenges))

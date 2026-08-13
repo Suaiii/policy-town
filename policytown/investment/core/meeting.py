@@ -259,7 +259,6 @@ def validate_position_revision(rev: dict) -> None:
                 raise ValueError("revision %s missing key: %s" % (side, k))
 
 
-# ---------- P1 Task 2：定向质询构建 + 立场修订（另一会话已实现） ----------
 def _shared_evidence(memoranda: List[dict]) -> List[str]:
     """在任一组内被 ≥3 个部门引用的证据视为共享证据。"""
     counts: Dict[str, int] = {}
