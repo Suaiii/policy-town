@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { SandboxEvent } from '../../../packages/events/src';
 import { enterpriseProfileForNode } from './enterpriseProfileAdapter';
+import { terminalRelationshipModel } from './terminalScenario';
 
 const events: SandboxEvent[] = [
   { seq: 2, type: 'subsidize', actor: 'gov', target: 'enterprise-a', at: '2008 · Q3', visibility: 'public', reveal_at: null, payload: { tool: 'investment' } },
@@ -10,26 +11,54 @@ const events: SandboxEvent[] = [
 ];
 
 describe('enterpriseProfileForNode', () => {
-  it('builds an enterprise system prompt and descending event memories', () => {
+  it('builds the terminal enterprise prompt and staged memories', () => {
     const profile = enterpriseProfileForNode({ uuid: 'enterprise-a', kind: 'Project' }, events);
 
     expect(profile).toMatchObject({
       id: 'enterprise-a',
-      name: '远景显示',
+      name: 'A · 远景显示',
       systemPrompt: {
         identity: expect.stringContaining('新型显示'),
-        motivation: expect.stringContaining('175'),
-        strategy: expect.arrayContaining([expect.stringContaining('TFT-LCD')]),
-        boundaries: expect.arrayContaining([expect.stringContaining('部分验证')]),
-        speakingStyle: expect.stringContaining('华东区域项目负责人'),
+        motivation: expect.stringContaining('投产'),
+        strategy: expect.arrayContaining([expect.stringContaining('采购')]),
+        boundaries: expect.arrayContaining([expect.stringContaining('审计')]),
+        speakingStyle: expect.stringContaining('履约'),
       },
     });
-    expect(profile!.requestedToolLabels).toEqual(['股权投资', '基础设施配套', '融资协调']);
-    expect(profile!.memories.map((memory) => memory.sequence)).toEqual([8, 5, 2]);
-    expect(profile!.memories.map((memory) => memory.stance)).toEqual(['cautious', 'neutral', 'support']);
+    expect(profile!.outcome).toBe('成功');
+    expect(profile!.memories.map((memory) => memory.sequence)).toEqual([1, 2, 3, 4]);
+    expect(profile!.memories.map((memory) => memory.stance)).toEqual(['support', 'support', 'cautious', 'support']);
   });
 
-  it('does not create a drawer profile for a government node', () => {
-    expect(enterpriseProfileForNode({ uuid: 'gov', kind: 'Government' }, events)).toBeNull();
+  it('provides the terminal government Agent with prompt and four staged memories', () => {
+    const profile = enterpriseProfileForNode({ uuid: 'gov-finance', kind: 'Government' }, events);
+    expect(profile).toMatchObject({
+      name: '财政部门',
+      agentKind: 'government',
+      outcome: '统筹',
+      systemPrompt: { identity: expect.stringContaining('财政') },
+    });
+    expect(profile!.memories).toHaveLength(4);
+    expect(profile!.memories.map((memory) => memory.at)).toEqual(['S1 · 起步核验', 'S2 · 组合配置', 'S3 · 压力传导', 'S4 · 终局结算']);
+  });
+
+  it('ships a complete terminal graph with five government Agents and six companies', () => {
+    expect(terminalRelationshipModel.nodes.filter((node) => node.kind === 'Government')).toHaveLength(5);
+    expect(terminalRelationshipModel.nodes.filter((node) => node.kind === 'Project')).toHaveLength(6);
+    expect(terminalRelationshipModel.edges.length).toBeGreaterThanOrEqual(30);
+  });
+
+  it('gives every terminal Agent a compact preview and an expandable mock deliberation record for S1–S4', () => {
+    for (const node of terminalRelationshipModel.nodes) {
+      const profile = enterpriseProfileForNode({ uuid: node.uuid, kind: node.kind }, events);
+      expect(profile!.memories).toHaveLength(4);
+      expect(profile!.memories.every((memory) => (
+        Boolean(memory.preview)
+        && Boolean(memory.detail)
+        && Boolean(memory.measures)
+        && Boolean(memory.interaction)
+        && Boolean(memory.result)
+      ))).toBe(true);
+    }
   });
 });

@@ -1,6 +1,7 @@
 import { getEnterprise, supportToolLabels } from '../../game/scenario';
 import type { SandboxEvent } from '../../../packages/events/src';
 import type { RelationshipNodeKind } from './graphAdapter';
+import { terminalAgentProfiles } from './terminalScenario';
 
 export type EnterpriseMemoryStance = 'support' | 'oppose' | 'cautious' | 'neutral';
 
@@ -10,6 +11,11 @@ export interface EnterpriseMemory {
   summary: string;
   stance: EnterpriseMemoryStance;
   relatedId: string;
+  preview?: string;
+  detail?: string;
+  measures?: string;
+  interaction?: string;
+  result?: string;
 }
 
 export interface EnterpriseProfile {
@@ -17,6 +23,8 @@ export interface EnterpriseProfile {
   name: string;
   industry: string;
   role: string;
+  agentKind?: 'government' | 'company';
+  outcome?: '统筹' | '成功' | '失败';
   requestedToolLabels: string[];
   systemPrompt: {
     identity: string;
@@ -44,6 +52,8 @@ export function enterpriseProfileForNode(
   node: { uuid: string; kind: RelationshipNodeKind },
   events: SandboxEvent[],
 ): EnterpriseProfile | null {
+  const terminalProfile = terminalAgentProfiles[node.uuid];
+  if (terminalProfile) return terminalProfile;
   if (node.kind !== 'Project') return null;
   const enterprise = getEnterprise(node.uuid as Parameters<typeof getEnterprise>[0]);
   if (!enterprise) return null;

@@ -3,6 +3,7 @@ import { fetchEvents, fetchGraph } from '../integration/agentApi';
 import type { SandboxEvent } from '../../packages/events/src';
 import { RelationshipNetworkView } from './relationship-network/RelationshipNetworkView';
 import { toRelationshipViewModel, type RelationshipViewModel } from './relationship-network/graphAdapter';
+import { terminalRelationshipModel } from './relationship-network/terminalScenario';
 
 export function RelationNetwork({ active, onBackToSandbox }: { active: boolean; onBackToSandbox: () => void }) {
   const [model, setModel] = useState<RelationshipViewModel | null>(null);
@@ -24,6 +25,6 @@ export function RelationNetwork({ active, onBackToSandbox }: { active: boolean; 
     return () => window.removeEventListener('relationship-network:updated', onUpdate);
   }, [active, refresh]);
 
-  const visibleModel = model ?? { revision: 0, nodes: [], edges: [] };
-  return <RelationshipNetworkView model={visibleModel} events={events} stale={stale || model === null} onBackToSandbox={onBackToSandbox} onRefresh={() => void refresh()} />;
+  const visibleModel = terminalRelationshipModel;
+  return <RelationshipNetworkView model={visibleModel} events={events} stale={false} onBackToSandbox={onBackToSandbox} onRefresh={() => void refresh()} />;
 }

@@ -95,7 +95,7 @@ export function RelationshipNetworkView({
       panRef.current = null;
       if (drag && !drag.moved) {
         const node = model.nodes.find((candidate) => candidate.uuid === drag.id);
-        if (node?.kind === 'Project') playCardOpenSound(selectedId ? 'switch' : 'open');
+        if (node) playCardOpenSound(selectedId ? 'switch' : 'open');
         setSelectedId(drag.id);
       }
     };
