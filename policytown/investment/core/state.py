@@ -8,6 +8,8 @@ import copy
 from dataclasses import dataclass, field, asdict
 from typing import Dict, List
 
+from ..memory.fact_graph import FactGraph
+
 COMPANY_METRICS = (
     "financial_health", "execution_ability", "technology_readiness",
     "customer_order_strength", "construction_progress", "production_ramp",
@@ -129,6 +131,7 @@ class WorldState:
     market: Dict[str, MarketConditions]
     companies: Dict[str, CompanyState]
     history: List[dict] = field(default_factory=list)
+    fact_graph: FactGraph = field(default_factory=FactGraph)
 
     def clone(self) -> "WorldState":
         return copy.deepcopy(self)

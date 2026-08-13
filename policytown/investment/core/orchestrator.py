@@ -20,6 +20,7 @@ from .context import build_context
 from .engine import RulesEngine
 from .graph_projection import project
 from .private_state import make_private_state
+from ..memory.fact_graph import FactRecord
 from ..agents.professional import make_professional_agents, run_assessments
 from ..agents.company import CompanyAgent
 
@@ -91,6 +92,20 @@ class Orchestrator:
             proto_id = "proto_%s" % cid.split("_")[-1]
             self.company_agents[cid].private_state = make_private_state(
                 companies[cid], self.enterprises.get(proto_id), self.seed)
+
+        # 现实图谱播种：仅关键命题的可见事实（available_at=企业决策截止日）
+        for cid, agent in self.company_agents.items():
+            ent = agent.enterprise or {}
+            kp = ent.get("key_proposition")
+            if not kp:
+                continue
+            avail = ent.get("decision_cutoff", stage["cutoff_at"])
+            for i, fact in enumerate(kp.get("visible_facts", [])):
+                self.state.fact_graph.add(FactRecord(
+                    fact_id="FACT-%s-%02d" % (ent.get("enterprise_id", cid).upper(), i + 1),
+                    subject=cid, predicate="visible_fact", value=fact,
+                    effective_at=avail, available_at=avail, visibility="public",
+                    source_ids=["CASE-%s" % ent.get("prototype_id", "?").upper()]))
 
     # ---------- ①②：开局视图（Context + 专业研判 + 图投影） ----------
 

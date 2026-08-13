@@ -3,7 +3,7 @@
   "$id": "investment_simulation/v0.1/context",
   "title": "FrozenContext v0.1 — ContextBuilder 产出的全局只读输入",
   "type": "object",
-  "required": ["stage_id", "cutoff_at", "city", "market", "companies", "inbox", "evidence_pack"],
+  "required": ["stage_id", "cutoff_at", "city", "market", "companies", "inbox", "evidence_pack", "fact_graph"],
   "properties": {
     "stage_id": {"type": "string", "enum": ["S1", "S2", "S3", "S4"]},
     "cutoff_at": {"type": "string", "description": "信息截止日 YYYY-MM-DD，之后公开的证据不得出现"},
@@ -68,6 +68,24 @@
           "value_type": {"type": "string", "enum": ["observed", "derived", "ordinal", "missing"]},
           "quality": {"type": "string", "enum": ["A", "B", "C", "D"]},
           "summary": {"type": "string"}
+        }
+      }
+    },
+    "fact_graph": {
+      "type": "array",
+      "description": "现实图谱（只读）：withheld 永不出现，available_at 不晚于 cutoff_at",
+      "items": {
+        "type": "object",
+        "required": ["fact_id", "subject", "predicate", "value", "available_at", "visibility"],
+        "properties": {
+          "fact_id": {"type": "string"},
+          "subject": {"type": "string"},
+          "predicate": {"type": "string"},
+          "value": {"type": "string"},
+          "effective_at": {"type": "string"},
+          "available_at": {"type": "string"},
+          "visibility": {"type": "string", "enum": ["public", "private", "withheld"]},
+          "source_ids": {"type": "array", "items": {"type": "string"}}
         }
       }
     }

@@ -79,6 +79,7 @@ def build_context(state: WorldState, inbox: Inbox, stage_events: List[dict]) -> 
         "companies": companies,
         "inbox": inbox.to_list(state.stage_id),
         "evidence_pack": evidence_pack,
+        "fact_graph": state.fact_graph.to_dict(cutoff, "public"),
     }
 
 
@@ -152,6 +153,7 @@ def slim_context(ctx: dict, kind: str, company_id: str = "") -> dict:
         slim["evidence_pack"] = {eid: ctx["evidence_pack"][eid]
                                  for eid in (comp.get("evidence_ids", []) if comp else [])
                                  if eid in ctx.get("evidence_pack", {})}
+        slim["fact_graph"] = ctx.get("fact_graph", [])
     elif kind == "fiscal":
         slim["company_requests"] = [{"company_id": c["company_id"],
                                      "anon_label": c["anon_label"],
