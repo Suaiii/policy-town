@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "investment_simulation/v0.3/meeting_minutes",
+  "title": "MeetingMinutes v0.3 — 联席会议纪要（文档 4.5）",
+  "description": "共识、未解决分歧、至少两个方案、少数意见与待调查问题。",
+  "type": "object",
+  "required": ["stage_id", "consensus", "disagreements", "proposals",
+               "minority_opinions", "open_questions", "revision_count"],
+  "properties": {
+    "stage_id": {"type": "string"},
+    "consensus": {
+      "type": "object",
+      "required": ["shared_evidence_ids", "majority_by_company"],
+      "properties": {
+        "shared_evidence_ids": {"type": "array", "items": {"type": "string"}},
+        "majority_by_company": {"type": "object"}
+      }
+    },
+    "disagreements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["conflict_id", "kind", "from", "to", "company_id", "question",
+                     "response_type", "resolved", "summary"]
+      }
+    },
+    "proposals": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["proposal_id", "title", "basis", "conditions"],
+        "properties": {
+          "proposal_id": {"type": "string"},
+          "title": {"type": "string"},
+          "basis": {"type": "string"},
+          "conditions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["condition", "reason", "proposing_department", "company_id"]
+            }
+          }
+        }
+      }
+    },
+    "minority_opinions": {"type": "array"},
+    "open_questions": {
+      "type": "array",
+      "items": {"type": "object", "required": ["challenge_id", "from", "to", "question"]}
+    },
+    "revision_count": {"type": "integer", "minimum": 0}
+  }
+}

@@ -11,6 +11,7 @@ from typing import Callable, List, Optional
 from .base import BaseAgent
 from ..fallback import deterministic
 from ..core.context import slim_context
+from ..core.meeting import validate_challenge_response
 
 KINDS = ("fiscal", "economy", "sci_tech", "development")
 _ROLE_NAMES = {"fiscal": "财政部门", "economy": "经信部门",
@@ -144,3 +145,72 @@ def run_assessments(agents: List[BaseAgent], ctx: dict,
 
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
         return list(pool.map(_run, tasks))
+
+
+# ---------- P1：部门质询回应（LLM 可选 + 确定性 fallback） ----------
+
+def build_challenge_prompt(payload: dict, role: str) -> str:
+    import json as _json
+    ch = payload["challenge"]
+    facts = _json.dumps({"challenge": ch, "memo": payload["memo"]},
+                        ensure_ascii=False, default=str)
+    example = {
+        "response_id": "RESP-01", "challenge_id": ch["challenge_id"],
+        "stage_id": ch["stage_id"], "from": ch["to"], "to": ch["from"],
+        "response_type": "soften",
+        "statement": "部分接受质询：维持基本立场，但接受对方条件约束",
+        "evidence_ids": ["EVID-001"], "confidence": 0.6,
+    }
+    return (
+        "【角色与边界】你是%s。你是被质询部门，只能输出结构化质询回应 JSON 对象。\n"
+        "你可以维持（maintain）、软化（soften）、改变（change）立场，"
+        "或承认材料不足（concede_insufficient）；回应必须引用证据或明确声明缺失；"
+        "禁止修改任何数值；禁止使用截止日之后的信息；禁止发明示例之外的其他字段。\n"
+        "【当前事实（只读，禁止修改）】%s\n"
+        "【输出契约】只输出一个 JSON 对象，必须严格遵循以下结构（response_type 只能是 "
+        "maintain / soften / change / concede_insufficient）：\n%s"
+        % (role, facts, _json.dumps(example, ensure_ascii=False, indent=1))
+    )
+
+
+class ChallengeResponderAgent(BaseAgent):
+    """被质询部门 Agent：固定质询回应契约 + 质询 Prompt（只读，不改数值）。"""
+
+    def __init__(self, role: str,
+                 llm_fn: Optional[Callable[[str], dict]] = None) -> None:
+        super().__init__(role=role, llm_fn=llm_fn,
+                         required_keys=["response_id", "challenge_id", "stage_id",
+                                        "from", "to", "response_type", "statement",
+                                        "evidence_ids", "confidence"],
+                         deep_validator=validate_challenge_response)
+
+    def build_prompt(self, payload: dict) -> str:
+        return build_challenge_prompt(payload, self.role)
+
+
+def make_challenge_responders(llm_fn: Optional[Callable[[str], dict]] = None) -> dict:
+    return {k: ChallengeResponderAgent(role=_ROLE_NAMES[k] + "（被质询回应）", llm_fn=llm_fn)
+            for k in KINDS}
+
+
+def run_challenge_responses(responders: dict, challenges: List[dict],
+                            memoranda: List[dict], ctx: dict) -> List[dict]:
+    """每个挑战触发一次定向质询回应：LLM 优先，超时/校验失败回退确定性规则。"""
+    from ..core.meeting import find_memorandum
+    from ..core.context import slim_context
+    from ..fallback import deterministic as _det
+
+    def _respond(ch: dict) -> dict:
+        memo = find_memorandum(memoranda, ch["to"], ch["company_id"]) or {}
+        slim = slim_context(ctx, ch["to"], ch["company_id"] or "")
+        out = responders[ch["to"]].run(
+            {"challenge": ch, "memo": memo, "ctx": slim},
+            lambda: _det.challenge_response(ch, memo, ctx),
+            validator=validate_challenge_response)
+        # 身份以挑战为准：回应方 = 被质询方
+        out["from"] = ch["to"]
+        out["to"] = ch["from"]
+        return out
+
+    with ThreadPoolExecutor(max_workers=min(4, len(challenges))) as pool:
+        return list(pool.map(_respond, challenges))

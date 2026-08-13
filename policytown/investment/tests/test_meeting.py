@@ -246,3 +246,110 @@ class TestPositionRevision(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# ---------- P1 Task 2-5：质询回应 / 立场修订 / 纪要 / 编排器接线 ----------
+
+from ..core.orchestrator import Orchestrator
+from ..core.meeting import (build_challenges, make_minutes, position_revision,
+                            validate_challenge_response, validate_minutes,
+                            validate_position_revision)
+from ..fallback import deterministic
+
+
+def _memo2(agent, reco, score=60, confidence=0.7, claims=None, red_lines=None,
+           conditions=None, missing=None, company_id="company_a", evidence=None):
+    ev = ["E1"] if evidence is None else evidence
+    return {
+        "agent": agent, "department": agent, "company_id": company_id,
+        "recommendation": reco, "direction": "neutral", "score": score,
+        "confidence": confidence,
+        "core_claims": claims or [{"claim_id": "C-1", "claim_type": "positive",
+                                   "statement": "%s 的主张" % agent, "evidence_ids": ["E1"]}],
+        "red_lines": red_lines or [{"redline_id": "R-1", "condition": "红线", "reason": "原因"}],
+        "acceptable_conditions": conditions or [{"condition_id": "C-1", "condition": "条件",
+                                                 "reason": "原因"}],
+        "missing_info": missing or [], "key_factors": [], "evidence_ids": ev,
+        "reasoning_summary": "理由",
+    }
+
+
+class TestMeetingMinutes2(unittest.TestCase):
+    def _memos(self):
+        return [_memo2("fiscal", "support", company_id=None,
+                       red_lines=[{"redline_id": "F-R2",
+                                   "condition": "企业资金来源未证实前不承诺后续追加上限",
+                                   "reason": "防暴露"}]),
+                _memo2("economy", "oppose", score=30),
+                _memo2("sci_tech", "support", score=65, confidence=0.65,
+                       conditions=[{"condition_id": "T-C1", "condition": "里程碑绑定放款",
+                                    "reason": "按阶段验证"}]),
+                _memo2("development", "conditional_support", score=50, confidence=0.7,
+                       conditions=[{"condition_id": "D-C1", "condition": "保留暂停追加条款",
+                                    "reason": "管理周期风险"}])]
+
+    def _minutes(self, memos=None):
+        memos = memos or self._memos()
+        conflicts = detect_conflicts(memos, "S1")
+        challenges = build_challenges(conflicts, "S1")
+        responses = [deterministic.challenge_response(
+            c, find_memorandum(memos, c["to"], c["company_id"]) or {}, {}) for c in challenges]
+        revisions = [r for r in (position_revision(
+            c, find_memorandum(memos, c["to"], c["company_id"]) or {},
+            find_memorandum(memos, c["from"], c["company_id"]) or {}, resp)
+            for c, resp in zip(challenges, responses)) if r is not None]
+        return make_minutes(memos, challenges, responses, revisions, "S1")
+
+    def test_minutes_structure(self):
+        minutes = self._minutes()
+        validate_minutes(minutes)
+        self.assertGreaterEqual(len(minutes["proposals"]), 2)
+        self.assertTrue(minutes["minority_opinions"], "oppose 的经信部门必须是少数意见")
+        self.assertEqual(minutes["minority_opinions"][0]["agent"], "economy")
+        self.assertTrue(minutes["disagreements"])
+
+    def test_minutes_deterministic(self):
+        import json as _j
+        self.assertEqual(_j.dumps(self._minutes(), sort_keys=True),
+                         _j.dumps(self._minutes(), sort_keys=True))
+
+
+class TestOrchestratorCommunication(unittest.TestCase):
+    def _view(self, company_ids=("proto_a", "proto_d")):
+        orch = Orchestrator(seed=42)
+        orch.start(list(company_ids), "S1")
+        return orch.open_stage()
+
+    def test_view_has_communication_and_minutes(self):
+        view = self._view()
+        self.assertIn("department_communication", view)
+        self.assertIn("meeting_minutes", view)
+        comm = view["department_communication"]
+        for k in ("conflicts", "challenges", "responses", "position_revisions"):
+            self.assertIn(k, comm)
+        validate_minutes(view["meeting_minutes"])
+
+    def test_real_s1_data_produces_challenges(self):
+        view = self._view()
+        challenges = view["department_communication"]["challenges"]
+        self.assertTrue(challenges, "真实 S1 数据必须产生定向质询")
+        self.assertLessEqual(len(challenges), 6)
+        parties = {ch["from"] for ch in challenges} | {ch["to"] for ch in challenges}
+        self.assertLessEqual(parties, {"fiscal", "economy", "sci_tech", "development"})
+
+    def test_communication_deterministic(self):
+        v1 = self._view()
+        v2 = self._view()
+        import json as _j
+        for k in ("department_communication", "meeting_minutes"):
+            self.assertEqual(_j.dumps(v1[k], sort_keys=True),
+                             _j.dumps(v2[k], sort_keys=True), k)
+
+    def test_submit_decisions_keeps_communication(self):
+        orch = Orchestrator(seed=42)
+        orch.start(["proto_a", "proto_d"], "S1")
+        orch.open_stage()
+        result = orch.submit_decisions([{"company_id": "company_a", "action": "invest",
+                                         "capital_points": 30.0}])
+        self.assertIn("department_communication", result)
+        self.assertEqual(result["meeting_minutes"]["stage_id"], "S1")
