@@ -34,6 +34,14 @@ def build_database(path: Path) -> None:
         ("src_nbs_2009", "2009年国民经济和社会发展统计公报", "国家统计局", "official", None, None, "A", None),
         ("src_nbs_2020", "中华人民共和国2020年国民经济和社会发展统计公报", "国家统计局", "official", None, None, "A", None),
         ("src_boe_2008", "京东方科技集团股份有限公司2008年年度报告摘要", "京东方科技集团", "company", "https://static.cninfo.com.cn/finalpage/2009-04-21/51493003.PDF", "2009-04-21", "A", "巨潮资讯原始公告；公告编号2009-017"),
+        ("src_boe_2009", "京东方科技集团股份有限公司2009年年度报告摘要", "京东方科技集团", "company", "https://static.cninfo.com.cn/finalpage/2010-04-20/57835157.PDF", "2010-04-20", "A", "巨潮资讯年报摘要；主要会计数据表"),
+        ("src_boe_2010", "京东方科技集团股份有限公司2010年年度报告摘要", "京东方科技集团", "company", "https://static.cninfo.com.cn/finalpage/2011-04-26/59337709.PDF", "2011-04-26", "A", "巨潮资讯年报摘要；主要会计数据表"),
+        ("src_boe_2011", "京东方科技集团股份有限公司2011年年度报告摘要", "京东方科技集团", "company", "https://static.cninfo.com.cn/finalpage/2012-04-27/60922681.PDF", "2012-04-27", "A", "巨潮资讯年报摘要；主要会计数据表"),
+        ("src_boe_2012", "京东方科技集团股份有限公司2012年年度报告摘要", "京东方科技集团", "company", "https://static.cninfo.com.cn/finalpage/2013-04-23/62405067.PDF", "2013-04-23", "A", "巨潮资讯年报摘要；主要会计数据表"),
+        ("src_boe_2013", "京东方科技集团股份有限公司2013年年度报告摘要", "京东方科技集团", "company", "https://static.cninfo.com.cn/finalpage/2014-04-22/63884740.PDF", "2014-04-22", "A", "巨潮资讯年报摘要；主要会计数据表"),
+        ("src_boe_2014", "京东方科技集团股份有限公司2014年年度报告摘要", "京东方科技集团", "company", "https://static.cninfo.com.cn/finalpage/2015-04-21/1200875938.PDF", "2015-04-21", "A", "巨潮资讯年报摘要；主要会计数据表"),
+        ("src_boe_2015", "京东方科技集团股份有限公司2015年年度报告摘要", "京东方科技集团", "company", "https://static.cninfo.com.cn/finalpage/2016-04-26/1202240457.PDF", "2016-04-26", "A", "巨潮资讯年报摘要；主要会计数据表"),
+        ("src_boe_2016", "京东方科技集团股份有限公司2016年年度报告摘要", "京东方科技集团", "company", "https://static.cninfo.com.cn/finalpage/2017-04-25/1203374859.PDF", "2017-04-25", "A", "巨潮资讯年报摘要；主要会计数据表"),
         ("src_boe_hefei_6g_framework_2008", "京东方关于签署合肥6代线投资框架协议的公告", "京东方科技集团", "company", "https://vip.stock.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=362396", "2008-09-13", "A", "公告转载；协议给出175亿元总投资、90亿元项目资本金及政府方资本金责任"),
         ("src_boe_hefei_6g_progress_2008", "京东方关于合肥6代线项目进展的公告", "京东方科技集团", "company", "https://static.cninfo.com.cn/finalpage/2008-10-17/44280437.PDF", "2008-10-16", "A", "巨潮资讯原始公告；项目公司初始注册资本与各方出资"),
         ("src_boe_hefei_85g_capital_2012", "京东方关于合肥8.5代线项目国资平台增资的公告", "京东方科技集团", "company", "https://static.cninfo.com.cn/finalpage/2012-10-30/61732389.PDF", "2012-10-29", "A", "巨潮资讯原始公告；国资平台拟向鑫晟增资43.55亿元"),
@@ -280,6 +288,29 @@ def build_database(path: Path) -> None:
     ]: add(oid,indicator,"boe","2008-01-01","2008-12-31",value,"亿元","src_boe_2008","A","verified",note,"2009-04-21")
     add("boe_2009_project_contribution","company_capital_contribution","proj_boe_6g","2009-01-01","2009-04-21",6,"亿元","src_boe_2008","A","verified","截至年报出具日累计两次单方增资","2009-04-21")
     add("boe_2009_project_share","company_ownership_share","proj_boe_6g","2009-01-01","2009-04-21",93.769,"%","src_boe_2008","A","verified","增资完成后京东方持股比例","2009-04-21")
+
+    # 京东方 2009—2016 年报摘要主要会计数据，构成“逆周期投资”的成功轨迹（withheld：
+    # 各年数据仅在其年报摘要披露日后进入 Context，不得反向进入 2008-09-12 决策点）。
+    # 净利润为年报摘要主要会计数据表披露值（归母或合并口径随各年披露）。
+    boe_annuals = {
+        2009: ("src_boe_2009", "2010-04-20", 62.4919, 0.4968, 8.1001, 306.1398, 180.2280),
+        2010: ("src_boe_2010", "2011-04-26", 80.2529, -20.0381, -10.5332, 542.2995, 249.5501),
+        2011: ("src_boe_2011", "2012-04-27", 127.4141, 5.6087, -7.7853, 687.6942, 255.8589),
+        2012: ("src_boe_2012", "2013-04-23", 257.7158, 2.5813, 30.8888, 671.0536, None),
+        2013: ("src_boe_2013", "2014-04-22", 337.7429, 23.5337, 89.5644, 925.3845, None),
+        2014: ("src_boe_2014", "2015-04-21", 368.1632, 25.6213, 80.9583, 1362.4028, None),
+        2015: ("src_boe_2015", "2016-04-26", 486.2373, 16.3627, 104.9339, 1525.9289, None),
+        2016: ("src_boe_2016", "2017-04-25", 688.9566, 18.8257, 100.7329, 2051.3501, None),
+    }
+    for year, (source, available, revenue, net_profit, ocf, assets, equity) in boe_annuals.items():
+        start, end = f"{year}-01-01", f"{year}-12-31"
+        add(f"boe_{year}_revenue", "revenue", "boe", start, end, revenue, "亿元", source, "A", "verified", None, available)
+        add(f"boe_{year}_net_profit", "net_profit", "boe", start, end, net_profit, "亿元", source, "A", "verified", "年报摘要主要会计数据表披露的净利润", available)
+        add(f"boe_{year}_ocf", "operating_cash_flow", "boe", start, end, ocf, "亿元", source, "A", "verified", None, available)
+        add(f"boe_{year}_assets", "assets", "boe", start, end, assets, "亿元", source, "A", "verified", None, available)
+        if equity is not None:
+            add(f"boe_{year}_equity", "owners_equity", "boe", start, end, equity, "亿元", source, "A", "verified", "归属于上市公司股东的所有者权益", available)
+            add(f"boe_{year}_liabilities", "liabilities", "boe", start, end, round(assets - equity, 4), "亿元", source, "A", "verified", "由总资产减归属于股东的所有者权益派生（含少数股东权益口径）", available)
 
     # Additional same-year but different-scope fiscal observations from the audit report.
     for oid,indicator,value,note in [
