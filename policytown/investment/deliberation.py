@@ -23,6 +23,7 @@ from contracts.investment_simulation_v0_1 import (
     DepartmentChallenge,
     DeliberationRound,
     DepartmentMemo,
+    DepartmentMemoryState,
     EnterpriseAgentIntent,
     EnterpriseBeliefState,
     EnterpriseMemoryState,
@@ -534,6 +535,35 @@ def build_enterprise_memory(
         graph_record_ids=list(previous.graph_record_ids if previous else []),
         last_update_reason=";".join(current.update_reasons),
     )
+def build_department_memory(
+    *,
+    run_id: str,
+    stage_id: StageId,
+    department: str,
+    company_id: str,
+    memo: DepartmentMemo,
+    previous: DepartmentMemoryState | None,
+) -> DepartmentMemoryState:
+    """更新单个部门的私有记忆（跨阶段立场、置信度与关键关切）。
+
+    因信息差，该记忆只由本部门的职责、KPI 与红线形成，不直接与其他部门共享；
+    部门之间仅通过质询传递结论。立场历史保留最近 8 轮。
+    """
+    history = [*(previous.stance_history if previous else []), memo.recommendation][-8:]
+    return DepartmentMemoryState(
+        memory_id=f"{run_id}:{company_id}:{department}",
+        run_id=run_id,
+        department=department,
+        company_id=company_id,
+        current_stage=stage_id,
+        stance_history=history,
+        confidence=0.5 if not previous else min(0.9, previous.confidence + 0.05),
+        key_concerns=list(dict.fromkeys([memo.most_important_risk, *memo.red_lines[:2]])),
+        evidence_ids=sorted(memo.supporting_evidence_ids),
+        update_rule="stance_tracking_v1",
+    )
+
+
 def _recommendation(score: int, *, cautious: bool = False) -> Recommendation:
     if score >= 72 and not cautious:
         return "support"
@@ -687,6 +717,29 @@ def _challenge(company_id: str, sender: DepartmentMemo, receiver: DepartmentMemo
     )
 
 
+def _recommend_action(memos: list[DepartmentMemo]) -> tuple[str, str]:
+    """会议秘书把四部门判断透明聚合为“建议动作”；不做额外偏好判断。
+
+    这是对已出现判断的整理（support / staged / defer / reject），
+    对应联席摘要里的“建议动作”。它不替玩家拍板，玩家仍可从双方案中选择。
+    """
+    counts = {"support": 0, "conditional_support": 0, "defer": 0, "oppose": 0}
+    for memo in memos:
+        counts[memo.recommendation] += 1
+    favorable = counts["support"] + counts["conditional_support"]
+    unfavorable = counts["defer"] + counts["oppose"]
+    if counts["oppose"] >= 2:
+        return "reject", f"至少两个部门反对（oppose={counts['oppose']}），建议拒绝。"
+    if unfavorable >= 3:
+        return "defer", f"多数部门倾向暂缓（defer+oppose={unfavorable}），建议暂缓。"
+    if favorable >= 3:
+        return "support", f"多数部门支持（support+conditional_support={favorable}），建议支持。"
+    return "staged", (
+        f"部门立场分歧（支持{favorable} vs 暂缓/反对{unfavorable}），"
+        "建议分期并附加里程碑、审计与同比例出资条件。"
+    )
+
+
 def deliberate(
     company,
     city,
@@ -704,6 +757,7 @@ def deliberate(
     enterprise_private_state: EnterprisePrivateState | None = None,
     enterprise_runtime: EnterpriseAgentRuntime | None = None,
     enterprise_memory: EnterpriseMemoryState | None = None,
+    previous_department_memories: list[DepartmentMemoryState] | None = None,
 ):
     fallback_memos = [
         _memo(
@@ -763,6 +817,20 @@ def deliberate(
     ]
     by_dept = {memo.department: memo for memo in memos}
     brief_by_dept = {brief.department: brief for brief in department_inputs}
+    previous_by_dept = {
+        memory.department: memory for memory in (previous_department_memories or [])
+    }
+    department_memories = [
+        build_department_memory(
+            run_id=run_id,
+            stage_id=stage_id,
+            department=memo.department,
+            company_id=company.company_id,
+            memo=memo,
+            previous=previous_by_dept.get(memo.department),
+        )
+        for memo in memos
+    ]
     challenges: list[DepartmentChallenge] = []
     if by_dept["finance"].recommendation != by_dept["industry_information"].recommendation:
         fallback = _challenge(company.company_id, by_dept["finance"], by_dept["industry_information"], by_dept["finance"].supporting_evidence_ids[-4:], 1)
@@ -819,6 +887,7 @@ def deliberate(
         ),
     ]
     evidence_ids = list(dict.fromkeys([eid for memo in memos for eid in memo.supporting_evidence_ids]))
+    recommended_action, recommendation_rationale = _recommend_action(memos)
     meeting = JointMeetingSummary(
         company_id=company.company_id,
         consensus=["项目具有一定产业或战略价值", "公开信息不足以支持无条件一次性投入"],
@@ -828,6 +897,8 @@ def deliberate(
         proposals=proposals,
         minority_opinions=[f"{memo.department}：{memo.most_important_risk}" for memo in memos if memo.department in dissent],
         evidence_ids=evidence_ids,
+        recommended_action=recommended_action,
+        recommendation_rationale=recommendation_rationale,
     )
     critical_proposition = CRITICAL_PROPOSITIONS.get(
         company.company_id,
@@ -1039,4 +1110,4 @@ def deliberate(
             summary="最终条件已写入承诺账；数值仍仅由规则引擎根据 PlayerAction 结算。",
             evidence_ids=[item.commitment_id for item in commitments],
         ))
-    return deliberation, beliefs, commitments
+    return deliberation, beliefs, commitments, department_memories

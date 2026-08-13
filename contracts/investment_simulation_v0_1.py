@@ -91,23 +91,6 @@ class NegotiationChoice(BaseModel):
     resolution: Literal["accept", "accept_counteroffer", "reject"] = "accept"
 
 
-class AutonomousGovernmentDecision(BaseModel):
-    """盲推演中政府 Agent 独立作出的最终决策。
-
-    与 Replay 对账相反：不读取真实政府动作，只在四部门初审、部门质询、
-    联席会议双方案与企业回应的基础上，由 LLM 独立选择方案与接受/拒绝。
-    """
-
-    company_id: str
-    stage_id: StageId
-    proposal_id: str
-    resolution: Literal["accept", "accept_counteroffer", "reject"] = "accept"
-    reasoning: str
-    evidence_ids: list[str] = Field(default_factory=list)
-    generation_mode: Literal["model", "deterministic_fallback"] = "deterministic_fallback"
-    fallback_reason: str | None = None
-
-
 class StageInput(BaseModel):
     run_id: str
     stage_id: StageId
@@ -366,6 +349,25 @@ class DepartmentMemo(BaseModel):
         return self
 
 
+class DepartmentMemoryState(BaseModel):
+    """部门私有记忆：跨阶段持久的立场与判断。
+
+    因信息差，各部门的记忆只基于自己的职责、KPI 与红线形成，不直接与其他
+    部门共享；部门之间的交流仅通过质询（Challenge/Response）传递结论。
+    """
+
+    memory_id: str
+    run_id: str
+    department: DepartmentId
+    company_id: str
+    current_stage: StageId
+    stance_history: list[Recommendation] = Field(default_factory=list)
+    confidence: float = Field(0.5, ge=0, le=1)
+    key_concerns: list[str] = Field(default_factory=list)
+    evidence_ids: list[str] = Field(default_factory=list)
+    update_rule: str = "stance_tracking_v1"
+
+
 class DepartmentBrief(BaseModel):
     """政府四部门的冻结输入。
 
@@ -443,6 +445,8 @@ class JointMeetingSummary(BaseModel):
     proposals: list[MeetingProposal] = Field(min_length=2)
     minority_opinions: list[str]
     evidence_ids: list[str]
+    recommended_action: Literal["support", "staged", "defer", "reject"] = "staged"
+    recommendation_rationale: str = ""
 
 
 class EnterpriseResponse(BaseModel):
@@ -816,6 +820,7 @@ class SimulationState(BaseModel):
     commitment_ledger: list[CommitmentLedgerEntry] = Field(default_factory=list)
     reality_graph: RealityGraph
     enterprise_memories: list[EnterpriseMemoryState] = Field(default_factory=list)
+    department_memories: list[DepartmentMemoryState] = Field(default_factory=list)
     completed_stages: list[StageId] = Field(default_factory=list)
     stage_audits: list[StageAudit] = Field(default_factory=list)
 
@@ -836,6 +841,7 @@ class StageResult(BaseModel):
     enterprise_memory_updates: list[EnterpriseMemoryState] = Field(default_factory=list)
     commitment_follow_ups: list[CommitmentFollowUp] = Field(default_factory=list)
     timeline_events: list[TimelineEvent] = Field(default_factory=list)
+    broadcast_events: list[BroadcastEvent] = Field(default_factory=list)
     state_deltas: list[StateDelta]
     events: list[HistoricalEvent]
     evidence_refs: list[EvidenceRef]
@@ -924,3 +930,52 @@ class FinalResult(BaseModel):
     replay_evidence: FrozenContextAudit | None = None
     branch_points: list[str]
     story_timeline: list[TimelineEvent] = Field(default_factory=list)
+
+
+class BroadcastNavigationTarget(BaseModel):
+    surface: Literal["map", "right_panel", "evidence_drawer", "commitment_ledger"]
+    target_id: str
+
+
+class BroadcastEvent(BaseModel):
+    """左侧播报流统一事件，对齐前端《左右面板信息架构与播报规范》第 7 节。"""
+
+    event_id: str
+    run_id: str
+    stage_code: StageId
+    related_step: str
+    logical_time: str
+    observed_at: str | None = None
+    available_at: str
+    cutoff_date: str
+    visibility: Literal["player_visible", "audit_only", "sealed"] = "player_visible"
+    type: Literal[
+        "media",
+        "natural_event",
+        "policy",
+        "city_update",
+        "enterprise_action",
+        "department_interaction",
+        "government_enterprise",
+        "player_decision",
+        "settlement",
+        "commitment",
+        "audit",
+    ]
+    priority: Literal["normal", "important", "critical"] = "normal"
+    status: Literal["new", "read", "acknowledged", "expired"] = "new"
+    actor_id: str | None = None
+    actor_type: Literal["media", "city", "department", "enterprise", "player", "system"] | None = None
+    target_id: str | None = None
+    affected_entity_ids: list[str] = Field(default_factory=list)
+    title: str
+    summary: str
+    impact_tags: list[str] = Field(default_factory=list)
+    thumbnail_url: str | None = None
+    evidence_ids: list[str] = Field(default_factory=list)
+    reason_codes: list[str] = Field(default_factory=list)
+    related_decision_id: str | None = None
+    related_snapshot_id: str | None = None
+    requires_acknowledgement: bool = False
+    pin_until: Literal["acknowledged", "stage_end", "resolved"] | None = None
+    navigation_target: BroadcastNavigationTarget | None = None

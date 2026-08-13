@@ -29,6 +29,7 @@ from contracts.investment_simulation_v0_1 import (
     TimelineEvent,
 )
 
+from .broadcast import build_broadcast_events
 from .context import HefeiContextBuilder
 from .deliberation import DepartmentAgentRuntime, deliberate
 from .loader import HefeiMvpLoader
@@ -220,6 +221,7 @@ class InvestmentEngine:
         commitment_updates = []
         reality_graph_updates = []
         enterprise_memory_updates = []
+        department_memory_updates = []
         next_returns = 0
         new_commitment = 0
 
@@ -278,7 +280,7 @@ class InvestmentEngine:
             evidence_ids.update(derivation_evidence)
             evidence_ids.update(company_evidence)
             assessments.extend(self._assess(company, city, budget, event.evidence_ids, real_context))
-            deliberation, company_beliefs, company_commitments = deliberate(
+            deliberation, company_beliefs, company_commitments, department_memories = deliberate(
                 company,
                 city,
                 budget,
@@ -300,7 +302,12 @@ class InvestmentEngine:
                     (memory for memory in state.enterprise_memories if memory.company_id == company.company_id),
                     None,
                 ),
+                previous_department_memories=[
+                    memory for memory in state.department_memories
+                    if memory.company_id == company.company_id
+                ],
             )
+            department_memory_updates.extend(department_memories)
             agreed_points = deliberation.enterprise_response.agreed_capital_points
             negotiation_choice = negotiation_by_company.get(company.company_id)
             if (
@@ -402,6 +409,10 @@ class InvestmentEngine:
                 *[memory for memory in state.enterprise_memories if memory.company_id not in {item.company_id for item in enterprise_memory_updates}],
                 *enterprise_memory_updates,
             ],
+            department_memories=[
+                *[memory for memory in state.department_memories if memory.company_id not in {item.company_id for item in department_memory_updates}],
+                *department_memory_updates,
+            ],
             completed_stages=[*state.completed_stages, stage_input.stage_id],
             stage_audits=[
                 *state.stage_audits,
@@ -430,7 +441,7 @@ class InvestmentEngine:
             self.memory_store.append_graph_records(reality_graph_updates)
             self.memory_store.save_memories(enterprise_memory_updates)
             self.memory_store.save_state(next_state, stage_id=stage_input.stage_id)
-        return StageResult(
+        result = StageResult(
             stage_id=stage_input.stage_id,
             cutoff_at=cutoff,
             budget=budget,
@@ -460,6 +471,8 @@ class InvestmentEngine:
             next_candidates=[item.company_id for item in companies if item.status != CompanyStatus.EXITED],
             next_state=next_state,
         )
+        result.broadcast_events = build_broadcast_events(result, stage_input)
+        return result
 
     @staticmethod
     def _seed_reality_graph(run_id, stage_id, city, companies):
@@ -614,7 +627,7 @@ class InvestmentEngine:
         for choice in stage_input.negotiations:
             if choice.resolution == "reject":
                 continue
-            preview, _, _ = deliberate(
+            preview, _, _, _ = deliberate(
                 company_by_id[choice.company_id],
                 city,
                 budget,
