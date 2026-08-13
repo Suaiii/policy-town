@@ -1,0 +1,2695 @@
+{
+  "run_id": "demo-001",
+  "seed": 42,
+  "pick": [
+    "proto_a",
+    "proto_d",
+    "proto_b"
+  ],
+  "rounds": [
+    {
+      "stage_id": "S1",
+      "cutoff_at": "2008-09-30",
+      "budget": {
+        "before": 100.0,
+        "spent": 50.0,
+        "recovered": 0.0,
+        "after": 50.0
+      },
+      "city_metrics": {
+        "committed_capital": 50.0,
+        "industrial_base": {
+          "display": 2.0
+        },
+        "talent_supply": 45.0,
+        "infrastructure_capacity": 50.0
+      },
+      "companies": [
+        {
+          "company_id": "company_a",
+          "anon_label": "企业A",
+          "industry": "display",
+          "status": "建设",
+          "metrics": {
+            "financial_health": 45,
+            "execution_ability": 70,
+            "technology_readiness": 60,
+            "customer_order_strength": 56.5,
+            "construction_progress": 36.33,
+            "production_ramp": 0.0,
+            "project_cashflow": -29.98,
+            "capital_intensity": 55
+          },
+          "cash_points": 45.0,
+          "milestones_done": []
+        },
+        {
+          "company_id": "company_d",
+          "anon_label": "企业B",
+          "industry": "pv",
+          "status": "建设",
+          "metrics": {
+            "financial_health": 55,
+            "execution_ability": 55,
+            "technology_readiness": 55,
+            "customer_order_strength": 60,
+            "construction_progress": 30,
+            "production_ramp": 10,
+            "project_cashflow": -9.98,
+            "capital_intensity": 40
+          },
+          "cash_points": 27.0,
+          "milestones_done": []
+        },
+        {
+          "company_id": "company_b",
+          "anon_label": "企业C",
+          "industry": "semiconductor",
+          "status": "建设",
+          "metrics": {
+            "financial_health": 50,
+            "execution_ability": 65,
+            "technology_readiness": 40,
+            "customer_order_strength": 35,
+            "construction_progress": 5,
+            "production_ramp": 0.0,
+            "project_cashflow": -39.65,
+            "capital_intensity": 60
+          },
+          "cash_points": 27.0,
+          "milestones_done": []
+        }
+      ],
+      "company_actions": [
+        {
+          "company_id": "company_a",
+          "action": "expand",
+          "capital_request_next_round": 28.0,
+          "resource_allocation": {
+            "construction": 0.55,
+            "research": 0.2,
+            "market": 0.1,
+            "cash_buffer": 0.15
+          },
+          "milestone_target": "construction_done",
+          "risk_response": "aggressive_build",
+          "competition_response": "wait",
+          "message_to_government": null,
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "confidence": 0.7
+        },
+        {
+          "company_id": "company_d",
+          "action": "wait",
+          "capital_request_next_round": 14.0,
+          "resource_allocation": {
+            "construction": 0.2,
+            "research": 0.2,
+            "market": 0.2,
+            "cash_buffer": 0.4
+          },
+          "milestone_target": "construction_done",
+          "risk_response": "observe",
+          "competition_response": "wait",
+          "message_to_government": null,
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "confidence": 0.7
+        },
+        {
+          "company_id": "company_b",
+          "action": "wait",
+          "capital_request_next_round": 18.0,
+          "resource_allocation": {
+            "construction": 0.2,
+            "research": 0.2,
+            "market": 0.2,
+            "cash_buffer": 0.4
+          },
+          "milestone_target": "construction_done",
+          "risk_response": "observe",
+          "competition_response": "wait",
+          "message_to_government": null,
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "confidence": 0.7
+        }
+      ],
+      "agent_assessments": [
+        {
+          "agent": "fiscal",
+          "company_id": null,
+          "direction": "positive",
+          "score": 100.0,
+          "confidence": 0.8,
+          "key_factors": [
+            {
+              "metric_id": "fiscal_budget",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "committed_capital",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [],
+          "reasoning_summary": "财政余量 100 点，已承诺 0 点；仍可承接新项目"
+        },
+        {
+          "agent": "industry",
+          "company_id": "company_a",
+          "direction": "negative",
+          "score": 30.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "industrial_base",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "talent_supply",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+        },
+        {
+          "agent": "industry",
+          "company_id": "company_d",
+          "direction": "negative",
+          "score": 30.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "industrial_base",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "talent_supply",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+        },
+        {
+          "agent": "industry",
+          "company_id": "company_b",
+          "direction": "negative",
+          "score": 30.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "industrial_base",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "talent_supply",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+        },
+        {
+          "agent": "company_tech",
+          "company_id": "company_a",
+          "direction": "positive",
+          "score": 65.0,
+          "confidence": 0.65,
+          "key_factors": [
+            {
+              "metric_id": "execution_ability",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "technology_readiness",
+              "effect": "positive"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
+        },
+        {
+          "agent": "company_tech",
+          "company_id": "company_d",
+          "direction": "positive",
+          "score": 55.0,
+          "confidence": 0.65,
+          "key_factors": [
+            {
+              "metric_id": "execution_ability",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "technology_readiness",
+              "effect": "positive"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
+        },
+        {
+          "agent": "company_tech",
+          "company_id": "company_b",
+          "direction": "neutral",
+          "score": 52.5,
+          "confidence": 0.65,
+          "key_factors": [
+            {
+              "metric_id": "execution_ability",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "technology_readiness",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
+        },
+        {
+          "agent": "market_risk",
+          "company_id": "company_a",
+          "direction": "neutral",
+          "score": 50.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "market_cycle",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "supply_pressure",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "reasoning_summary": "景气 0 / 价格趋势 0 / 供给压力 40：下行风险主导，宜逆周期评估"
+        },
+        {
+          "agent": "market_risk",
+          "company_id": "company_d",
+          "direction": "neutral",
+          "score": 50.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "market_cycle",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "supply_pressure",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "reasoning_summary": "景气 0 / 价格趋势 0 / 供给压力 40：下行风险主导，宜逆周期评估"
+        },
+        {
+          "agent": "market_risk",
+          "company_id": "company_b",
+          "direction": "neutral",
+          "score": 50.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "market_cycle",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "supply_pressure",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "reasoning_summary": "景气 0 / 价格趋势 0 / 供给压力 40：下行风险主导，宜逆周期评估"
+        }
+      ],
+      "state_deltas": [
+        {
+          "metric_id": "construction_progress",
+          "company_id": "company_a",
+          "delta": 11.97,
+          "reason_code": "GOV_INVEST",
+          "input_metric_ids": [
+            "execution_ability"
+          ]
+        },
+        {
+          "metric_id": "customer_order_strength",
+          "company_id": "company_a",
+          "delta": 1.5,
+          "reason_code": "SUPPORT_SUPPLY",
+          "input_metric_ids": [
+            "industrial_base"
+          ]
+        },
+        {
+          "metric_id": "construction_progress",
+          "company_id": "company_a",
+          "delta": 14.36,
+          "reason_code": "ACT_EXPAND",
+          "input_metric_ids": [
+            "execution_ability"
+          ]
+        },
+        {
+          "metric_id": "project_cashflow",
+          "company_id": "company_a",
+          "delta": -9.98,
+          "reason_code": "EVENT:EVT-S1-GFC",
+          "input_metric_ids": [
+            "demand_shock"
+          ]
+        },
+        {
+          "metric_id": "project_cashflow",
+          "company_id": "company_d",
+          "delta": -9.98,
+          "reason_code": "EVENT:EVT-S1-GFC",
+          "input_metric_ids": [
+            "demand_shock"
+          ]
+        },
+        {
+          "metric_id": "project_cashflow",
+          "company_id": "company_b",
+          "delta": -9.65,
+          "reason_code": "EVENT:EVT-S1-GFC",
+          "input_metric_ids": [
+            "demand_shock"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "event_id": "EVT-S1-GFC",
+          "title": "全球金融危机爆发"
+        }
+      ],
+      "evidence_refs": [
+        "EVT-2008-GFC",
+        "PROTO_A-PRE-01",
+        "PROTO_A-PRE-02",
+        "PROTO_B-PRE-01",
+        "PROTO_B-PRE-02",
+        "PROTO_D-PRE-01",
+        "PROTO_D-PRE-02"
+      ],
+      "messages_new": [
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "capital_request",
+          "urgency": 0.4666666666666667,
+          "state_evidence": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "content": "企业A：下轮申请 28 点（目标里程碑 construction_done）",
+          "created_stage": "S1",
+          "expires_after_stages": 2,
+          "message_id": "msg-S1-company_a-capital_request",
+          "from": "company_a"
+        },
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "capital_request",
+          "urgency": 0.23333333333333334,
+          "state_evidence": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "content": "企业B：下轮申请 14 点（目标里程碑 construction_done）",
+          "created_stage": "S1",
+          "expires_after_stages": 2,
+          "message_id": "msg-S1-company_d-capital_request",
+          "from": "company_d"
+        },
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "capital_request",
+          "urgency": 0.3,
+          "state_evidence": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "content": "企业C：下轮申请 18 点（目标里程碑 construction_done）",
+          "created_stage": "S1",
+          "expires_after_stages": 2,
+          "message_id": "msg-S1-company_b-capital_request",
+          "from": "company_b"
+        }
+      ],
+      "graph_view": {
+        "nodes": [
+          {
+            "id": "government",
+            "kind": "government",
+            "label": "合肥市政府",
+            "status": "",
+            "size": 30.0
+          },
+          {
+            "id": "company_a",
+            "kind": "company",
+            "label": "企业A",
+            "status": "建设",
+            "size": 27.1
+          },
+          {
+            "id": "company_d",
+            "kind": "company",
+            "label": "企业B",
+            "status": "建设",
+            "size": 21.1
+          },
+          {
+            "id": "company_b",
+            "kind": "company",
+            "label": "企业C",
+            "status": "建设",
+            "size": 18.6
+          },
+          {
+            "id": "industry:display",
+            "kind": "industry",
+            "label": "display",
+            "status": "",
+            "size": 12.4
+          },
+          {
+            "id": "industry:pv",
+            "kind": "industry",
+            "label": "pv",
+            "status": "",
+            "size": 12.0
+          },
+          {
+            "id": "industry:semiconductor",
+            "kind": "industry",
+            "label": "semiconductor",
+            "status": "",
+            "size": 12.0
+          },
+          {
+            "id": "EVT-S1-GFC",
+            "kind": "market_event",
+            "label": "全球金融危机爆发",
+            "status": "",
+            "size": 16.0
+          }
+        ],
+        "edges": [
+          {
+            "source": "government",
+            "target": "company_a",
+            "relation": "invests",
+            "weight": 5.0,
+            "animated": true
+          },
+          {
+            "source": "company_a",
+            "target": "government",
+            "relation": "requests",
+            "weight": 2.4,
+            "animated": false
+          },
+          {
+            "source": "company_d",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.7,
+            "animated": false
+          },
+          {
+            "source": "company_b",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.9,
+            "animated": false
+          },
+          {
+            "source": "EVT-S1-GFC",
+            "target": "company_a",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          },
+          {
+            "source": "EVT-S1-GFC",
+            "target": "company_d",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          },
+          {
+            "source": "EVT-S1-GFC",
+            "target": "company_b",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          }
+        ]
+      },
+      "next_candidates": [],
+      "_stage_label": "产业底座"
+    },
+    {
+      "stage_id": "S2",
+      "cutoff_at": "2011-06-30",
+      "budget": {
+        "before": 100.0,
+        "spent": 60.0,
+        "recovered": 0.0,
+        "after": 40.0
+      },
+      "city_metrics": {
+        "committed_capital": 110.0,
+        "industrial_base": {
+          "display": 2.0
+        },
+        "talent_supply": 45.0,
+        "infrastructure_capacity": 50.0
+      },
+      "companies": [
+        {
+          "company_id": "company_a",
+          "anon_label": "企业A",
+          "industry": "display",
+          "status": "建设",
+          "metrics": {
+            "financial_health": 45,
+            "execution_ability": 70,
+            "technology_readiness": 60,
+            "customer_order_strength": 56.5,
+            "construction_progress": 57.41,
+            "production_ramp": 0.0,
+            "project_cashflow": -29.98,
+            "capital_intensity": 55
+          },
+          "cash_points": 55.0,
+          "milestones_done": []
+        },
+        {
+          "company_id": "company_d",
+          "anon_label": "企业B",
+          "industry": "pv",
+          "status": "建设",
+          "metrics": {
+            "financial_health": 55,
+            "execution_ability": 55,
+            "technology_readiness": 55,
+            "customer_order_strength": 60,
+            "construction_progress": 26,
+            "production_ramp": 6,
+            "project_cashflow": -9.98,
+            "capital_intensity": 40
+          },
+          "cash_points": 33.0,
+          "milestones_done": []
+        },
+        {
+          "company_id": "company_b",
+          "anon_label": "企业C",
+          "industry": "semiconductor",
+          "status": "建设",
+          "metrics": {
+            "financial_health": 50,
+            "execution_ability": 65,
+            "technology_readiness": 40,
+            "customer_order_strength": 35,
+            "construction_progress": 10.36,
+            "production_ramp": 0.0,
+            "project_cashflow": -39.65,
+            "capital_intensity": 60
+          },
+          "cash_points": 68.0,
+          "milestones_done": []
+        }
+      ],
+      "company_actions": [
+        {
+          "company_id": "company_a",
+          "action": "expand",
+          "capital_request_next_round": 19.6,
+          "resource_allocation": {
+            "construction": 0.55,
+            "research": 0.2,
+            "market": 0.1,
+            "cash_buffer": 0.15
+          },
+          "milestone_target": "construction_done",
+          "risk_response": "aggressive_build",
+          "competition_response": "wait",
+          "message_to_government": null,
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "confidence": 0.7
+        },
+        {
+          "company_id": "company_d",
+          "action": "contract",
+          "capital_request_next_round": 14.0,
+          "resource_allocation": {
+            "construction": 0.05,
+            "research": 0.05,
+            "market": 0.1,
+            "cash_buffer": 0.8
+          },
+          "milestone_target": "construction_done",
+          "risk_response": "conserve_cash",
+          "competition_response": "wait",
+          "message_to_government": null,
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "confidence": 0.7
+        },
+        {
+          "company_id": "company_b",
+          "action": "contract",
+          "capital_request_next_round": 18.0,
+          "resource_allocation": {
+            "construction": 0.05,
+            "research": 0.05,
+            "market": 0.1,
+            "cash_buffer": 0.8
+          },
+          "milestone_target": "construction_done",
+          "risk_response": "conserve_cash",
+          "competition_response": "wait",
+          "message_to_government": null,
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "confidence": 0.7
+        }
+      ],
+      "agent_assessments": [
+        {
+          "agent": "fiscal",
+          "company_id": null,
+          "direction": "positive",
+          "score": 66.7,
+          "confidence": 0.8,
+          "key_factors": [
+            {
+              "metric_id": "fiscal_budget",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "committed_capital",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [],
+          "reasoning_summary": "财政余量 100 点，已承诺 50 点；仍可承接新项目"
+        },
+        {
+          "agent": "industry",
+          "company_id": "company_a",
+          "direction": "negative",
+          "score": 19.2,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "industrial_base",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "talent_supply",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "reasoning_summary": "本地产业基础 2、人才 45：配套存在缺口"
+        },
+        {
+          "agent": "industry",
+          "company_id": "company_d",
+          "direction": "negative",
+          "score": 30.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "industrial_base",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "talent_supply",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+        },
+        {
+          "agent": "industry",
+          "company_id": "company_b",
+          "direction": "negative",
+          "score": 30.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "industrial_base",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "talent_supply",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+        },
+        {
+          "agent": "company_tech",
+          "company_id": "company_a",
+          "direction": "positive",
+          "score": 65.0,
+          "confidence": 0.65,
+          "key_factors": [
+            {
+              "metric_id": "execution_ability",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "technology_readiness",
+              "effect": "positive"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
+        },
+        {
+          "agent": "company_tech",
+          "company_id": "company_d",
+          "direction": "positive",
+          "score": 55.0,
+          "confidence": 0.65,
+          "key_factors": [
+            {
+              "metric_id": "execution_ability",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "technology_readiness",
+              "effect": "positive"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
+        },
+        {
+          "agent": "company_tech",
+          "company_id": "company_b",
+          "direction": "neutral",
+          "score": 52.5,
+          "confidence": 0.65,
+          "key_factors": [
+            {
+              "metric_id": "execution_ability",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "technology_readiness",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
+        },
+        {
+          "agent": "market_risk",
+          "company_id": "company_a",
+          "direction": "negative",
+          "score": 26.5,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "market_cycle",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "supply_pressure",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "reasoning_summary": "景气 -35 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
+        },
+        {
+          "agent": "market_risk",
+          "company_id": "company_d",
+          "direction": "negative",
+          "score": 26.5,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "market_cycle",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "supply_pressure",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "reasoning_summary": "景气 -35 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
+        },
+        {
+          "agent": "market_risk",
+          "company_id": "company_b",
+          "direction": "negative",
+          "score": 26.5,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "market_cycle",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "supply_pressure",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "reasoning_summary": "景气 -35 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
+        }
+      ],
+      "state_deltas": [
+        {
+          "metric_id": "construction_progress",
+          "company_id": "company_a",
+          "delta": 7.22,
+          "reason_code": "GOV_INVEST",
+          "input_metric_ids": [
+            "execution_ability"
+          ]
+        },
+        {
+          "metric_id": "construction_progress",
+          "company_id": "company_b",
+          "delta": 9.36,
+          "reason_code": "GOV_INVEST",
+          "input_metric_ids": [
+            "execution_ability"
+          ]
+        },
+        {
+          "metric_id": "construction_progress",
+          "company_id": "company_a",
+          "delta": 13.86,
+          "reason_code": "ACT_EXPAND",
+          "input_metric_ids": [
+            "execution_ability"
+          ]
+        },
+        {
+          "metric_id": "construction_progress",
+          "company_id": "company_d",
+          "delta": -4,
+          "reason_code": "ACT_CONTRACT",
+          "input_metric_ids": []
+        },
+        {
+          "metric_id": "construction_progress",
+          "company_id": "company_b",
+          "delta": -4,
+          "reason_code": "ACT_CONTRACT",
+          "input_metric_ids": []
+        }
+      ],
+      "events": [
+        {
+          "event_id": "EVT-S2-STIMULUS",
+          "title": "四万亿刺激与战略性新兴产业规划"
+        },
+        {
+          "event_id": "EVT-S2-PV-BOOM",
+          "title": "光伏海外需求短期暴涨"
+        }
+      ],
+      "evidence_refs": [
+        "EVT-2009-STIMULUS",
+        "EVT-2010-PV",
+        "PROTO_A-PRE-01",
+        "PROTO_A-PRE-02",
+        "PROTO_B-PRE-01",
+        "PROTO_B-PRE-02",
+        "PROTO_D-PRE-01",
+        "PROTO_D-PRE-02"
+      ],
+      "messages_new": [
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "capital_request",
+          "urgency": 0.3266666666666667,
+          "state_evidence": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "content": "企业A：下轮申请 19 点（目标里程碑 construction_done）",
+          "created_stage": "S2",
+          "expires_after_stages": 2,
+          "message_id": "msg-S2-company_a-capital_request",
+          "from": "company_a"
+        },
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "capital_request",
+          "urgency": 0.23333333333333334,
+          "state_evidence": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "content": "企业B：下轮申请 14 点（目标里程碑 construction_done）",
+          "created_stage": "S2",
+          "expires_after_stages": 2,
+          "message_id": "msg-S2-company_d-capital_request",
+          "from": "company_d"
+        },
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "capital_request",
+          "urgency": 0.3,
+          "state_evidence": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "content": "企业C：下轮申请 18 点（目标里程碑 construction_done）",
+          "created_stage": "S2",
+          "expires_after_stages": 2,
+          "message_id": "msg-S2-company_b-capital_request",
+          "from": "company_b"
+        },
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "threat",
+          "urgency": 0.6,
+          "state_evidence": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "content": "企业B：连续多轮未获支持，正评估迁往其他城市",
+          "created_stage": "S2",
+          "expires_after_stages": 2,
+          "message_id": "msg-S2-company_d-threat",
+          "from": "company_d"
+        }
+      ],
+      "graph_view": {
+        "nodes": [
+          {
+            "id": "government",
+            "kind": "government",
+            "label": "合肥市政府",
+            "status": "",
+            "size": 30.0
+          },
+          {
+            "id": "company_a",
+            "kind": "company",
+            "label": "企业A",
+            "status": "建设",
+            "size": 32.2
+          },
+          {
+            "id": "company_d",
+            "kind": "company",
+            "label": "企业B",
+            "status": "建设",
+            "size": 22.5
+          },
+          {
+            "id": "company_b",
+            "kind": "company",
+            "label": "企业C",
+            "status": "建设",
+            "size": 31.4
+          },
+          {
+            "id": "industry:display",
+            "kind": "industry",
+            "label": "display",
+            "status": "",
+            "size": 12.4
+          },
+          {
+            "id": "industry:pv",
+            "kind": "industry",
+            "label": "pv",
+            "status": "",
+            "size": 12.0
+          },
+          {
+            "id": "industry:semiconductor",
+            "kind": "industry",
+            "label": "semiconductor",
+            "status": "",
+            "size": 12.0
+          },
+          {
+            "id": "EVT-S2-STIMULUS",
+            "kind": "market_event",
+            "label": "四万亿刺激与战略性新兴产业规划",
+            "status": "",
+            "size": 16.0
+          },
+          {
+            "id": "EVT-S2-PV-BOOM",
+            "kind": "market_event",
+            "label": "光伏海外需求短期暴涨",
+            "status": "",
+            "size": 16.0
+          }
+        ],
+        "edges": [
+          {
+            "source": "government",
+            "target": "company_a",
+            "relation": "invests",
+            "weight": 7.5,
+            "animated": true
+          },
+          {
+            "source": "government",
+            "target": "company_b",
+            "relation": "invests",
+            "weight": 3.5,
+            "animated": true
+          },
+          {
+            "source": "company_a",
+            "target": "government",
+            "relation": "requests",
+            "weight": 2.4,
+            "animated": false
+          },
+          {
+            "source": "company_d",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.7,
+            "animated": false
+          },
+          {
+            "source": "company_b",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.9,
+            "animated": false
+          },
+          {
+            "source": "company_a",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.98,
+            "animated": false
+          },
+          {
+            "source": "company_d",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.7,
+            "animated": false
+          },
+          {
+            "source": "company_b",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.9,
+            "animated": false
+          },
+          {
+            "source": "company_d",
+            "target": "government",
+            "relation": "requests",
+            "weight": 2.8,
+            "animated": false
+          },
+          {
+            "source": "EVT-S2-STIMULUS",
+            "target": "company_a",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          },
+          {
+            "source": "EVT-S2-STIMULUS",
+            "target": "company_d",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          },
+          {
+            "source": "EVT-S2-STIMULUS",
+            "target": "company_b",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          },
+          {
+            "source": "EVT-S2-PV-BOOM",
+            "target": "company_d",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          }
+        ]
+      },
+      "next_candidates": [],
+      "_stage_label": "扩产抉择"
+    },
+    {
+      "stage_id": "S3",
+      "cutoff_at": "2014-06-30",
+      "budget": {
+        "before": 90.0,
+        "spent": 30.0,
+        "recovered": 0.0,
+        "after": 60.0
+      },
+      "city_metrics": {
+        "committed_capital": 140.0,
+        "industrial_base": {
+          "display": 2.0
+        },
+        "talent_supply": 45.0,
+        "infrastructure_capacity": 50.0
+      },
+      "companies": [
+        {
+          "company_id": "company_a",
+          "anon_label": "企业A",
+          "industry": "display",
+          "status": "建设",
+          "metrics": {
+            "financial_health": 37.3,
+            "execution_ability": 70,
+            "technology_readiness": 60,
+            "customer_order_strength": 56.5,
+            "construction_progress": 57.41,
+            "production_ramp": 0.0,
+            "project_cashflow": -37.68,
+            "capital_intensity": 55
+          },
+          "cash_points": 57.0,
+          "milestones_done": []
+        },
+        {
+          "company_id": "company_d",
+          "anon_label": "企业B",
+          "industry": "pv",
+          "status": "承压",
+          "metrics": {
+            "financial_health": 43.44,
+            "execution_ability": 55,
+            "technology_readiness": 55,
+            "customer_order_strength": 29.03,
+            "construction_progress": 21,
+            "production_ramp": 6,
+            "project_cashflow": -60.26,
+            "capital_intensity": 40
+          },
+          "cash_points": 35.0,
+          "milestones_done": []
+        },
+        {
+          "company_id": "company_b",
+          "anon_label": "企业C",
+          "industry": "semiconductor",
+          "status": "承压",
+          "metrics": {
+            "financial_health": 41.07,
+            "execution_ability": 65,
+            "technology_readiness": 40,
+            "customer_order_strength": 35,
+            "construction_progress": 31.21,
+            "production_ramp": 0.0,
+            "project_cashflow": -48.58,
+            "capital_intensity": 60
+          },
+          "cash_points": 83.0,
+          "milestones_done": []
+        }
+      ],
+      "company_actions": [
+        {
+          "company_id": "company_a",
+          "action": "wait",
+          "capital_request_next_round": 7.8,
+          "resource_allocation": {
+            "construction": 0.2,
+            "research": 0.2,
+            "market": 0.2,
+            "cash_buffer": 0.4
+          },
+          "milestone_target": "construction_done",
+          "risk_response": "observe",
+          "competition_response": "price_cut",
+          "message_to_government": null,
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "confidence": 0.7
+        },
+        {
+          "company_id": "company_d",
+          "action": "wait",
+          "capital_request_next_round": 5.6,
+          "resource_allocation": {
+            "construction": 0.2,
+            "research": 0.2,
+            "market": 0.2,
+            "cash_buffer": 0.4
+          },
+          "milestone_target": "construction_done",
+          "risk_response": "observe",
+          "competition_response": "wait",
+          "message_to_government": null,
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "confidence": 0.7
+        },
+        {
+          "company_id": "company_b",
+          "action": "expand",
+          "capital_request_next_round": 12.6,
+          "resource_allocation": {
+            "construction": 0.55,
+            "research": 0.2,
+            "market": 0.1,
+            "cash_buffer": 0.15
+          },
+          "milestone_target": "construction_done",
+          "risk_response": "aggressive_build",
+          "competition_response": "price_cut",
+          "message_to_government": null,
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "confidence": 0.7
+        }
+      ],
+      "agent_assessments": [
+        {
+          "agent": "fiscal",
+          "company_id": null,
+          "direction": "neutral",
+          "score": 45.0,
+          "confidence": 0.8,
+          "key_factors": [
+            {
+              "metric_id": "fiscal_budget",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "committed_capital",
+              "effect": "negative"
+            }
+          ],
+          "evidence_ids": [],
+          "reasoning_summary": "财政余量 90 点，已承诺 110 点；追加空间有限，需防锁定"
+        },
+        {
+          "agent": "industry",
+          "company_id": "company_a",
+          "direction": "negative",
+          "score": 19.2,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "industrial_base",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "talent_supply",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "reasoning_summary": "本地产业基础 2、人才 45：配套存在缺口"
+        },
+        {
+          "agent": "industry",
+          "company_id": "company_d",
+          "direction": "negative",
+          "score": 30.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "industrial_base",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "talent_supply",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+        },
+        {
+          "agent": "industry",
+          "company_id": "company_b",
+          "direction": "negative",
+          "score": 30.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "industrial_base",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "talent_supply",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+        },
+        {
+          "agent": "company_tech",
+          "company_id": "company_a",
+          "direction": "positive",
+          "score": 65.0,
+          "confidence": 0.65,
+          "key_factors": [
+            {
+              "metric_id": "execution_ability",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "technology_readiness",
+              "effect": "positive"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
+        },
+        {
+          "agent": "company_tech",
+          "company_id": "company_d",
+          "direction": "positive",
+          "score": 55.0,
+          "confidence": 0.65,
+          "key_factors": [
+            {
+              "metric_id": "execution_ability",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "technology_readiness",
+              "effect": "positive"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
+        },
+        {
+          "agent": "company_tech",
+          "company_id": "company_b",
+          "direction": "neutral",
+          "score": 52.5,
+          "confidence": 0.65,
+          "key_factors": [
+            {
+              "metric_id": "execution_ability",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "technology_readiness",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
+        },
+        {
+          "agent": "market_risk",
+          "company_id": "company_a",
+          "direction": "negative",
+          "score": 36.5,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "market_cycle",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "supply_pressure",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "reasoning_summary": "景气 -15 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
+        },
+        {
+          "agent": "market_risk",
+          "company_id": "company_d",
+          "direction": "positive",
+          "score": 59.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "market_cycle",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "supply_pressure",
+              "effect": "negative"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "reasoning_summary": "景气 15 / 价格趋势 5 / 供给压力 60：时点有利"
+        },
+        {
+          "agent": "market_risk",
+          "company_id": "company_b",
+          "direction": "negative",
+          "score": 36.5,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "market_cycle",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "supply_pressure",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "reasoning_summary": "景气 -15 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
+        }
+      ],
+      "state_deltas": [
+        {
+          "metric_id": "construction_progress",
+          "company_id": "company_d",
+          "delta": -5,
+          "reason_code": "RESTRUCTURE",
+          "input_metric_ids": []
+        },
+        {
+          "metric_id": "construction_progress",
+          "company_id": "company_b",
+          "delta": 8.02,
+          "reason_code": "GOV_INVEST",
+          "input_metric_ids": [
+            "execution_ability"
+          ]
+        },
+        {
+          "metric_id": "construction_progress",
+          "company_id": "company_b",
+          "delta": 12.83,
+          "reason_code": "ACT_EXPAND",
+          "input_metric_ids": [
+            "execution_ability"
+          ]
+        },
+        {
+          "metric_id": "project_cashflow",
+          "company_id": "company_d",
+          "delta": -38.72,
+          "reason_code": "EVENT:EVT-S3-PV-CRASH",
+          "input_metric_ids": [
+            "price_crash"
+          ]
+        },
+        {
+          "metric_id": "customer_order_strength",
+          "company_id": "company_d",
+          "delta": -30.97,
+          "reason_code": "EVENT:EVT-S3-PV-CRASH",
+          "input_metric_ids": [
+            "price_crash"
+          ]
+        },
+        {
+          "metric_id": "financial_health",
+          "company_id": "company_a",
+          "delta": -7.7,
+          "reason_code": "EVENT:EVT-S3-CREDIT",
+          "input_metric_ids": [
+            "credit_tighten"
+          ]
+        },
+        {
+          "metric_id": "project_cashflow",
+          "company_id": "company_a",
+          "delta": -7.7,
+          "reason_code": "EVENT:EVT-S3-CREDIT",
+          "input_metric_ids": [
+            "credit_tighten"
+          ]
+        },
+        {
+          "metric_id": "financial_health",
+          "company_id": "company_d",
+          "delta": -11.56,
+          "reason_code": "EVENT:EVT-S3-CREDIT",
+          "input_metric_ids": [
+            "credit_tighten"
+          ]
+        },
+        {
+          "metric_id": "project_cashflow",
+          "company_id": "company_d",
+          "delta": -11.56,
+          "reason_code": "EVENT:EVT-S3-CREDIT",
+          "input_metric_ids": [
+            "credit_tighten"
+          ]
+        },
+        {
+          "metric_id": "financial_health",
+          "company_id": "company_b",
+          "delta": -8.93,
+          "reason_code": "EVENT:EVT-S3-CREDIT",
+          "input_metric_ids": [
+            "credit_tighten"
+          ]
+        },
+        {
+          "metric_id": "project_cashflow",
+          "company_id": "company_b",
+          "delta": -8.93,
+          "reason_code": "EVENT:EVT-S3-CREDIT",
+          "input_metric_ids": [
+            "credit_tighten"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "event_id": "EVT-S3-PV-CRASH",
+          "title": "光伏双反与价格崩盘"
+        },
+        {
+          "event_id": "EVT-S3-CREDIT",
+          "title": "信贷环境收紧"
+        }
+      ],
+      "evidence_refs": [
+        "EVT-2012-PV-CRASH",
+        "EVT-2013-CREDIT",
+        "PROTO_A-PRE-01",
+        "PROTO_A-PRE-02",
+        "PROTO_B-PRE-01",
+        "PROTO_B-PRE-02",
+        "PROTO_D-PRE-01",
+        "PROTO_D-PRE-02"
+      ],
+      "messages_new": [
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "capital_request",
+          "urgency": 0.13,
+          "state_evidence": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "content": "企业A：下轮申请 7 点（目标里程碑 construction_done）",
+          "created_stage": "S3",
+          "expires_after_stages": 2,
+          "message_id": "msg-S3-company_a-capital_request",
+          "from": "company_a"
+        },
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "capital_request",
+          "urgency": 0.09333333333333332,
+          "state_evidence": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "content": "企业B：下轮申请 5 点（目标里程碑 construction_done）",
+          "created_stage": "S3",
+          "expires_after_stages": 2,
+          "message_id": "msg-S3-company_d-capital_request",
+          "from": "company_d"
+        },
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "capital_request",
+          "urgency": 0.21,
+          "state_evidence": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "content": "企业C：下轮申请 12 点（目标里程碑 construction_done）",
+          "created_stage": "S3",
+          "expires_after_stages": 2,
+          "message_id": "msg-S3-company_b-capital_request",
+          "from": "company_b"
+        },
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "threat",
+          "urgency": 0.6,
+          "state_evidence": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "content": "企业B：连续多轮未获支持，正评估迁往其他城市",
+          "created_stage": "S3",
+          "expires_after_stages": 2,
+          "message_id": "msg-S3-company_d-threat",
+          "from": "company_d"
+        }
+      ],
+      "graph_view": {
+        "nodes": [
+          {
+            "id": "government",
+            "kind": "government",
+            "label": "合肥市政府",
+            "status": "",
+            "size": 30.0
+          },
+          {
+            "id": "company_a",
+            "kind": "company",
+            "label": "企业A",
+            "status": "建设",
+            "size": 32.8
+          },
+          {
+            "id": "company_d",
+            "kind": "company",
+            "label": "企业B",
+            "status": "承压",
+            "size": 22.6
+          },
+          {
+            "id": "company_b",
+            "kind": "company",
+            "label": "企业C",
+            "status": "承压",
+            "size": 38.0
+          },
+          {
+            "id": "industry:display",
+            "kind": "industry",
+            "label": "display",
+            "status": "",
+            "size": 12.4
+          },
+          {
+            "id": "industry:pv",
+            "kind": "industry",
+            "label": "pv",
+            "status": "",
+            "size": 12.0
+          },
+          {
+            "id": "industry:semiconductor",
+            "kind": "industry",
+            "label": "semiconductor",
+            "status": "",
+            "size": 12.0
+          },
+          {
+            "id": "EVT-S3-PV-CRASH",
+            "kind": "market_event",
+            "label": "光伏双反与价格崩盘",
+            "status": "",
+            "size": 16.0
+          },
+          {
+            "id": "EVT-S3-CREDIT",
+            "kind": "market_event",
+            "label": "信贷环境收紧",
+            "status": "",
+            "size": 16.0
+          }
+        ],
+        "edges": [
+          {
+            "source": "government",
+            "target": "company_a",
+            "relation": "invests",
+            "weight": 7.5,
+            "animated": true
+          },
+          {
+            "source": "government",
+            "target": "company_b",
+            "relation": "invests",
+            "weight": 6.5,
+            "animated": true
+          },
+          {
+            "source": "company_a",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.98,
+            "animated": false
+          },
+          {
+            "source": "company_d",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.7,
+            "animated": false
+          },
+          {
+            "source": "company_b",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.9,
+            "animated": false
+          },
+          {
+            "source": "company_d",
+            "target": "government",
+            "relation": "requests",
+            "weight": 2.8,
+            "animated": false
+          },
+          {
+            "source": "company_a",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.39,
+            "animated": false
+          },
+          {
+            "source": "company_d",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.28,
+            "animated": false
+          },
+          {
+            "source": "company_b",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.63,
+            "animated": false
+          },
+          {
+            "source": "company_d",
+            "target": "government",
+            "relation": "requests",
+            "weight": 2.8,
+            "animated": false
+          },
+          {
+            "source": "EVT-S3-PV-CRASH",
+            "target": "company_d",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          },
+          {
+            "source": "EVT-S3-CREDIT",
+            "target": "company_a",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          },
+          {
+            "source": "EVT-S3-CREDIT",
+            "target": "company_d",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          },
+          {
+            "source": "EVT-S3-CREDIT",
+            "target": "company_b",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          }
+        ]
+      },
+      "next_candidates": [],
+      "_stage_label": "周期分化"
+    },
+    {
+      "stage_id": "S4",
+      "cutoff_at": "2016-12-31",
+      "budget": {
+        "before": 90.0,
+        "spent": 35.0,
+        "recovered": 0.0,
+        "after": 55.0
+      },
+      "city_metrics": {
+        "committed_capital": 175.0,
+        "industrial_base": {
+          "display": 2.0
+        },
+        "talent_supply": 47.0,
+        "infrastructure_capacity": 50.0
+      },
+      "companies": [
+        {
+          "company_id": "company_a",
+          "anon_label": "企业A",
+          "industry": "display",
+          "status": "建设",
+          "metrics": {
+            "financial_health": 37.3,
+            "execution_ability": 70,
+            "technology_readiness": 61.5,
+            "customer_order_strength": 56.5,
+            "construction_progress": 57.41,
+            "production_ramp": 0.0,
+            "project_cashflow": -21.79,
+            "capital_intensity": 55
+          },
+          "cash_points": 59.0,
+          "milestones_done": []
+        },
+        {
+          "company_id": "company_d",
+          "anon_label": "企业B",
+          "industry": "pv",
+          "status": "承压",
+          "metrics": {
+            "financial_health": 43.44,
+            "execution_ability": 55,
+            "technology_readiness": 55,
+            "customer_order_strength": 29.03,
+            "construction_progress": 21,
+            "production_ramp": 6,
+            "project_cashflow": -60.26,
+            "capital_intensity": 40
+          },
+          "cash_points": 37.0,
+          "milestones_done": []
+        },
+        {
+          "company_id": "company_b",
+          "anon_label": "企业C",
+          "industry": "semiconductor",
+          "status": "承压",
+          "metrics": {
+            "financial_health": 41.07,
+            "execution_ability": 65,
+            "technology_readiness": 40,
+            "customer_order_strength": 51.74,
+            "construction_progress": 50.73,
+            "production_ramp": 0.0,
+            "project_cashflow": -48.58,
+            "capital_intensity": 60
+          },
+          "cash_points": 93.0,
+          "milestones_done": []
+        }
+      ],
+      "company_actions": [
+        {
+          "company_id": "company_a",
+          "action": "wait",
+          "capital_request_next_round": 3.1,
+          "resource_allocation": {
+            "construction": 0.2,
+            "research": 0.2,
+            "market": 0.2,
+            "cash_buffer": 0.4
+          },
+          "milestone_target": "construction_done",
+          "risk_response": "observe",
+          "competition_response": "price_cut",
+          "message_to_government": null,
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "confidence": 0.7
+        },
+        {
+          "company_id": "company_d",
+          "action": "wait",
+          "capital_request_next_round": 2.2,
+          "resource_allocation": {
+            "construction": 0.2,
+            "research": 0.2,
+            "market": 0.2,
+            "cash_buffer": 0.4
+          },
+          "milestone_target": "construction_done",
+          "risk_response": "observe",
+          "competition_response": "wait",
+          "message_to_government": null,
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "confidence": 0.7
+        },
+        {
+          "company_id": "company_b",
+          "action": "expand",
+          "capital_request_next_round": 8.8,
+          "resource_allocation": {
+            "construction": 0.55,
+            "research": 0.2,
+            "market": 0.1,
+            "cash_buffer": 0.15
+          },
+          "milestone_target": "construction_done",
+          "risk_response": "aggressive_build",
+          "competition_response": "price_cut",
+          "message_to_government": null,
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "confidence": 0.7
+        }
+      ],
+      "agent_assessments": [
+        {
+          "agent": "fiscal",
+          "company_id": null,
+          "direction": "neutral",
+          "score": 39.1,
+          "confidence": 0.8,
+          "key_factors": [
+            {
+              "metric_id": "fiscal_budget",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "committed_capital",
+              "effect": "negative"
+            }
+          ],
+          "evidence_ids": [],
+          "reasoning_summary": "财政余量 90 点，已承诺 140 点；追加空间有限，需防锁定"
+        },
+        {
+          "agent": "industry",
+          "company_id": "company_a",
+          "direction": "negative",
+          "score": 19.2,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "industrial_base",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "talent_supply",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "reasoning_summary": "本地产业基础 2、人才 45：配套存在缺口"
+        },
+        {
+          "agent": "industry",
+          "company_id": "company_d",
+          "direction": "negative",
+          "score": 30.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "industrial_base",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "talent_supply",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+        },
+        {
+          "agent": "industry",
+          "company_id": "company_b",
+          "direction": "negative",
+          "score": 30.0,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "industrial_base",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "talent_supply",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "reasoning_summary": "本地产业基础 20、人才 45：配套存在缺口"
+        },
+        {
+          "agent": "company_tech",
+          "company_id": "company_a",
+          "direction": "positive",
+          "score": 65.0,
+          "confidence": 0.65,
+          "key_factors": [
+            {
+              "metric_id": "execution_ability",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "technology_readiness",
+              "effect": "positive"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "reasoning_summary": "执行 70 / 技术成熟 60：能把钱变成产能"
+        },
+        {
+          "agent": "company_tech",
+          "company_id": "company_d",
+          "direction": "positive",
+          "score": 55.0,
+          "confidence": 0.65,
+          "key_factors": [
+            {
+              "metric_id": "execution_ability",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "technology_readiness",
+              "effect": "positive"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "reasoning_summary": "执行 55 / 技术成熟 55：能把钱变成产能"
+        },
+        {
+          "agent": "company_tech",
+          "company_id": "company_b",
+          "direction": "neutral",
+          "score": 52.5,
+          "confidence": 0.65,
+          "key_factors": [
+            {
+              "metric_id": "execution_ability",
+              "effect": "positive"
+            },
+            {
+              "metric_id": "technology_readiness",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "reasoning_summary": "执行 65 / 技术成熟 40：兑现风险需关注"
+        },
+        {
+          "agent": "market_risk",
+          "company_id": "company_a",
+          "direction": "negative",
+          "score": 36.5,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "market_cycle",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "supply_pressure",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "reasoning_summary": "景气 -15 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
+        },
+        {
+          "agent": "market_risk",
+          "company_id": "company_d",
+          "direction": "negative",
+          "score": 22.5,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "market_cycle",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "supply_pressure",
+              "effect": "negative"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "reasoning_summary": "景气 -25 / 价格趋势 -50 / 供给压力 60：下行风险主导，宜逆周期评估"
+        },
+        {
+          "agent": "market_risk",
+          "company_id": "company_b",
+          "direction": "negative",
+          "score": 36.5,
+          "confidence": 0.7,
+          "key_factors": [
+            {
+              "metric_id": "market_cycle",
+              "effect": "negative"
+            },
+            {
+              "metric_id": "supply_pressure",
+              "effect": "neutral"
+            }
+          ],
+          "evidence_ids": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "reasoning_summary": "景气 -15 / 价格趋势 -20 / 供给压力 40：下行风险主导，宜逆周期评估"
+        }
+      ],
+      "state_deltas": [
+        {
+          "metric_id": "construction_progress",
+          "company_id": "company_b",
+          "delta": 6.68,
+          "reason_code": "GOV_INVEST",
+          "input_metric_ids": [
+            "execution_ability"
+          ]
+        },
+        {
+          "metric_id": "technology_readiness",
+          "company_id": "company_a",
+          "delta": 1.5,
+          "reason_code": "SUPPORT_TALENT",
+          "input_metric_ids": [
+            "talent_supply"
+          ]
+        },
+        {
+          "metric_id": "construction_progress",
+          "company_id": "company_b",
+          "delta": 12.83,
+          "reason_code": "ACT_EXPAND",
+          "input_metric_ids": [
+            "execution_ability"
+          ]
+        },
+        {
+          "metric_id": "customer_order_strength",
+          "company_id": "company_b",
+          "delta": 16.74,
+          "reason_code": "EVENT:EVT-S4-MEMORY",
+          "input_metric_ids": [
+            "demand_boom"
+          ]
+        },
+        {
+          "metric_id": "project_cashflow",
+          "company_id": "company_a",
+          "delta": 15.88,
+          "reason_code": "EVENT:EVT-S4-LCD",
+          "input_metric_ids": [
+            "demand_boom"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "event_id": "EVT-S4-MEMORY",
+          "title": "存储器上行周期启动"
+        },
+        {
+          "event_id": "EVT-S4-LCD",
+          "title": "面板价格回升与国产替代加速"
+        }
+      ],
+      "evidence_refs": [
+        "EVT-2016-LCD",
+        "EVT-2016-MEM",
+        "PROTO_A-PRE-01",
+        "PROTO_A-PRE-02",
+        "PROTO_B-PRE-01",
+        "PROTO_B-PRE-02",
+        "PROTO_D-PRE-01",
+        "PROTO_D-PRE-02"
+      ],
+      "messages_new": [
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "capital_request",
+          "urgency": 0.051666666666666666,
+          "state_evidence": [
+            "PROTO_A-PRE-01",
+            "PROTO_A-PRE-02"
+          ],
+          "content": "企业A：下轮申请 3 点（目标里程碑 construction_done）",
+          "created_stage": "S4",
+          "expires_after_stages": 2,
+          "message_id": "msg-S4-company_a-capital_request",
+          "from": "company_a"
+        },
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "capital_request",
+          "urgency": 0.03666666666666667,
+          "state_evidence": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "content": "企业B：下轮申请 2 点（目标里程碑 construction_done）",
+          "created_stage": "S4",
+          "expires_after_stages": 2,
+          "message_id": "msg-S4-company_d-capital_request",
+          "from": "company_d"
+        },
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "capital_request",
+          "urgency": 0.14666666666666667,
+          "state_evidence": [
+            "PROTO_B-PRE-01",
+            "PROTO_B-PRE-02"
+          ],
+          "content": "企业C：下轮申请 8 点（目标里程碑 construction_done）",
+          "created_stage": "S4",
+          "expires_after_stages": 2,
+          "message_id": "msg-S4-company_b-capital_request",
+          "from": "company_b"
+        },
+        {
+          "channel": "company_to_government",
+          "to": "government",
+          "type": "threat",
+          "urgency": 0.6,
+          "state_evidence": [
+            "PROTO_D-PRE-01",
+            "PROTO_D-PRE-02"
+          ],
+          "content": "企业B：连续多轮未获支持，正评估迁往其他城市",
+          "created_stage": "S4",
+          "expires_after_stages": 2,
+          "message_id": "msg-S4-company_d-threat",
+          "from": "company_d"
+        }
+      ],
+      "graph_view": {
+        "nodes": [
+          {
+            "id": "government",
+            "kind": "government",
+            "label": "合肥市政府",
+            "status": "",
+            "size": 30.0
+          },
+          {
+            "id": "company_a",
+            "kind": "company",
+            "label": "企业A",
+            "status": "建设",
+            "size": 33.4
+          },
+          {
+            "id": "company_d",
+            "kind": "company",
+            "label": "企业B",
+            "status": "承压",
+            "size": 23.2
+          },
+          {
+            "id": "company_b",
+            "kind": "company",
+            "label": "企业C",
+            "status": "承压",
+            "size": 43.0
+          },
+          {
+            "id": "industry:display",
+            "kind": "industry",
+            "label": "display",
+            "status": "",
+            "size": 12.4
+          },
+          {
+            "id": "industry:pv",
+            "kind": "industry",
+            "label": "pv",
+            "status": "",
+            "size": 12.0
+          },
+          {
+            "id": "industry:semiconductor",
+            "kind": "industry",
+            "label": "semiconductor",
+            "status": "",
+            "size": 12.0
+          },
+          {
+            "id": "EVT-S4-MEMORY",
+            "kind": "market_event",
+            "label": "存储器上行周期启动",
+            "status": "",
+            "size": 16.0
+          },
+          {
+            "id": "EVT-S4-LCD",
+            "kind": "market_event",
+            "label": "面板价格回升与国产替代加速",
+            "status": "",
+            "size": 16.0
+          }
+        ],
+        "edges": [
+          {
+            "source": "government",
+            "target": "company_a",
+            "relation": "invests",
+            "weight": 8.5,
+            "animated": true
+          },
+          {
+            "source": "government",
+            "target": "company_b",
+            "relation": "invests",
+            "weight": 9.0,
+            "animated": true
+          },
+          {
+            "source": "company_a",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.39,
+            "animated": false
+          },
+          {
+            "source": "company_d",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.28,
+            "animated": false
+          },
+          {
+            "source": "company_b",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.63,
+            "animated": false
+          },
+          {
+            "source": "company_d",
+            "target": "government",
+            "relation": "requests",
+            "weight": 2.8,
+            "animated": false
+          },
+          {
+            "source": "company_a",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.16,
+            "animated": false
+          },
+          {
+            "source": "company_d",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.11,
+            "animated": false
+          },
+          {
+            "source": "company_b",
+            "target": "government",
+            "relation": "requests",
+            "weight": 1.44,
+            "animated": false
+          },
+          {
+            "source": "company_d",
+            "target": "government",
+            "relation": "requests",
+            "weight": 2.8,
+            "animated": false
+          },
+          {
+            "source": "EVT-S4-MEMORY",
+            "target": "company_b",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          },
+          {
+            "source": "EVT-S4-LCD",
+            "target": "company_a",
+            "relation": "shocks",
+            "weight": 2.0,
+            "animated": true
+          }
+        ]
+      },
+      "next_candidates": [],
+      "_stage_label": "长期下注"
+    }
+  ],
+  "final": {
+    "portfolio_result": {
+      "companies": [
+        {
+          "company_id": "company_a",
+          "status": "建设",
+          "milestones_done": []
+        },
+        {
+          "company_id": "company_d",
+          "status": "承压",
+          "milestones_done": []
+        },
+        {
+          "company_id": "company_b",
+          "status": "承压",
+          "milestones_done": []
+        }
+      ],
+      "committed_capital": 175.0,
+      "industrial_base": {
+        "display": 2.0
+      }
+    },
+    "historical_replay": {
+      "direction_score": 0.5,
+      "sequence_score": 0.0,
+      "mechanism_score": 0.857,
+      "path_feedback_score": 0.333,
+      "leakage_audit_passed": true
+    },
+    "branch_points": [
+      {
+        "stage_id": "S3",
+        "company_id": "company_d",
+        "status": "承压"
+      },
+      {
+        "stage_id": "S3",
+        "company_id": "company_b",
+        "status": "承压"
+      },
+      {
+        "stage_id": "S4",
+        "company_id": "company_d",
+        "status": "承压"
+      },
+      {
+        "stage_id": "S4",
+        "company_id": "company_b",
+        "status": "承压"
+      }
+    ]
+  },
+  "historical_replay_baseline": {
+    "portfolio_result": {
+      "companies": [
+        {
+          "company_id": "company_a",
+          "status": "建设",
+          "milestones_done": [
+            "construction_done"
+          ]
+        },
+        {
+          "company_id": "company_d",
+          "status": "退出",
+          "milestones_done": []
+        },
+        {
+          "company_id": "company_b",
+          "status": "承压",
+          "milestones_done": [
+            "construction_done"
+          ]
+        }
+      ],
+      "committed_capital": 220.0,
+      "industrial_base": {
+        "display": 2.0
+      }
+    },
+    "historical_replay": {
+      "direction_score": 0.75,
+      "sequence_score": 0.667,
+      "mechanism_score": 0.857,
+      "path_feedback_score": 0.333,
+      "leakage_audit_passed": true
+    },
+    "branch_points": [
+      {
+        "stage_id": "S3",
+        "company_id": "company_d",
+        "status": "承压"
+      },
+      {
+        "stage_id": "S3",
+        "company_id": "company_b",
+        "status": "承压"
+      },
+      {
+        "stage_id": "S4",
+        "company_id": "company_d",
+        "status": "退出"
+      },
+      {
+        "stage_id": "S4",
+        "company_id": "company_b",
+        "status": "承压"
+      }
+    ]
+  }
+}

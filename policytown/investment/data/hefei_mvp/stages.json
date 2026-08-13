@@ -1,0 +1,160 @@
+{
+  "stages": [
+    {
+      "stage_id": "S1",
+      "label": "产业底座",
+      "window": "2007—2008",
+      "cutoff_at": "2008-09-30",
+      "budget_points": 100,
+      "core_tension": "财政能力有限，但逆周期项目出现",
+      "candidate_pool": ["proto_a", "proto_e"],
+      "events": [
+        {
+          "event_id": "EVT-S1-GFC",
+          "title": "全球金融危机爆发",
+          "scope": "all",
+          "mechanism_tag": "demand_shock",
+          "effects": {"market.cycle": -35, "market.price_trend": -20, "company.project_cashflow": -10},
+          "evidence": {
+            "evidence_id": "EVT-2008-GFC",
+            "source_id": "PUBLIC-NEWS-2008",
+            "as_of": "2008-09-15",
+            "publication_date": "2008-09-15",
+            "value_type": "observed",
+            "quality": "A",
+            "summary": "雷曼兄弟破产，全球需求预期急剧下修"
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "S2",
+      "label": "扩产抉择",
+      "window": "2009—2011",
+      "cutoff_at": "2011-06-30",
+      "budget_points": 100,
+      "core_tension": "早期项目需要追加，新项目同时出现",
+      "candidate_pool": ["proto_a", "proto_e", "proto_c", "proto_d"],
+      "events": [
+        {
+          "event_id": "EVT-S2-STIMULUS",
+          "title": "四万亿刺激与战略性新兴产业规划",
+          "scope": "all",
+          "mechanism_tag": "policy_up",
+          "effects": {"market.policy_support": 25, "market.cycle": 20},
+          "evidence": {
+            "evidence_id": "EVT-2009-STIMULUS",
+            "source_id": "GOV-2009-PLAN",
+            "as_of": "2009-03-05",
+            "publication_date": "2009-03-05",
+            "value_type": "observed",
+            "quality": "A",
+            "summary": "中央出台扩内需计划并酝酿战略性新兴产业目录"
+          }
+        },
+        {
+          "event_id": "EVT-S2-PV-BOOM",
+          "title": "光伏海外需求短期暴涨",
+          "scope": "pv",
+          "mechanism_tag": "demand_boom",
+          "effects": {"market.cycle": 30, "market.price_trend": 25, "market.supply_pressure": 20},
+          "evidence": {
+            "evidence_id": "EVT-2010-PV",
+            "source_id": "IND-PV-2010",
+            "as_of": "2010-06-30",
+            "publication_date": "2010-07-15",
+            "value_type": "derived",
+            "quality": "B",
+            "summary": "欧洲补贴驱动组件需求，国内厂商大规模扩产"
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "S3",
+      "label": "周期分化",
+      "window": "2012—2014",
+      "cutoff_at": "2014-06-30",
+      "budget_points": 90,
+      "core_tension": "有的行业下行，有的技术窗口形成",
+      "candidate_pool": ["proto_a", "proto_e", "proto_c", "proto_d", "proto_f"],
+      "events": [
+        {
+          "event_id": "EVT-S3-PV-CRASH",
+          "title": "光伏双反与价格崩盘",
+          "scope": "pv",
+          "mechanism_tag": "price_crash",
+          "effects": {"market.price_trend": -55, "market.cycle": -40, "company.project_cashflow": -25, "company.customer_order_strength": -20},
+          "evidence": {
+            "evidence_id": "EVT-2012-PV-CRASH",
+            "source_id": "IND-PV-2012",
+            "as_of": "2012-05-18",
+            "publication_date": "2012-05-18",
+            "value_type": "observed",
+            "quality": "A",
+            "summary": "美欧双反落地，组件价格一年下跌过半，全行业产能过剩"
+          }
+        },
+        {
+          "event_id": "EVT-S3-CREDIT",
+          "title": "信贷环境收紧",
+          "scope": "all",
+          "mechanism_tag": "credit_tighten",
+          "effects": {"company.financial_health": -8, "company.project_cashflow": -8},
+          "evidence": {
+            "evidence_id": "EVT-2013-CREDIT",
+            "source_id": "PBOC-2013",
+            "as_of": "2013-06-20",
+            "publication_date": "2013-06-20",
+            "value_type": "derived",
+            "quality": "B",
+            "summary": "银行间市场流动性紧张，高负债企业再融资成本上升"
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "S4",
+      "label": "长期下注",
+      "window": "2015—2016",
+      "cutoff_at": "2016-12-31",
+      "budget_points": 90,
+      "core_tension": "短期财政回报与长期战略能力冲突",
+      "candidate_pool": ["proto_a", "proto_e", "proto_c", "proto_d", "proto_f", "proto_b"],
+      "events": [
+        {
+          "event_id": "EVT-S4-MEMORY",
+          "title": "存储器上行周期启动",
+          "scope": "semiconductor",
+          "mechanism_tag": "demand_boom",
+          "effects": {"market.cycle": 35, "market.price_trend": 30, "company.customer_order_strength": 15},
+          "evidence": {
+            "evidence_id": "EVT-2016-MEM",
+            "source_id": "IND-MEM-2016",
+            "as_of": "2016-09-30",
+            "publication_date": "2016-10-10",
+            "value_type": "derived",
+            "quality": "B",
+            "summary": "全球存储器价格进入上行通道"
+          }
+        },
+        {
+          "event_id": "EVT-S4-LCD",
+          "title": "面板价格回升与国产替代加速",
+          "scope": "display",
+          "mechanism_tag": "demand_boom",
+          "effects": {"market.price_trend": 25, "market.cycle": 20, "company.project_cashflow": 15},
+          "evidence": {
+            "evidence_id": "EVT-2016-LCD",
+            "source_id": "IND-LCD-2016",
+            "as_of": "2016-06-30",
+            "publication_date": "2016-07-08",
+            "value_type": "derived",
+            "quality": "B",
+            "summary": "韩厂退出 LCD 产能，国内面板厂盈利改善"
+          }
+        }
+      ]
+    }
+  ]
+}

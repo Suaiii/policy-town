@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "investment_simulation/v0.1/message",
+  "title": "Message v0.1 — 三通道统一消息（企业↔政府；企业↔企业不直接通信，走共享池结算）",
+  "type": "object",
+  "required": ["message_id", "channel", "from", "to", "type", "urgency", "state_evidence", "content", "created_stage", "expires_after_stages"],
+  "properties": {
+    "message_id": {"type": "string"},
+    "channel": {"type": "string", "enum": ["company_to_government", "government_to_company"]},
+    "from": {"type": "string"},
+    "to": {"type": "string"},
+    "type": {
+      "type": "string",
+      "enum": ["capital_request", "distress_call", "progress_report", "threat",
+               "counter_proposal", "info_disclosure", "invest", "support",
+               "follow_on", "restructure", "exit"]
+    },
+    "urgency": {"type": "number", "minimum": 0, "maximum": 1},
+    "state_evidence": {"type": "array", "items": {"type": "string"}, "description": "必须引用当轮 Context 中存在的 evidence_id"},
+    "content": {"type": "string"},
+    "created_stage": {"type": "string"},
+    "expires_after_stages": {"type": "integer", "minimum": 1, "description": "经过几个阶段后过期"}
+  }
+}

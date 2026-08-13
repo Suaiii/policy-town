@@ -1,0 +1,164 @@
+{
+  "prototypes": [
+    {
+      "prototype_id": "proto_a",
+      "historical_case": "京东方合肥项目（仅后台校准用，绝不进入 Context）",
+      "industry": "display",
+      "industry_label": "大型显示制造",
+      "initial_metrics": {
+        "financial_health": 45, "execution_ability": 70, "technology_readiness": 60,
+        "customer_order_strength": 55, "construction_progress": 10, "production_ramp": 0,
+        "project_cashflow": -20, "capital_intensity": 55
+      },
+      "initial_cash_points": 20, "initial_debt_points": 25,
+      "capital_request": 40, "follow_on_thresholds": [25, 20],
+      "event_sensitivities": {"price_crash": 0.8, "policy_up": 1.2, "credit_tighten": 1.0, "demand_boom": 1.1},
+      "milestones": ["construction_done", "pilot_production", "scale_up"],
+      "historical_decisions": {
+        "S1": [{"action": "invest", "capital_points": 40, "support_focus": "infrastructure"}],
+        "S2": [{"action": "follow_on", "capital_points": 30, "support_focus": "supply_chain"}],
+        "S3": [{"action": "follow_on", "capital_points": 20, "support_focus": "talent"}],
+        "S4": [{"action": "support", "capital_points": 10, "support_focus": "supply_chain"}]
+      },
+      "replay_targets": {
+        "direction": {"construction_progress": 1, "production_ramp": 1, "financial_health": 1},
+        "milestone_order": ["construction_done", "pilot_production"],
+        "risk_mechanisms": ["price_crash", "follow_on_pressure"],
+        "path_feedback": {"industrial_base.display": 1}
+      }
+    },
+    {
+      "prototype_id": "proto_b",
+      "historical_case": "长鑫存储（仅后台校准用，绝不进入 Context）",
+      "industry": "semiconductor",
+      "industry_label": "半导体存储",
+      "initial_metrics": {
+        "financial_health": 50, "execution_ability": 65, "technology_readiness": 40,
+        "customer_order_strength": 35, "construction_progress": 5, "production_ramp": 0,
+        "project_cashflow": -30, "capital_intensity": 60
+      },
+      "initial_cash_points": 25, "initial_debt_points": 20,
+      "capital_request": 45, "follow_on_thresholds": [35, 30],
+      "event_sensitivities": {"price_crash": 0.6, "policy_up": 1.3, "credit_tighten": 1.2, "demand_boom": 1.2},
+      "milestones": ["construction_done", "pilot_production", "scale_up"],
+      "historical_decisions": {
+        "S1": [{"action": "invest", "capital_points": 30, "support_focus": "talent"}],
+        "S2": [{"action": "follow_on", "capital_points": 35, "support_focus": "talent"}],
+        "S3": [{"action": "follow_on", "capital_points": 30, "support_focus": "financing"}],
+        "S4": [{"action": "follow_on", "capital_points": 25, "support_focus": "supply_chain"}]
+      },
+      "replay_targets": {
+        "direction": {"technology_readiness": 1, "construction_progress": 1, "production_ramp": 1},
+        "milestone_order": ["construction_done", "pilot_production"],
+        "risk_mechanisms": ["follow_on_pressure", "credit_tighten"],
+        "path_feedback": {"industrial_base.semiconductor": 1}
+      }
+    },
+    {
+      "prototype_id": "proto_c",
+      "historical_case": "鑫昊等离子（仅后台校准用，绝不进入 Context）",
+      "industry": "equipment",
+      "industry_label": "高端装备技术",
+      "initial_metrics": {
+        "financial_health": 40, "execution_ability": 35, "technology_readiness": 45,
+        "customer_order_strength": 25, "construction_progress": 15, "production_ramp": 0,
+        "project_cashflow": -15, "capital_intensity": 30
+      },
+      "initial_cash_points": 15, "initial_debt_points": 15,
+      "capital_request": 25, "follow_on_thresholds": [20],
+      "event_sensitivities": {"price_crash": 0.7, "policy_up": 0.9, "credit_tighten": 1.1, "demand_boom": 0.8},
+      "milestones": ["construction_done", "pilot_production"],
+      "historical_decisions": {
+        "S1": [{"action": "invest", "capital_points": 20, "support_focus": "infrastructure"}],
+        "S2": [{"action": "exit", "capital_points": 0, "support_focus": "financing"}],
+        "S3": [], "S4": []
+      },
+      "replay_targets": {
+        "direction": {"production_ramp": 0, "financial_health": -1},
+        "milestone_order": ["construction_done"],
+        "risk_mechanisms": ["commercialization_gap"],
+        "path_feedback": {"industrial_base.equipment": 0}
+      }
+    },
+    {
+      "prototype_id": "proto_d",
+      "historical_case": "赛维LDK（仅后台校准用，绝不进入 Context）",
+      "industry": "pv",
+      "industry_label": "光伏制造",
+      "initial_metrics": {
+        "financial_health": 55, "execution_ability": 55, "technology_readiness": 55,
+        "customer_order_strength": 60, "construction_progress": 30, "production_ramp": 10,
+        "project_cashflow": 0, "capital_intensity": 40
+      },
+      "initial_cash_points": 25, "initial_debt_points": 35,
+      "capital_request": 35, "follow_on_thresholds": [30],
+      "event_sensitivities": {"price_crash": 1.5, "policy_up": 1.1, "credit_tighten": 1.4, "demand_boom": 1.3},
+      "milestones": ["construction_done", "pilot_production", "scale_up"],
+      "historical_decisions": {
+        "S1": [{"action": "invest", "capital_points": 25, "support_focus": "infrastructure"}],
+        "S2": [{"action": "follow_on", "capital_points": 20, "support_focus": "financing"}],
+        "S3": [{"action": "restructure", "capital_points": 10, "support_focus": "financing"}],
+        "S4": [{"action": "exit", "capital_points": 0, "support_focus": "financing"}]
+      },
+      "replay_targets": {
+        "direction": {"project_cashflow": -1, "financial_health": -1},
+        "milestone_order": ["construction_done"],
+        "risk_mechanisms": ["price_crash", "overcapacity", "credit_tighten"],
+        "path_feedback": {"industrial_base.pv": 0}
+      }
+    },
+    {
+      "prototype_id": "proto_e",
+      "historical_case": "熔安/熔盛（仅后台校准用，绝不进入 Context）",
+      "industry": "heavy",
+      "industry_label": "重型装备",
+      "initial_metrics": {
+        "financial_health": 50, "execution_ability": 45, "technology_readiness": 50,
+        "customer_order_strength": 40, "construction_progress": 20, "production_ramp": 5,
+        "project_cashflow": -10, "capital_intensity": 45
+      },
+      "initial_cash_points": 20, "initial_debt_points": 30,
+      "capital_request": 35, "follow_on_thresholds": [25],
+      "event_sensitivities": {"price_crash": 1.1, "policy_up": 0.8, "credit_tighten": 1.3, "demand_boom": 1.0},
+      "milestones": ["construction_done", "pilot_production"],
+      "historical_decisions": {
+        "S1": [{"action": "invest", "capital_points": 30, "support_focus": "infrastructure"}],
+        "S2": [{"action": "follow_on", "capital_points": 25, "support_focus": "financing"}],
+        "S3": [{"action": "exit", "capital_points": 0, "support_focus": "financing"}],
+        "S4": []
+      },
+      "replay_targets": {
+        "direction": {"financial_health": -1, "project_cashflow": -1},
+        "milestone_order": ["construction_done"],
+        "risk_mechanisms": ["demand_shock", "asset_sink"],
+        "path_feedback": {"industrial_base.heavy": 0}
+      }
+    },
+    {
+      "prototype_id": "proto_f",
+      "historical_case": "北大未名（仅后台校准用，绝不进入 Context）",
+      "industry": "biotech",
+      "industry_label": "生物医药",
+      "initial_metrics": {
+        "financial_health": 45, "execution_ability": 30, "technology_readiness": 50,
+        "customer_order_strength": 20, "construction_progress": 10, "production_ramp": 0,
+        "project_cashflow": -15, "capital_intensity": 30
+      },
+      "initial_cash_points": 15, "initial_debt_points": 10,
+      "capital_request": 25, "follow_on_thresholds": [20],
+      "event_sensitivities": {"price_crash": 0.4, "policy_up": 1.0, "credit_tighten": 1.0, "demand_boom": 0.7},
+      "milestones": ["construction_done", "pilot_production"],
+      "historical_decisions": {
+        "S1": [{"action": "invest", "capital_points": 20, "support_focus": "talent"}],
+        "S2": [{"action": "follow_on", "capital_points": 15, "support_focus": "infrastructure"}],
+        "S3": [], "S4": []
+      },
+      "replay_targets": {
+        "direction": {"construction_progress": 0, "financial_health": -1},
+        "milestone_order": [],
+        "risk_mechanisms": ["execution_failure"],
+        "path_feedback": {"industrial_base.biotech": 0}
+      }
+    }
+  ]
+}
