@@ -8,6 +8,7 @@
     "dev:global": "vite --host 0.0.0.0 --port 5273 --strictPort",
     "build": "npm run build:global",
     "build:global": "tsc -b && vite build",
+    "build:all": "npm run build:global",
     "preview": "vite --host 0.0.0.0",
     "test": "vitest run"
   },

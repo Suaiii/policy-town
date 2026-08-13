@@ -1,4 +1,4 @@
-export const MAP_CONTRACT_VERSION = '2.0' as const
+export const MAP_CONTRACT_VERSION = '3.0' as const
 
 export type ProjectArchetype =
   | 'heavy-manufacturing'
@@ -6,6 +6,31 @@ export type ProjectArchetype =
   | 'rd-pilot'
 
 export type ProjectLifecycle = 'active' | 'stalled' | 'exited'
+
+export type PhysicalAssetStatus = 'planned' | 'building' | 'complete' | 'paused' | 'abandoned'
+
+export type PhysicalAssetRole = 'main' | 'support' | 'warehouse' | 'utility'
+
+export interface PhysicalAssetVisualState {
+  id: string
+  role: PhysicalAssetRole
+  slotIndex: number
+  currentLevel: number
+  targetLevel: number
+  workProgress: number
+  status: PhysicalAssetStatus
+  createdStage: string
+  decisionId: string
+}
+
+export interface PhysicalAssetLedgerVisualState {
+  developmentUnitCost: number
+  qualifiedCapital: number
+  capitalRemainder: number
+  overflowUnits: number
+  constructionDelta: number
+  assets: PhysicalAssetVisualState[]
+}
 
 export type ProjectStage =
   | 'proposal'
@@ -30,6 +55,7 @@ export interface MapProjectVisualState {
   lifecycle: ProjectLifecycle
   progress: number
   builtProgress: number
+  physicalAssets: PhysicalAssetLedgerVisualState
   employment: number
   logistics: number
   risk: number
@@ -110,6 +136,8 @@ const projectArchetypes = new Set<ProjectArchetype>([
 ])
 
 const projectLifecycles = new Set<ProjectLifecycle>(['active', 'stalled', 'exited'])
+const physicalAssetStatuses = new Set<PhysicalAssetStatus>(['planned', 'building', 'complete', 'paused', 'abandoned'])
+const physicalAssetRoles = new Set<PhysicalAssetRole>(['main', 'support', 'warehouse', 'utility'])
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null
@@ -144,9 +172,36 @@ export function isMapSnapshot(value: unknown): value is MapSnapshot {
 
   const ids = new Set<string>()
   return value.projects.every((project) => {
-    if (!isRecord(project) || !isRecord(project.position) || !isRecord(project.delta)) return false
+    if (!isRecord(project) || !isRecord(project.position) || !isRecord(project.delta) || !isRecord(project.physicalAssets)) return false
     if (!isNonEmptyString(project.id) || ids.has(project.id)) return false
     ids.add(project.id)
+    const ledger = project.physicalAssets
+    if (
+      !isFiniteNumber(ledger.developmentUnitCost) || ledger.developmentUnitCost <= 0 ||
+      !isFiniteNumber(ledger.qualifiedCapital) || ledger.qualifiedCapital < 0 ||
+      !isFiniteNumber(ledger.capitalRemainder) || ledger.capitalRemainder < 0 ||
+      !Number.isInteger(ledger.overflowUnits) || (ledger.overflowUnits as number) < 0 ||
+      !isFiniteNumber(ledger.constructionDelta) || ledger.constructionDelta < 0 ||
+      !Array.isArray(ledger.assets) || ledger.assets.length > 4
+    ) return false
+
+    const assetIds = new Set<string>()
+    const assetsValid = ledger.assets.every((asset) => {
+      if (!isRecord(asset) || !isNonEmptyString(asset.id) || assetIds.has(asset.id)) return false
+      assetIds.add(asset.id)
+      return (
+        typeof asset.role === 'string' && physicalAssetRoles.has(asset.role as PhysicalAssetRole) &&
+        Number.isInteger(asset.slotIndex) && (asset.slotIndex as number) >= 0 && (asset.slotIndex as number) < 4 &&
+        Number.isInteger(asset.currentLevel) && (asset.currentLevel as number) >= 0 && (asset.currentLevel as number) <= 3 &&
+        Number.isInteger(asset.targetLevel) && (asset.targetLevel as number) >= 1 && (asset.targetLevel as number) <= 3 &&
+        (asset.currentLevel as number) <= (asset.targetLevel as number) &&
+        isPercentage(asset.workProgress) &&
+        typeof asset.status === 'string' && physicalAssetStatuses.has(asset.status as PhysicalAssetStatus) &&
+        isNonEmptyString(asset.createdStage) && isNonEmptyString(asset.decisionId)
+      )
+    })
+    if (!assetsValid || new Set(ledger.assets.map((asset) => (asset as Record<string, unknown>).slotIndex)).size !== ledger.assets.length) return false
+
     return (
       isNonEmptyString(project.name) &&
       isNonEmptyString(project.industry) &&

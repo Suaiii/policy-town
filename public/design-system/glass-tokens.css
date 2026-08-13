@@ -1,0 +1,57 @@
+:root {
+  /* Typography: use only this semantic scale in product UI. */
+  --pt-font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --pt-font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --pt-type-display: 25px;
+  --pt-type-title: 18px;
+  --pt-type-subtitle: 14px;
+  --pt-type-body: 11px;
+  --pt-type-label: 10px;
+  --pt-type-caption: 9px;
+  --pt-type-micro: 8px;
+  --pt-type-hint: 7px;
+  --pt-weight-regular: 400;
+  --pt-weight-medium: 500;
+  --pt-weight-semibold: 600;
+  --pt-weight-emphasis: 650;
+  --pt-leading-display: 1.42;
+  --pt-leading-title: 1.4;
+  --pt-leading-body: 1.75;
+
+  /* Shared product palette. Red is reserved for official-document and risk semantics. */
+  --pt-color-text: #f3efe6;
+  --pt-color-text-secondary: #9eaaa4;
+  --pt-color-text-tertiary: #76847e;
+  --pt-color-accent: #8bd2c2;
+  --pt-color-accent-soft: rgba(139, 210, 194, .18);
+  --pt-color-gold: #d3b27a;
+  --pt-color-gold-soft: rgba(211, 178, 122, .22);
+  --pt-color-danger: #d98579;
+  --pt-color-danger-soft: rgba(217, 133, 121, .18);
+  --pt-color-line: rgba(238, 243, 239, .14);
+  --pt-color-line-strong: rgba(238, 243, 239, .22);
+
+  /* Glass surfaces: layout / card / control. */
+  --pt-glass-layout: linear-gradient(145deg, rgba(39, 49, 46, .72), rgba(14, 23, 21, .68));
+  --pt-glass-card: rgba(28, 39, 36, .54);
+  --pt-glass-control: rgba(24, 40, 37, .62);
+  --pt-glass-highlight: radial-gradient(circle at 16% 0%, rgba(255, 255, 255, .09), transparent 30%);
+  --pt-blur-layout: 30px;
+  --pt-blur-card: 20px;
+  --pt-blur-control: 18px;
+  --pt-radius-layout: 18px;
+  --pt-radius-card: 13px;
+  --pt-radius-control: 11px;
+  --pt-shadow-layout: 0 22px 62px rgba(0, 0, 0, .36), inset 0 1px rgba(255, 255, 255, .12);
+  --pt-shadow-card: 0 10px 28px rgba(0, 0, 0, .16), inset 0 1px rgba(255, 255, 255, .075);
+  --pt-shadow-control: 0 8px 22px rgba(0, 0, 0, .16), inset 0 1px rgba(255, 255, 255, .09);
+
+  /* Spacing follows a 4px base grid. */
+  --pt-space-1: 4px;
+  --pt-space-2: 8px;
+  --pt-space-3: 12px;
+  --pt-space-4: 16px;
+  --pt-space-5: 20px;
+  --pt-space-6: 24px;
+  --pt-control-height: 38px;
+}

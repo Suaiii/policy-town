@@ -1,8 +1,10 @@
 import type { EnterpriseId, SupportTool } from './types';
 
 export const stages = [
-  { code: 'S1', date: '2008 · Q3', cutoff: '2008-09-30', label: '产业底座 · 逆周期项目出现', event: '全球信贷快速收紧' },
-  { code: 'S2', date: '2009 · Q2', cutoff: '2009-06-30', label: '扩产抉择 · 政策窗口开启', event: '国家产业振兴政策落地' },
+  { code: 'S1', date: '2007—2008', cutoff: '2008-09-30', label: '产业底座 · 逆周期项目出现', event: '全球信贷快速收紧', action: '首投与基础设施配套' },
+  { code: 'S2', date: '2009—2011', cutoff: '2011-12-31', label: '扩产抉择 · 追加压力出现', event: '产业振兴政策与需求回暖', action: '追加、引链或拒绝' },
+  { code: 'S3', date: '2012—2014', cutoff: '2014-12-31', label: '周期分化 · 重资产项目承压', event: '行业周期分化与资本收紧', action: '止损、重组或继续投入' },
+  { code: 'S4', date: '2015—2016', cutoff: '2016-12-31', label: '长期下注 · 技术窗口形成', event: '战略性新兴产业政策窗口开启', action: '组合再平衡与长期投资' },
 ] as const;
 
 export const enterprises = [

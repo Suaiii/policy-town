@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { MapSnapshot } from '../../contracts/src'
-import { createDemoSnapshot } from '../../../apps/map/src/demoState'
+import { createDemoSnapshot } from '../../../src/map/tableDemoState'
 import { constructionStateFor, deriveMapScene } from './scene'
 
 describe('deriveMapScene', () => {
@@ -35,6 +35,18 @@ describe('deriveMapScene', () => {
     const snapshot = createDemoSnapshot('construction', 1)
     expect(deriveMapScene(snapshot).transitionQueue).toHaveLength(0)
     expect(deriveMapScene(snapshot, snapshot).transitionQueue).toHaveLength(0)
+  })
+
+  it('keeps an unfunded zero-asset city free of premature resident actors', () => {
+    const snapshot = createDemoSnapshot('proposal', 0)
+    snapshot.projects = snapshot.projects.map((project) => ({
+      ...project,
+      physicalAssets: { ...project.physicalAssets, assets: [] },
+    }))
+
+    const scene = deriveMapScene(snapshot)
+    expect(scene.residentActors).toBe(0)
+    expect(scene.parcels.every((parcel) => parcel.assetScenes.length === 0)).toBe(true)
   })
 
   it('creates a bounded, ordered transition queue after a revision increment', () => {

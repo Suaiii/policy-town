@@ -24,6 +24,17 @@ const createSnapshot = (): MapSnapshot => ({
       lifecycle: 'active',
       progress: 46,
       builtProgress: 46,
+      physicalAssets: {
+        developmentUnitCost: 42,
+        qualifiedCapital: 42,
+        capitalRemainder: 0,
+        overflowUnits: 0,
+        constructionDelta: 18,
+        assets: [{
+          id: 'asset-1', role: 'main', slotIndex: 0, currentLevel: 0, targetLevel: 1,
+          workProgress: 46, status: 'building', createdStage: 'S1', decisionId: 'decision-1',
+        }],
+      },
       employment: 38,
       logistics: 31,
       risk: 42,
