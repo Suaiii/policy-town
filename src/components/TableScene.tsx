@@ -55,6 +55,7 @@ function CameraRig({ mode, selectedId, enterpriseIds, introFocus }: {
       intro: introFocus === 'overview'
         ? new THREE.Vector3(0, 9.6, 10.8)
         : new THREE.Vector3(selectedX + 0.42, 2.9, 1.85),
+      relation: new THREE.Vector3(0, 10.4, 9.8),
     }),
     [introFocus, selectedX],
   );
@@ -66,6 +67,7 @@ function CameraRig({ mode, selectedId, enterpriseIds, introFocus }: {
       intro: introFocus === 'overview'
         ? new THREE.Vector3(0, 0.35, -1.25)
         : new THREE.Vector3(selectedX, 0.86, -5.05),
+      relation: new THREE.Vector3(0, 0.45, -1.15),
     }),
     [introFocus, selectedX],
   );
@@ -74,6 +76,7 @@ function CameraRig({ mode, selectedId, enterpriseIds, introFocus }: {
       table: new THREE.Vector3(0, 1, 0),
       meeting: new THREE.Vector3(0, 1, 0),
       panorama: new THREE.Vector3(0, 1, 0),
+      relation: new THREE.Vector3(0, 1, 0),
     }),
     [],
   );

@@ -2,6 +2,9 @@ import { enterprises, stages } from './scenario';
 import { ENTERPRISE_REPRESENTATIVE_CONFIG, sortEnterpriseIdsBySeat } from './representatives';
 import { applyConstruction, confirmQualifiedInvestment, createPhysicalAssetLedger, physicalCompletion } from './physicalAssets';
 import type {
+  AgentFirmAction,
+  AgentFirmRequest,
+  AgentReview,
   EnterpriseAction,
   EnterpriseId,
   EnterpriseMetrics,
@@ -140,6 +143,14 @@ export function enterApplications(state: SimulationState): SimulationState {
   return { ...state, phase: 'applications', cameraMode: 'table' };
 }
 
+export function applyAgentRequests(state: SimulationState, requests: Record<EnterpriseId, AgentFirmRequest>): SimulationState {
+  return { ...state, agentRequests: requests };
+}
+
+export function applyAgentReview(state: SimulationState, review: AgentReview): SimulationState {
+  return { ...state, agentReview: review };
+}
+
 export function selectEnterprise(state: SimulationState, id: EnterpriseId): SimulationState {
   if (!state.enterprises.some((enterprise) => enterprise.id === id)) return state;
   return { ...state, selectedEnterpriseId: id };
@@ -223,7 +234,10 @@ function chooseAction(enterprise: EnterpriseState): { action: EnterpriseAction; 
   return { action: '迁往外地', actionReason: '企业仍具备行动能力，将比较其他城市的支持条件。' };
 }
 
-export function submitDecision(state: SimulationState): SimulationState {
+export function submitDecision(
+  state: SimulationState,
+  agentActions?: Record<EnterpriseId, AgentFirmAction>,
+): SimulationState {
   if (state.phase !== 'allocation') return state;
   const total = state.enterprises.reduce((sum, enterprise) => sum + enterprise.allocation, 0);
   const hasConfiguredSupport = state.enterprises.every(
@@ -237,9 +251,10 @@ export function submitDecision(state: SimulationState): SimulationState {
   const decisionBase = `${state.runId}:${stageCode}`;
   const enterprisesAfterDecision = state.enterprises.map((enterprise) => {
     const selectedInvestment = enterprise.supportTools.includes('investment');
+    const agent = agentActions?.[enterprise.id];
     return {
       ...enterprise,
-      ...chooseAction(enterprise),
+      ...(agent ? { action: agent.action, actionReason: agent.actionReason } : chooseAction(enterprise)),
       physicalAssets: selectedInvestment
         ? confirmQualifiedInvestment(
             enterprise.physicalAssets,

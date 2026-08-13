@@ -3,18 +3,21 @@ import { GlassTabs, GlassTabsList, GlassTabsTrigger } from '@mawtech/glass-ui';
 import { createFullCityDemoSnapshot } from './map/tableDemoState';
 import { emptyNegotiationRecord, NegotiationOverlay } from './components/NegotiationOverlay';
 import type { NegotiationRecord } from './components/NegotiationOverlay';
+import { RelationNetwork } from './components/RelationNetwork';
 import { TableScene } from './components/TableScene';
 import { AnnouncementOverlay } from './components/AnnouncementOverlay';
 import { ResourceGauge } from './components/ResourceGauge';
 import { StageContextPanel } from './components/StageContextPanel';
-import { ActionButton, FramedCard, FramedPanel, PanelHeading, SectionLabel } from './components/ui/ParlorUI';
-import { simulationToMapSnapshot } from './integration/mapAdapter';
+import { ActionButton, FrameCorners, FramedCard, FramedPanel, PanelHeading, SectionLabel } from './components/ui/ParlorUI';
+import { ENTERPRISE_ARCHETYPES, simulationToMapSnapshot } from './integration/mapAdapter';
+import { appendSandboxEvent, fetchAgentHealth, fetchFirmRequests, fetchFirmResponses, fetchGovReview, type AgentHealth } from './integration/agentApi';
+import { relationshipEventsForTransition } from './integration/relationshipEvents';
 import { createDecisionReviewExport } from './game/exportRun';
 import { restoreSimulationState } from './game/persistence';
 import { MOCK_EVENT_FEED, type MockEventItem } from './game/mockEventFeed';
 import { stageContexts } from './game/stageContext';
 import { TableMapSurface } from './map/TableMapSurface';
-import openingBackgroundUrl from '../开屏握手背景.png?url';
+import openingBackgroundUrl from '/assets/opening-background.svg?url';
 import {
   agentLabels,
   agentReports,
@@ -24,6 +27,8 @@ import {
   supportToolLabels,
 } from './game/scenario';
 import {
+  applyAgentRequests,
+  applyAgentReview,
   continueSimulation,
   enterApplications,
   enterEnterpriseMeeting,
@@ -531,12 +536,29 @@ function EventIntelligenceRail({ state }: { state: SimulationState }) {
   );
 }
 
+function AgentStatusBadge({ health }: { health: AgentHealth | null }) {
+  const status = !health
+    ? { tone: 'pending' as const, label: 'Agent 连接中…' }
+    : health.bridge !== 'up'
+      ? { tone: 'offline' as const, label: 'Agent 离线 · 确定性模式' }
+      : health.agent?.stub
+        ? { tone: 'stub' as const, label: 'Agent 确定性模式（stub）' }
+        : { tone: 'live' as const, label: 'LLM Agent 在线' };
+  return (
+    <div className={`agent-status-badge ${status.tone}`} title={health?.error ?? (health?.agent ? `model via bridge :${health.agent.port}` : '')}>
+      <span className="agent-status-dot" />
+      <small>{status.label}</small>
+    </div>
+  );
+}
+
 function App() {
   const [state, setState] = useState<SimulationState>(() => restoreSimulationState(
     window.localStorage.getItem('hefei-sandbox-run-v1'),
   ));
   const [introActive, setIntroActive] = useState(true);
   const [formalUiEntering, setFormalUiEntering] = useState(false);
+  const [agentHealth, setAgentHealth] = useState<AgentHealth | null>(null);
   const [mapCanvas, setMapCanvas] = useState<HTMLCanvasElement | null>(null);
   const [negotiationRecords, setNegotiationRecords] = useState<Record<string, NegotiationRecord>>(() => {
     try {
@@ -552,11 +574,18 @@ function App() {
   const [contextOpen, setContextOpen] = useState(false);
   const [announcementOpen, setAnnouncementOpen] = useState(false);
   const timelineCloseTimer = useRef<number | null>(null);
+  const previousRelationshipState = useRef(state);
   const stageTimelineCloseTimer = useRef<number | null>(null);
   const contextCloseTimer = useRef<number | null>(null);
   const mapSnapshot = useMemo(() => simulationToMapSnapshot(state), [state]);
   useEffect(() => {
     window.localStorage.setItem('hefei-sandbox-run-v1', JSON.stringify(state));
+  }, [state]);
+  useEffect(() => {
+    const before = previousRelationshipState.current;
+    previousRelationshipState.current = state;
+    const events = relationshipEventsForTransition(before, state, 'sandbox-state-updated');
+    if (events.length > 0) void Promise.all(events.map(appendSandboxEvent));
   }, [state]);
   useEffect(() => {
     window.localStorage.setItem('hefei-negotiation-drafts-v1', JSON.stringify(negotiationRecords));
@@ -566,6 +595,21 @@ function App() {
     const timer = window.setTimeout(() => setFormalUiEntering(false), 1500);
     return () => window.clearTimeout(timer);
   }, [formalUiEntering]);
+  useEffect(() => {
+    let cancelled = false;
+    fetchAgentHealth().then((health) => {
+      if (!cancelled) setAgentHealth(health);
+    });
+    const timer = window.setInterval(() => {
+      fetchAgentHealth().then((health) => {
+        if (!cancelled) setAgentHealth(health);
+      });
+    }, 15_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, []);
   const receiveMapCanvas = useCallback((canvas: HTMLCanvasElement) => setMapCanvas(canvas), []);
   const selected = state.enterprises.find((enterprise) => enterprise.id === state.selectedEnterpriseId)!;
   const meetingOpen = state.cameraMode === 'meeting';
@@ -691,20 +735,22 @@ function App() {
   }
 
   return (
-    <main className={`app-shell ${meetingOpen ? 'is-meeting' : ''} ${formalUiEntering ? 'formal-ui-entering' : ''}`}>
-      <section className="world-layer" aria-label="360 度政府产业投资决策空间">
-        <TableScene
-          mode={state.cameraMode}
-          enterprises={state.enterprises}
-          resources={state.resources}
-          mapSnapshot={mapSnapshot}
-          mapCanvas={mapCanvas}
-          selectedId={state.selectedEnterpriseId}
-          globalFocus={state.phase === 'briefing'}
-          onEnterpriseSelect={chooseEnterprise}
-        />
-        <TableMapSurface onCanvasReady={receiveMapCanvas} />
-      </section>
+    <main className={`app-shell ${meetingOpen ? 'is-meeting' : ''} ${formalUiEntering ? 'formal-ui-entering' : ''} ${state.cameraMode === 'relation' ? 'is-relation' : ''}`}>
+      {state.cameraMode === 'relation'
+        ? <div className="relation-graph-embed"><RelationNetwork active onBackToSandbox={() => setState((current) => ({ ...current, cameraMode: 'table' as const }))} /></div>
+        : <section className="world-layer" aria-label="360 度政府产业投资决策空间">
+            <TableScene
+              mode={state.cameraMode}
+              enterprises={state.enterprises}
+              resources={state.resources}
+              mapSnapshot={mapSnapshot}
+              mapCanvas={mapCanvas}
+              selectedId={state.selectedEnterpriseId}
+              globalFocus={state.phase === 'briefing'}
+              onEnterpriseSelect={chooseEnterprise}
+            />
+            <TableMapSurface onCanvasReady={receiveMapCanvas} />
+          </section>}
 
       <FramedPanel as="header" className="topbar layout-header">
         <div className="brand-block">
@@ -762,12 +808,14 @@ function App() {
                 ['table', '沙盘'],
                 ['meeting', '企业核验'],
                 ['panorama', '360°'],
+                ['relation', '关系网'],
               ] as Array<[CameraMode, string]>).map(([mode, label]) => (
                 <GlassTabsTrigger key={mode} value={mode} className={state.cameraMode === mode ? 'active' : ''}>{label}</GlassTabsTrigger>
               ))}
             </GlassTabsList>
           </GlassTabs>
         </div>
+        <AgentStatusBadge health={agentHealth} />
       </FramedPanel>
 
       {meetingOpen && <NegotiationOverlay
@@ -880,6 +928,57 @@ function PanelContent({ state, setState, onRestart, onStartMeeting, onExport }: 
   const selected = state.enterprises.find((enterprise) => enterprise.id === state.selectedEnterpriseId)!;
   const profile = getEnterprise(selected.id);
   const allocationTotal = state.enterprises.reduce((sum, enterprise) => sum + enterprise.allocation, 0);
+  const [agentBusy, setAgentBusy] = useState<string | null>(null);
+
+  const agentRequest = state.agentRequests?.[selected.id];
+
+  const runWithAgent = async <T,>(
+    task: (current: SimulationState) => Promise<T | null>,
+    apply: (current: SimulationState, result: T) => SimulationState,
+    fallback: (current: SimulationState) => SimulationState,
+    busyLabel: string,
+  ) => {
+    if (agentBusy) return;
+    setAgentBusy(busyLabel);
+    try {
+      const result = await task(state);
+      setState((current) => (result ? apply(current, result) : fallback(current)));
+    } catch {
+      setState((current) => fallback(current));
+    } finally {
+      setAgentBusy(null);
+    }
+  };
+
+  const handleEnterApplications = () => {
+    void runWithAgent(
+      fetchFirmRequests,
+      (current, requests) => applyAgentRequests(enterApplications(current), requests),
+      enterApplications,
+      'LLM Agent 正在生成企业申请…',
+    );
+  };
+
+  const handleOpenAnalysis = () => {
+    void runWithAgent(
+      fetchGovReview,
+      (current, review) => applyAgentReview(openAnalysis(current), review),
+      openAnalysis,
+      'LLM Agent 正在联席研判…',
+    );
+  };
+
+  const handleSubmitDecision = () => {
+    const total = state.enterprises.reduce((sum, enterprise) => sum + enterprise.allocation, 0);
+    const missingTools = state.enterprises.some((enterprise) => enterprise.allocation > 0 && enterprise.supportTools.length === 0);
+    if (total <= 0 || total > state.roundFiscalStart || missingTools) return;
+    void runWithAgent(
+      fetchFirmResponses,
+      (current, actions) => submitDecision(current, actions),
+      submitDecision,
+      'LLM Agent 正在形成企业行动…',
+    );
+  };
 
   if (state.phase === 'setup') {
     return <>
@@ -889,7 +988,7 @@ function PanelContent({ state, setState, onRestart, onStartMeeting, onExport }: 
   }
 
   if (state.phase === 'briefing') {
-    return <StageContextPanel state={state} onComplete={() => setState((current) => enterApplications(current))} />;
+    return <StageContextPanel state={state} onComplete={handleEnterApplications} />;
   }
 
   if (state.phase === 'applications') {
@@ -897,7 +996,7 @@ function PanelContent({ state, setState, onRestart, onStartMeeting, onExport }: 
       <PanelHeading index="02" kicker="COMPETING PROJECTS">比较匿名项目申请</PanelHeading>
       <EnterpriseTabs state={state} setState={setState} />
       <FramedCard as="section" className="enterprise-profile">
-        <div className="profile-title"><span>{selected.code}</span><div><small>ANONYMOUS PROJECT</small><h3>{profile.alias}</h3></div><em>资金请求 {profile.request} 点</em></div>
+        <div className="profile-title"><span>{selected.code}</span><div><small>ANONYMOUS PROJECT</small><h3>{profile.alias}</h3></div><em>资金请求 {agentRequest?.amount ?? profile.request} 点</em></div>
         <p>{profile.background}</p>
         <dl>
           <div><dt>产品与市场</dt><dd>{profile.product}</dd></div>
@@ -908,35 +1007,48 @@ function PanelContent({ state, setState, onRestart, onStartMeeting, onExport }: 
           <div><dt>证据状态</dt><dd>{profile.evidenceStatus}</dd></div>
           <div><dt>当前数据缺口</dt><dd>{profile.dataGap}</dd></div>
         </dl>
-        <div className="request-tools">{profile.requestedTools.map((tool) => <span key={tool}>{supportToolLabels[tool]}</span>)}</div>
+        <div className="request-tools">{(agentRequest?.tools ?? profile.requestedTools).map((tool) => <span key={tool}>{supportToolLabels[tool]}</span>)}</div>
+        {agentRequest && <FramedCard className="agent-reason-card" tone="amber">
+          <small>LLM Agent 申请说明 · {agentRequest.source === 'llm' ? '真实模型生成' : '确定性生成'}</small>
+          <p>{agentRequest.useOfFunds}</p>
+          <p className="agent-reason-text">{agentRequest.reasoning}</p>
+        </FramedCard>}
       </FramedCard>
       <button className="inline-meeting-action" onClick={() => onStartMeeting(selected.id)}>与企业 {selected.code} 核验关键命题 →</button>
-      <FramedCard className="notice amber" tone="amber"><b>机会成本</b><span>入局项目合计请求 {state.enterprises.reduce((sum, item) => sum + getEnterprise(item.id).request, 0)} 点，本轮可用 {state.roundFiscalStart} 点。支持一家，会减少其他项目及未来阶段的财政空间。</span></FramedCard>
-      <ActionButton onClick={() => setState((current) => openAnalysis(current))}>查看四部门联席摘要</ActionButton>
+      <FramedCard className="notice amber" tone="amber"><b>机会成本</b><span>入局项目合计请求 {state.enterprises.reduce((sum, item) => sum + (state.agentRequests?.[item.id]?.amount ?? getEnterprise(item.id).request), 0)} 点，本轮可用 {state.roundFiscalStart} 点。支持一家，会减少其他项目及未来阶段的财政空间。</span></FramedCard>
+      <ActionButton onClick={handleOpenAnalysis} disabled={agentBusy !== null}>
+        {agentBusy ?? '查看四部门联席摘要'}
+      </ActionButton>
     </>;
   }
 
   if (state.phase === 'analysis') {
     const reports = agentReports[selected.id];
     const summary = jointReviewSummaries[selected.id];
+    const llmReview = state.agentReview;
+    const review = llmReview ?? summary;
+    const departments = llmReview?.departments.length
+      ? llmReview.departments
+      : (Object.keys(agentLabels) as Array<keyof typeof agentLabels>).map((key) => ({ dept: key, stance: reports[key].stance, text: reports[key].text }));
     return <>
       <PanelHeading index="03" kicker="JOINT REVIEW">查看部门联席研判</PanelHeading>
       <EnterpriseTabs state={state} setState={setState} />
       <FramedCard className="joint-summary" tone="amber">
         <dl>
-          <div><dt>共同判断</dt><dd>{summary.consensus}</dd></div>
-          <div><dt>最大分歧</dt><dd>{summary.disagreement}</dd></div>
-          <div><dt>关键未穿透项</dt><dd>{summary.unresolved}</dd></div>
-          <div><dt>建议动作</dt><dd>{summary.recommendation}</dd></div>
+          <div><dt>共同判断</dt><dd>{review.consensus}</dd></div>
+          <div><dt>最大分歧</dt><dd>{review.disagreement}</dd></div>
+          <div><dt>关键未穿透项</dt><dd>{review.unresolved}</dd></div>
+          <div><dt>建议动作</dt><dd>{review.recommendation}</dd></div>
         </dl>
       </FramedCard>
+      {llmReview && <FramedCard className="notice"><b>联席研判由 LLM Agent 生成。</b><span>四部门意见为模型基于本轮申请与台账的初判，仅供决策参考。</span></FramedCard>}
       <details className="department-details">
         <summary>展开四部门独立初审</summary>
         <div className="agent-list">
-          {(Object.keys(agentLabels) as Array<keyof typeof agentLabels>).map((key) => (
-            <FramedCard as="article" key={key}>
-              <i>{agentLabels[key][0]}</i>
-              <div><div><b>{agentLabels[key]}</b><em>{reports[key].stance}</em></div><p>{reports[key].text}</p></div>
+          {departments.map((report) => (
+            <FramedCard as="article" key={report.dept}>
+              <i>{agentLabels[report.dept][0]}</i>
+              <div><div><b>{agentLabels[report.dept]}</b><em>{report.stance}</em></div><p>{report.text}</p></div>
             </FramedCard>
           ))}
         </div>
@@ -948,6 +1060,7 @@ function PanelContent({ state, setState, onRestart, onStartMeeting, onExport }: 
       <FramedCard className="directed-challenge"><small>定向质询与立场变化</small><b>财政部门 → 经信部门</b><p>追问后续追加上限；经信部门维持产业价值判断，但接受分期投入条件。科技部门保留量产证据不足的少数意见。</p></FramedCard>
       <button className="inline-meeting-action" onClick={() => onStartMeeting(selected.id)}>向企业 {selected.code} 追问关键未穿透项 →</button>
       <MemoryCards state={state} />
+      <FramedCard className="notice"><b>当前为联席研判{llmReview ? '（LLM 版）' : '基础版'}。</b><span>已展示四部门独立初审与争议摘要；部门定向质询、立场变化和少数意见尚未接入，不模拟真实历史会议原话。</span></FramedCard>
       <ActionButton onClick={() => setState((current) => openAllocation(current))}>形成政府条件单</ActionButton>
     </>;
   }
@@ -957,6 +1070,7 @@ function PanelContent({ state, setState, onRestart, onStartMeeting, onExport }: 
     const missingTools = state.enterprises.some((enterprise) => enterprise.allocation > 0 && enterprise.supportTools.length === 0);
     const missingFinalTerms = state.enterprises.some((enterprise) => enterprise.allocation > 0 && !enterprise.negotiationFinalized);
     const canSubmit = allocationTotal > 0 && remaining >= 0 && !missingTools && !missingFinalTerms;
+    const requestAmount = agentRequest?.amount ?? profile.request;
     return <>
       <PanelHeading index="04" kicker="GOVERNMENT TERM SHEET">提交政府条件单</PanelHeading>
       <EnterpriseTabs state={state} setState={setState} />
@@ -965,7 +1079,7 @@ function PanelContent({ state, setState, onRestart, onStartMeeting, onExport }: 
         <FramedCard tone={remaining < 15 ? 'alert' : 'default'}><small>本轮可用余额</small><strong className={remaining < 15 ? 'warning-text' : ''}>{remaining}</strong></FramedCard>
       </div>
       <label className="allocation-slider">
-        <div><span>{profile.alias} · 资金请求 {profile.request}</span><b>政府投入 {selected.allocation} 点</b></div>
+        <div><span>{profile.alias} · 资金请求 {requestAmount}</span><b>政府投入 {selected.allocation} 点</b></div>
         <input
           type="range"
           min="0"
@@ -985,7 +1099,7 @@ function PanelContent({ state, setState, onRestart, onStartMeeting, onExport }: 
         >＋ 5</button>
         <button
           aria-label={`${selected.code} 企业按申请额度配置`}
-          onClick={() => setState((current) => updateAllocation(current, selected.id, profile.request))}
+          onClick={() => setState((current) => updateAllocation(current, selected.id, requestAmount))}
         >按请求额度</button>
       </div>
       <div className="allocation-ledger">
@@ -1011,7 +1125,9 @@ function PanelContent({ state, setState, onRestart, onStartMeeting, onExport }: 
       </div>
       {!canSubmit && <p className="validation-note">{allocationTotal === 0 ? '至少为一个项目配置政府投入。' : missingTools ? '获得政府投入的项目必须配置至少一种城市支持。' : '获得投入的项目必须先完成一次关键核验并确认企业回应。'}</p>}
       <button className="inline-meeting-action" onClick={() => onStartMeeting(selected.id)}>核验企业回应或查看一次性反提案 →</button>
-      <ActionButton disabled={!canSubmit} onClick={() => setState((current) => submitDecision(current))}>确认本轮政府动作</ActionButton>
+      <ActionButton disabled={!canSubmit || agentBusy !== null} onClick={handleSubmitDecision}>
+        {agentBusy ?? '确认本轮政府动作'}
+      </ActionButton>
     </>;
   }
 

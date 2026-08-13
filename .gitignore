@@ -14,3 +14,12 @@ vite.config.d.ts
 
 # Local macOS launcher (not part of the frontend source).
 /*.command
+
+# Local LLM credentials (never commit).
+sim/agent_config.json
+
+# Local event-log database (SQLite).
+bridge/data/
+
+# Agent memory persistence (runtime).
+sim/memories.json
