@@ -251,7 +251,7 @@ button { color: inherit; }
 @keyframes stage-modal-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes stage-modal-in { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-.intro-world { position: absolute; inset: 0; background: #0a1112 url('/assets/hefei-strategy-room-v1.png') center / cover no-repeat; transition: filter 1s ease, transform 1.2s ease; }
+.intro-world { position: absolute; inset: 0; background: #0a1112 url('/assets/hefei-strategy-room-v1.webp') center / cover no-repeat; transition: filter 1s ease, transform 1.2s ease; }
 .intro-overview .intro-world { filter: blur(7px) brightness(.58) saturate(.7); transform: scale(1.035); }
 .intro-enterprise .intro-world { filter: blur(1.6px) brightness(.7) saturate(.8); transform: scale(1.012); }
 .intro-handoff .intro-world { filter: blur(0) brightness(1) saturate(1); transform: scale(1); }

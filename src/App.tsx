@@ -23,7 +23,7 @@ import {
 } from './game/applicationReview';
 import { stageContexts } from './game/stageContext';
 import { TableMapSurface } from './map/TableMapSurface';
-const openingBackgroundUrl = '/assets/hefei-strategy-room-v1.png';
+const openingBackgroundUrl = '/assets/hefei-strategy-room-v1.webp';
 import {
   getEnterprise,
   jointReviewSummaries,
@@ -798,7 +798,7 @@ function App() {
 
       <FramedPanel as="header" className="topbar layout-header">
         <div className="brand-block">
-          <img className="brand-logo" src="/assets/logo.png" alt="" aria-hidden="true" />
+          <img className="brand-logo" src="/assets/logo.webp" alt="" aria-hidden="true" />
           <div><strong>合肥产业投资决策沙盘</strong><small>HEFEI INDUSTRIAL DECISION SANDBOX</small></div>
         </div>
         <div className="turn-status">
