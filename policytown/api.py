@@ -10,14 +10,16 @@ from __future__ import annotations
 import json
 import os
 import uuid
+from hashlib import sha256
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, model_validator
 
 from contracts.investment_simulation_v0_1 import (
-    NegotiationChoice, PlayerAction, StageId, StageInput,
+    MeetingProposal, NegotiationChoice, PlayerAction, StageId, StageInput,
 )
 from policytown.investment import InvestmentEngine
 
@@ -25,6 +27,8 @@ from policytown.investment import InvestmentEngine
 ROOT = Path(__file__).resolve().parents[1]
 RESULT_DIR = ROOT / "data" / "hefei_mvp_runs" / "stage_results"
 RESULT_DIR.mkdir(parents=True, exist_ok=True)
+DELIBERATION_CACHE_DIR = ROOT / "data" / "hefei_mvp_runs" / "deliberation_cache"
+DELIBERATION_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="Hefei Investment Simulation API", version="0.1.0")
 app.add_middleware(
@@ -110,6 +114,77 @@ def _result_path(run_id: str, stage_id: StageId) -> Path:
     return RESULT_DIR / f"{run_id}-{stage_id.value}.json"
 
 
+def _deliberation_cache_path(run_id: str, stage_id: StageId, company_id: str) -> Path:
+    """Return a safe, durable path for one player-visible LLM deliberation."""
+    identity = f"{run_id}\x00{stage_id.value}\x00{company_id}".encode("utf-8")
+    return DELIBERATION_CACHE_DIR / f"{sha256(identity).hexdigest()}.json"
+
+
+def _load_cached_deliberation(run_id: str, stage_id: StageId, company_id: str) -> dict | None:
+    path = _deliberation_cache_path(run_id, stage_id, company_id)
+    if not path.exists():
+        return None
+    try:
+        cached = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if (
+        cached.get("run_id") != run_id
+        or cached.get("stage_id") != stage_id.value
+        or cached.get("company_id") != company_id
+        or not isinstance(cached.get("payload"), dict)
+    ):
+        return None
+    return cached["payload"]
+
+
+def _save_cached_deliberation(run_id: str, stage_id: StageId, company_id: str, payload: dict) -> None:
+    path = _deliberation_cache_path(run_id, stage_id, company_id)
+    temporary = path.with_suffix(".tmp")
+    temporary.write_text(json.dumps({
+        "run_id": run_id,
+        "stage_id": stage_id.value,
+        "company_id": company_id,
+        "payload": payload,
+    }, ensure_ascii=False), encoding="utf-8")
+    temporary.replace(path)
+
+
+def _preview_payload(engine, state, stage_id: StageId, company_id: str) -> dict:
+    """Call the model chain and persist only a successful, player-visible result."""
+    deliberation, budget = engine.preview_deliberation(state, stage_id, company_id)
+    payload = deliberation.model_dump(mode="json")
+    payload["available_budget"] = budget.before
+    payload["model_runtime"] = {
+        "provider": "opencode-go" if engine.department_runtime.provider is not None else "deterministic_fallback",
+        "model": getattr(engine.department_runtime.provider, "model", "deterministic-fallback"),
+        "all_departments_model_generated": all(
+            memo.generation_mode == "model" for memo in deliberation.department_memos
+        ),
+        "enterprise_model_generated": bool(
+            deliberation.enterprise_intent
+            and deliberation.enterprise_intent.generation_mode == "model"
+        ),
+        "served_from_cache": False,
+    }
+    _save_cached_deliberation(state.run_id, stage_id, company_id, payload)
+    return payload
+
+
+def _cached_proposals(run_id: str, stage_id: StageId, company_id: str) -> dict[str, MeetingProposal] | None:
+    payload = _load_cached_deliberation(run_id, stage_id, company_id)
+    if payload is None:
+        return None
+    proposals = payload.get("meeting", {}).get("proposals")
+    if not isinstance(proposals, list):
+        return None
+    try:
+        parsed = [MeetingProposal.model_validate(item) for item in proposals]
+    except (TypeError, ValueError):
+        return None
+    return {item.proposal_id: item for item in parsed}
+
+
 def _stage_view(state, stage_id: StageId) -> dict:
     engine = _engine()
     assumption = engine.loader.budget_assumption(stage_id)
@@ -160,25 +235,18 @@ def preview_company_deliberation(run_id: str, stage_id: StageId, company_id: str
     engine = _engine()
     try:
         state = engine.resume_run(run_id)
-        deliberation, budget = engine.preview_deliberation(state, stage_id, company_id)
+        return _preview_payload(engine, state, stage_id, company_id)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-    payload = deliberation.model_dump(mode="json")
-    payload["available_budget"] = budget.before
-    payload["model_runtime"] = {
-        "provider": "opencode-go" if engine.department_runtime.provider is not None else "deterministic_fallback",
-        "model": getattr(engine.department_runtime.provider, "model", "deterministic-fallback"),
-        "all_departments_model_generated": all(
-            memo.generation_mode == "model" for memo in deliberation.department_memos
-        ),
-        "enterprise_model_generated": bool(
-            deliberation.enterprise_intent
-            and deliberation.enterprise_intent.generation_mode == "model"
-        ),
-    }
-    return payload
+    except (ConnectionError, TimeoutError, RuntimeError) as exc:
+        cached = _load_cached_deliberation(run_id, stage_id, company_id)
+        if cached is None:
+            raise HTTPException(status_code=504, detail="LLM 请求超时且没有可用缓存") from exc
+        cached.setdefault("model_runtime", {})["served_from_cache"] = True
+        cached["model_runtime"]["cache_reason"] = "live_llm_timeout"
+        return cached
 
 
 def _counterfactual_summary(result, company_id: str, proposal) -> dict:
@@ -315,14 +383,18 @@ def compare_proposals(run_id: str, request: CompareProposalsRequest) -> dict:
     engine = _engine()
     try:
         state = engine.resume_run(run_id)
-        preview, _ = engine.preview_deliberation(
-            state, request.stage_id, request.company_id,
-        )
+        proposals = _cached_proposals(run_id, request.stage_id, request.company_id)
+        if proposals is None:
+            payload = _preview_payload(engine, state, request.stage_id, request.company_id)
+            proposals = _cached_proposals(run_id, request.stage_id, request.company_id)
+            if proposals is None:
+                raise RuntimeError("deliberation cache was not persisted")
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-    proposals = {item.proposal_id: item for item in preview.meeting.proposals}
+    except (ConnectionError, TimeoutError, RuntimeError) as exc:
+        raise HTTPException(status_code=504, detail="LLM 请求超时且没有可用缓存") from exc
     if not set(request.proposal_ids) <= set(proposals):
         raise HTTPException(status_code=422, detail="comparison proposal does not exist")
     try:
@@ -348,14 +420,19 @@ def select_proposal(run_id: str, request: SelectProposalRequest) -> dict:
     engine = _engine()
     try:
         state = engine.resume_run(run_id)
-        preview, _ = engine.preview_deliberation(state, request.stage_id, request.company_id)
+        proposals = _cached_proposals(run_id, request.stage_id, request.company_id)
+        if proposals is None:
+            _preview_payload(engine, state, request.stage_id, request.company_id)
+            proposals = _cached_proposals(run_id, request.stage_id, request.company_id)
+            if proposals is None:
+                raise RuntimeError("deliberation cache was not persisted")
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-    proposal = next(
-        (item for item in preview.meeting.proposals if item.proposal_id == request.proposal_id), None,
-    )
+    except (ConnectionError, TimeoutError, RuntimeError) as exc:
+        raise HTTPException(status_code=504, detail="LLM 请求超时且没有可用缓存") from exc
+    proposal = proposals.get(request.proposal_id)
     if proposal is None:
         raise HTTPException(status_code=422, detail="proposal does not exist in the compiled meeting result")
     try:
@@ -465,3 +542,13 @@ def settle_stage(run_id: str, request: SettleStageRequest) -> dict:
         encoding="utf-8",
     )
     return payload
+
+
+# ---- One-process deployment: serve the built front-end from the same origin ----
+# When a `dist/` build is present next to the backend, mount it as the catch-all
+# static site so that a single `uvicorn policytown.api:app` process serves both
+# the SPA (frontend) and the `/api/*` routes. API routes are registered first,
+# so they take precedence over the static catch-all.
+_STATIC_DIR = ROOT / "dist"
+if _STATIC_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(_STATIC_DIR), html=True), name="frontend")

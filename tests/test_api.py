@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
@@ -108,6 +109,32 @@ class TestInvestmentApi(unittest.TestCase):
         self.assertEqual(4, len(result["settlement_trace"]))
         self.assertEqual("proposal_validation", result["settlement_trace"][0]["step"])
         self.assertTrue(result["comparison_available_at"].endswith("/compare-proposals"))
+
+    def test_select_proposal_uses_the_previously_live_llm_preview_cache(self):
+        stage = self.client.post("/api/runs", json={"seed": 18}).json()
+        company_id = stage["companies"][0]["company_id"]
+        preview = self.client.get(
+            f"/api/runs/{stage['run_id']}/stages/S1/companies/{company_id}/deliberation"
+        ).json()
+        proposal = preview["meeting"]["proposals"][0]
+
+        with patch.object(
+            api_module._ENGINE,
+            "preview_deliberation",
+            side_effect=AssertionError("select must use the cached live preview"),
+        ):
+            response = self.client.post(
+                f"/api/runs/{stage['run_id']}/select-proposal",
+                json={
+                    "stage_id": "S1",
+                    "company_id": company_id,
+                    "proposal_id": proposal["proposal_id"],
+                    "idempotency_key": "select-cached-preview",
+                },
+            )
+
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["budget"]["spent"], proposal["capital_points"])
 
     def test_two_policy_packages_form_a_controlled_ablation(self):
         stage = self.client.post("/api/runs", json={"seed": 9}).json()

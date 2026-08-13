@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { restoreSimulationState } from './persistence';
+import { restoreInteractiveSimulationState, restoreSimulationState } from './persistence';
 import { initialState, startSimulation } from './simulation';
 
 describe('simulation save restoration', () => {
@@ -69,5 +69,16 @@ describe('simulation save restoration', () => {
 
     const restored = restoreSimulationState(JSON.stringify(current));
     expect(restored.enterprises[0].physicalAssets.assets).toEqual([]);
+  });
+
+  it('leaves a restored meeting without deliberation in an interactive application state', () => {
+    const saved = structuredClone(startSimulation(initialState, 12));
+    saved.phase = 'allocation';
+    saved.cameraMode = 'meeting';
+
+    const restored = restoreInteractiveSimulationState(JSON.stringify(saved));
+
+    expect(restored.phase).toBe('applications');
+    expect(restored.cameraMode).toBe('table');
   });
 });

@@ -119,3 +119,13 @@ export function restoreSimulationState(raw: string | null): SimulationState {
     return structuredClone(initialState);
   }
 }
+
+/**
+ * A meeting camera needs a live deliberation payload, which is intentionally
+ * not kept in local storage.  Resume on an actionable screen instead.
+ */
+export function restoreInteractiveSimulationState(raw: string | null): SimulationState {
+  const restored = restoreSimulationState(raw);
+  if (restored.cameraMode !== 'meeting') return restored;
+  return { ...restored, phase: 'applications', cameraMode: 'table' };
+}
