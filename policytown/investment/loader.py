@@ -22,6 +22,7 @@ class HefeiMvpLoader:
         self.data_dir = Path(data_dir or Path(__file__).resolve().parents[2] / "data" / "hefei_mvp")
         self._stages = self._read("stages.json")
         self._company_rows = self._read("companies.json")
+        self._enterprise_settings = self._read("enterprise_agent_settings.json")
         self._evidence = [EvidenceRef.model_validate(item) for item in self._read("evidence.json")]
 
     def _read(self, filename: str) -> Any:
@@ -50,6 +51,20 @@ class HefeiMvpLoader:
             if row["company_id"] == company_id:
                 return deepcopy(row)
         raise KeyError(company_id)
+
+    def enterprise_private_state(self, company_id: str, stage_id: StageId):
+        from contracts.investment_simulation_v0_1 import EnterprisePrivateState
+
+        rows = self._enterprise_settings.get("companies", {})
+        if company_id not in rows:
+            raise KeyError(f"enterprise private state not configured: {company_id}")
+        row = deepcopy(rows[company_id])
+        row["stage_context"] = {
+            stage: text
+            for stage, text in row.get("stage_context", {}).items()
+            if StageId(stage).value <= stage_id.value
+        }
+        return EnterprisePrivateState.model_validate(row)
 
     def budget_assumption(self, stage_id: StageId) -> FiscalBudgetAssumption:
         return FiscalBudgetAssumption.model_validate(

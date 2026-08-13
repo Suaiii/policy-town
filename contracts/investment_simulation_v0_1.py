@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -91,11 +91,28 @@ class NegotiationChoice(BaseModel):
     resolution: Literal["accept", "accept_counteroffer", "reject"] = "accept"
 
 
+class AutonomousGovernmentDecision(BaseModel):
+    """盲推演中政府 Agent 独立作出的最终决策。
+
+    与 Replay 对账相反：不读取真实政府动作，只在四部门初审、部门质询、
+    联席会议双方案与企业回应的基础上，由 LLM 独立选择方案与接受/拒绝。
+    """
+
+    company_id: str
+    stage_id: StageId
+    proposal_id: str
+    resolution: Literal["accept", "accept_counteroffer", "reject"] = "accept"
+    reasoning: str
+    evidence_ids: list[str] = Field(default_factory=list)
+    generation_mode: Literal["model", "deterministic_fallback"] = "deterministic_fallback"
+    fallback_reason: str | None = None
+
+
 class StageInput(BaseModel):
     run_id: str
     stage_id: StageId
     seed: int = 42
-    context_mode: Literal["player", "audit"] = "audit"
+    context_mode: Literal["player", "audit", "replay"] = "audit"
     actions: list[PlayerAction] = Field(default_factory=list)
     negotiations: list[NegotiationChoice] = Field(default_factory=list)
 
@@ -217,6 +234,86 @@ class CompanyState(BaseModel):
     cumulative_support: int = Field(0, ge=0)
     missed_windows: int = Field(0, ge=0)
     synergy_sources: list[str] = Field(default_factory=list)
+
+
+class EnterprisePrivateState(BaseModel):
+    """企业 Agent 的私有决策底色；政府 Context 不得携带这些字段。"""
+
+    company_id: str
+    profile_version: str
+    identity: str
+    strategic_objectives: list[str]
+    financial_private_state: str
+    technology_private_state: str
+    customer_private_state: str
+    risk_preference: Literal["conservative", "balanced", "aggressive"]
+    expansion_inertia: float = Field(ge=0, le=1)
+    disclosure_boundary: list[str]
+    stage_context: dict[StageId, str] = Field(default_factory=dict)
+    source_class: Literal["scenario_assumption"] = "scenario_assumption"
+
+
+class EnterpriseAgentIntent(BaseModel):
+    company_id: str
+    stage_id: StageId | None = None
+    action: Literal["disclose", "range", "refuse", "exchange_condition"]
+    statement: str
+    requested_changes: list[str] = Field(default_factory=list)
+    evidence_ids: list[str] = Field(default_factory=list)
+    rationale: str
+    generation_mode: Literal["model", "deterministic_fallback"] = "deterministic_fallback"
+    fallback_reason: str | None = None
+
+
+class RealityGraphRecord(BaseModel):
+    record_id: str
+    run_id: str
+    stage_id: StageId
+    entity_id: str
+    record_type: Literal["fact", "event", "relationship", "commitment", "outcome"]
+    subject: str
+    predicate: str
+    object_value: str
+    visibility: Literal["government", "enterprise", "both", "replay"]
+    status: Literal["observed", "derived", "simulated", "withheld"]
+    evidence_ids: list[str] = Field(default_factory=list)
+    available_at: str
+
+
+class RealityGraph(BaseModel):
+    graph_id: str
+    run_id: str
+    records: list[RealityGraphRecord] = Field(default_factory=list)
+    latest_stage: StageId
+
+
+class EnterpriseBeliefState(BaseModel):
+    company_id: str
+    run_id: str
+    stage_id: StageId
+    market_outlook: float = Field(ge=0, le=1)
+    financing_continuity: float = Field(ge=0, le=1)
+    delivery_feasibility: float = Field(ge=0, le=1)
+    government_follow_through: float = Field(ge=0, le=1)
+    confidence: float = Field(ge=0, le=1)
+    update_reasons: list[str] = Field(default_factory=list)
+    evidence_ids: list[str] = Field(default_factory=list)
+
+
+class EnterpriseMemoryState(BaseModel):
+    """每个 run_id/企业独立的可变认知状态；不进入政府部门 Brief。"""
+
+    memory_id: str
+    run_id: str
+    company_id: str
+    profile_version: str
+    current_stage: StageId
+    private_state: EnterprisePrivateState
+    beliefs: EnterpriseBeliefState
+    intent_history: list[EnterpriseAgentIntent] = Field(default_factory=list)
+    observed_commitment_ids: list[str] = Field(default_factory=list)
+    graph_record_ids: list[str] = Field(default_factory=list)
+    last_update_reason: str = "initialization"
 
 
 class KeyFactor(BaseModel):
@@ -439,6 +536,7 @@ class DeliberationRound(BaseModel):
     meeting: JointMeetingSummary
     verification_question: VerificationQuestionCard
     enterprise_disclosure: EnterpriseDisclosure
+    enterprise_intent: EnterpriseAgentIntent | None = None
     selected_proposal_id: str | None = None
     condition_sheet: GovernmentConditionSheet | None = None
     enterprise_counteroffer: EnterpriseCounteroffer | None = None
@@ -689,6 +787,7 @@ class FrozenContextAudit(BaseModel):
 class StageAudit(BaseModel):
     stage_id: StageId
     cutoff_at: str
+    player_actions: dict[str, str] = Field(default_factory=dict)
     company_actions: dict[str, str]
     company_statuses: dict[str, str]
     construction_progress: dict[str, int]
@@ -715,6 +814,8 @@ class SimulationState(BaseModel):
     exits_and_returns: int = Field(0, ge=0)
     belief_ledger: list[BeliefLedgerEntry] = Field(default_factory=list)
     commitment_ledger: list[CommitmentLedgerEntry] = Field(default_factory=list)
+    reality_graph: RealityGraph
+    enterprise_memories: list[EnterpriseMemoryState] = Field(default_factory=list)
     completed_stages: list[StageId] = Field(default_factory=list)
     stage_audits: list[StageAudit] = Field(default_factory=list)
 
@@ -731,6 +832,8 @@ class StageResult(BaseModel):
     deliberations: list[DeliberationRound] = Field(default_factory=list)
     belief_updates: list[BeliefLedgerEntry] = Field(default_factory=list)
     commitment_updates: list[CommitmentLedgerEntry] = Field(default_factory=list)
+    reality_graph_updates: list[RealityGraphRecord] = Field(default_factory=list)
+    enterprise_memory_updates: list[EnterpriseMemoryState] = Field(default_factory=list)
     commitment_follow_ups: list[CommitmentFollowUp] = Field(default_factory=list)
     timeline_events: list[TimelineEvent] = Field(default_factory=list)
     state_deltas: list[StateDelta]
@@ -738,8 +841,66 @@ class StageResult(BaseModel):
     evidence_refs: list[EvidenceRef]
     real_data_context: RealDataContext | None = None
     frozen_context_audit: FrozenContextAudit | None = None
+    model_runtime: dict[str, str] = Field(default_factory=dict)
     next_candidates: list[str]
     next_state: SimulationState
+
+
+class BaselineFieldComparison(BaseModel):
+    field: str
+    status: Literal["match", "mismatch", "partial", "not_evaluable"]
+    baseline_value: Any
+    simulated_value: Any = None
+    reason: str
+
+
+class DecisionBaselineReconciliation(BaseModel):
+    baseline_id: str
+    case_id: str
+    stage_id: StageId
+    baseline_completeness: float = Field(ge=0, le=1)
+    action_match: bool
+    timing_match: bool
+    milestone_sequence_status: Literal["match", "mismatch", "partial", "not_evaluable"]
+    capital_match_status: Literal["match", "mismatch", "partial", "not_evaluable"]
+    condition_match_status: Literal["match", "mismatch", "partial", "not_evaluable"]
+    comparisons: list[BaselineFieldComparison]
+    limitations: list[str] = Field(default_factory=list)
+
+
+class OutcomeForecast(BaseModel):
+    """一个历史案例的概率化结局预测：截止日前信念 → P(success)。"""
+
+    case_id: str
+    company_id: str
+    cutoff_at: str
+    p_success: float = Field(ge=0, le=1)
+    predicted_direction: Literal["success", "failure"]
+    ground_truth: Literal["success", "failure", "unknown"]
+    evidence_ids: list[str] = Field(default_factory=list)
+    signal_breakdown: dict[str, float] = Field(default_factory=dict)
+    basis: str
+    is_correct_direction: bool | None = None
+    brier_contribution: float | None = None
+
+
+class OutcomePredictionReport(BaseModel):
+    """概率预测评估报告：Brier / log-loss / ECE / AUC / 方向命中率。
+
+    用判断账（belief ledger）给出的 P(success) 对标 case_library 真实结局，
+    衡量预测的校准质量与判别能力。案例数不足时指标仅具示意性。
+    """
+
+    brier_score: float | None = None
+    log_loss: float | None = None
+    expected_calibration_error: float | None = None
+    roc_auc: float | None = None
+    direction_accuracy: float | None = None
+    calibrated_case_count: int = Field(0, ge=0)
+    leakage_passed: bool = True
+    score_basis: dict[str, str] = Field(default_factory=dict)
+    limitations: list[str] = Field(default_factory=list)
+    forecasts: list[OutcomeForecast] = Field(default_factory=list)
 
 
 class ReplayScores(BaseModel):
@@ -750,7 +911,9 @@ class ReplayScores(BaseModel):
     leakage_audit_passed: bool
     calibrated_case_count: int = Field(ge=0)
     score_basis: dict[str, str]
+    decision_baselines: list[DecisionBaselineReconciliation] = Field(default_factory=list)
     limitations: list[str] = Field(default_factory=list)
+    prediction: OutcomePredictionReport | None = None
 
 
 class FinalResult(BaseModel):

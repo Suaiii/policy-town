@@ -53,6 +53,69 @@ class InvestmentRealDataTest(unittest.TestCase):
         fund_ids = {item.observation_id for item in later.observations if item.indicator_id == "government_fund_revenue"}
         self.assertEqual({f"hef_{year}_fund_revenue" for year in range(2008, 2016)}, fund_ids)
 
+    def test_fiscal_balance_is_distinct_from_year_end_carryover(self):
+        context = HefeiRealDataRepository().context_at("2016-06-30")
+        balances = {
+            item.observation_id: item
+            for item in context.observations
+            if item.indicator_id == "fiscal_current_year_balance"
+        }
+        self.assertEqual({f"hef_{year}_fiscal_current_year_balance" for year in range(2008, 2016)}, set(balances))
+        self.assertIn("不等同", balances["hef_2015_fiscal_current_year_balance"].notes)
+
+    def test_debt_series_keeps_historical_scope_and_cutoff(self):
+        repository = HefeiRealDataRepository()
+        before_report = {item.observation_id for item in repository.context_at("2013-06-27").observations}
+        self.assertNotIn("hef_2012_direct_government_debt_balance", before_report)
+        later = repository.context_at("2016-06-30")
+        direct = {
+            item.observation_id: item.value
+            for item in later.observations
+            if item.indicator_id == "direct_government_debt_balance"
+        }
+        self.assertEqual(
+            {
+                "hef_2012_direct_government_debt_balance": 585.08,
+                "hef_2014_direct_government_debt_balance": 816.75,
+                "hef_2015_direct_government_debt_balance": 857.16,
+            },
+            direct,
+        )
+
+    def test_project_money_separates_commitment_equity_and_loan(self):
+        repository = HefeiRealDataRepository()
+        context = repository.context_at("2016-08-09")
+        by_id = {item.observation_id: item for item in context.observations}
+        self.assertEqual(
+            "government_actual_equity_contribution",
+            by_id["boe_6g_government_actual_equity_contribution"].indicator_id,
+        )
+        self.assertEqual(
+            "government_capital_commitment",
+            by_id["boe_85g_government_capital_increase"].indicator_id,
+        )
+        self.assertEqual(
+            "government_registered_equity_capital",
+            by_id["boe_85g_government_registered_equity_capital"].indicator_id,
+        )
+        self.assertEqual(
+            "government_platform_entrusted_loan",
+            by_id["ldk_hefei_government_platform_entrusted_loan"].indicator_id,
+        )
+
+    def test_later_disclosed_ldk_loan_does_not_leak_into_decision_context(self):
+        early_ids = {item.observation_id for item in HefeiRealDataRepository().context_at("2010-08-30").observations}
+        self.assertNotIn("ldk_hefei_government_platform_entrusted_loan", early_ids)
+
+    def test_state_owned_budget_status_does_not_invent_numeric_budget(self):
+        context = HefeiRealDataRepository().context_at("2012-11-19")
+        status = next(
+            item for item in context.observations
+            if item.observation_id == "hef_2012_state_owned_capital_budget_status"
+        )
+        self.assertIsInstance(status.value, str)
+        self.assertNotIn("state_owned_capital_budget_revenue", {item.indicator_id for item in context.observations})
+
     def test_engine_stage_exposes_raw_real_data_and_sources(self):
         engine = InvestmentEngine()
         state = engine.new_run("real-data", ["company_a", "company_d"])
@@ -121,6 +184,27 @@ class InvestmentRealDataTest(unittest.TestCase):
             return next(item.score for item in stage.agent_assessments if item.company_id == company and item.agent == agent)
         self.assertNotEqual(score(s1, "company_d", "market"), score(s2, "company_d", "market"))
         self.assertNotEqual(score(s1, "company_d", "industry"), score(s2, "company_d", "industry"))
+
+    def test_ldk_parent_credit_is_separate_and_drives_company_d(self):
+        loader = HefeiMvpLoader()
+        builder = HefeiContextBuilder(loader, HefeiRealDataRepository())
+        context = builder.project(["company_d", "company_a"], loader.cutoff_at(StageId.S2)).context
+        derivations = {item.metric_id: item for item in context.derivations if item.entity_id == "company_d"}
+        self.assertIn("parent_financing_health", derivations)
+        self.assertIn("financial_health", derivations)
+        parent = derivations["parent_financing_health"]
+        self.assertTrue(any("ldk_2009" in evidence_id for evidence_id in parent.evidence_ids))
+        self.assertNotIn("parent_assets", derivations)
+        self.assertNotEqual(parent.value, derivations["financial_health"].value)
+
+    def test_ldk_price_cycle_drives_supply_pressure_before_2016(self):
+        loader = HefeiMvpLoader()
+        builder = HefeiContextBuilder(loader, HefeiRealDataRepository())
+        s2 = builder.project(["company_d", "company_a"], loader.cutoff_at(StageId.S2)).context
+        pressure = next(item for item in s2.derivations if item.entity_id == "company_d" and item.metric_id == "supply_pressure")
+        self.assertGreater(pressure.value, 50)
+        self.assertIn("wafer_asp", pressure.formula)
+        self.assertTrue(any("ldk_2009_wafer_asp" in item for item in pressure.evidence_ids))
 
 
 if __name__ == "__main__":

@@ -259,8 +259,8 @@ def build_database(path: Path) -> None:
     # Project observations use project entities created here.
     project_entities = [("proj_boe_6g","project","京东方合肥第六代TFT-LCD项目","hefei",j([])),("proj_boe_85g","project","京东方合肥第八代半TFT-LCD项目","hefei",j([])),("proj_boe_105g","project","京东方合肥第十代半TFT-LCD项目","hefei",j([])),("proj_xinhao_pdp","project","鑫昊等离子项目","hefei",j([])),("proj_ldk_hefei","project","合肥赛维LDK光伏项目","hefei",j(["安徽赛维","合肥赛维"]))]
     insert_many(conn,"entity",["entity_id","entity_type","name","parent_entity_id","aliases_json"],project_entities)
-    add("boe_total_investment","total_investment","proj_boe_6g","2008-09-12","2008-09-12",175,"亿元","src_boe_2008")
-    add("boe_planned_capacity","planned_capacity","proj_boe_6g","2008-09-12","2008-09-12",90000,"片/月","src_boe_2008")
+    add("boe_total_investment","total_investment","proj_boe_6g","2008-09-12","2008-09-12",175,"亿元","src_boe_hefei_6g_framework_2008","A","verified","框架协议于决策次日公开；不得进入2008-09-12盲推演Context","2008-09-13")
+    add("boe_planned_capacity","planned_capacity","proj_boe_6g","2008-09-12","2008-09-12",90000,"片/月","src_boe_hefei_6g_framework_2008","A","verified","框架协议于决策次日公开；不得进入2008-09-12盲推演Context","2008-09-13")
     add("boe_6g_project_capital","project_capital_commitment","proj_boe_6g","2008-09-12","2008-09-12",90,"亿元","src_boe_hefei_6g_framework_2008","A","verified","协议项目资本金；其中政府方承担60亿元注册资本及其余30亿元资本金的筹集责任","2008-09-13")
     add("boe_6g_government_capital_commitment","government_capital_commitment","proj_boe_6g","2008-09-12","2008-09-12",60,"亿元","src_boe_hefei_6g_framework_2008","A","verified","政府方注册资本金责任，不等同已支付现金","2008-09-13")
     add("boe_6g_initial_registered_capital","registered_capital","proj_boe_6g","2008-10-16","2008-10-16",0.5,"亿元","src_boe_hefei_6g_progress_2008","A","verified","项目公司初始注册资本5000万元；政府平台4050万元、京东方950万元","2008-10-17")
@@ -373,9 +373,9 @@ def build_database(path: Path) -> None:
     insert_many(conn,"case_library",["case_id","name","archetype","decision_date","outcome","case_status","player_visible_outcome","research_question","source_id","notes"],cases)
 
     milestones = [
-        ("boe_agreement","CASE-02","2008-09-12","decision","签署投资框架协议","src_boe_2008","2008-09-12","A",0),
-        ("boe_company","CASE-02","2008-10-16","company_setup","项目公司成立","src_boe_2008","2008-10-16","A",0),
-        ("boe_construction","CASE-02","2009-04-13","construction","项目开工","src_boe_2008","2009-04-13","A",1),
+        ("boe_agreement","CASE-02","2008-09-12","decision","签署投资框架协议","src_boe_hefei_6g_framework_2008","2008-09-13","A",0),
+        ("boe_company","CASE-02","2008-10-16","company_setup","项目公司成立","src_boe_hefei_6g_progress_2008","2008-10-17","A",0),
+        ("boe_construction","CASE-02","2009-04-13","construction","项目开工","src_boe_2008","2009-04-21","A",1),
         ("ldk_company","CASE-04","2010-08-30","company_setup","合肥公司成立","src_ldk_2011","2010-08-30","A",0),
         ("ldk_trial","CASE-04","2011-03-01","trial_production","开始试生产","src_ldk_2011","2011-03-01","A",1),
         ("ldk_poly_price_collapse","CASE-04","2011-06-30","industry_downturn","多晶硅价格下跌与光伏产能过剩显现，行业周期转弱","src_ldk_wiki","2011-12-31","C",1),

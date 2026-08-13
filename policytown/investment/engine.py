@@ -9,6 +9,10 @@ from contracts.investment_simulation_v0_1 import (
     CompanyState,
     CompanyStatus,
     CommitmentFollowUp,
+    EnterpriseAgentIntent,
+    EnterpriseMemoryState,
+    RealityGraph,
+    RealityGraphRecord,
     Direction,
     FinalResult,
     InvestmentActionType,
@@ -28,7 +32,10 @@ from contracts.investment_simulation_v0_1 import (
 from .context import HefeiContextBuilder
 from .deliberation import DepartmentAgentRuntime, deliberate
 from .loader import HefeiMvpLoader
+from .outcome_forecast import derive_outcome_forecast, evaluate_forecasts
 from .real_data import HefeiRealDataRepository
+from .replay_baseline import ReplayBaselineRepository, reconcile_decision_baseline
+from .memory_store import MemoryStore
 
 
 STAGE_ORDER = (StageId.S1, StageId.S2, StageId.S3, StageId.S4)
@@ -47,14 +54,27 @@ class InvestmentEngine:
         real_data: HefeiRealDataRepository | None = None,
         department_provider=None,
         use_agent_api: bool | None = None,
+        memory_store: MemoryStore | None = None,
     ) -> None:
         self.loader = loader or HefeiMvpLoader()
         self.real_data = real_data or HefeiRealDataRepository()
+        self.replay_baselines = ReplayBaselineRepository(db_path=self.real_data.db_path)
+        self.memory_store = memory_store or MemoryStore()
         self.context_builder = HefeiContextBuilder(self.loader, self.real_data)
         self.department_runtime = DepartmentAgentRuntime(
             department_provider,
             use_api=use_agent_api,
         )
+        self.enterprise_runtime = None
+        if self.department_runtime.provider is not None:
+            from .deliberation import EnterpriseAgentRuntime
+
+            self.enterprise_runtime = EnterpriseAgentRuntime(
+                self.department_runtime.provider
+                if department_provider is not None
+                else None,
+                use_api=department_provider is None,
+            )
 
     def new_run(
         self,
@@ -65,16 +85,74 @@ class InvestmentEngine:
     ) -> SimulationState:
         selected = company_ids or ["company_a", "company_b", "company_d"]
         projection = self.context_builder.project(selected, self.loader.cutoff_at(StageId.S1))
-        return SimulationState(
+        memories = []
+        for company in projection.companies:
+            private = self.loader.enterprise_private_state(company.company_id, StageId.S1)
+            from .deliberation import build_enterprise_memory
+            seed_intent = EnterpriseAgentIntent(
+                company_id=company.company_id,
+                action="range",
+                statement="企业认知初始化",
+                rationale="initialization",
+            )
+            memories.append(build_enterprise_memory(
+                private_state=private,
+                run_id=run_id,
+                stage_id=StageId.S1,
+                company=company,
+                city=projection.city,
+                previous=None,
+                intent=seed_intent,
+                evidence_ids=[],
+            ))
+        graph = self._seed_reality_graph(run_id, StageId.S1, projection.city, projection.companies)
+        state = SimulationState(
             run_id=run_id,
             seed=seed,
             treasury_balance=0,
             city_metrics=projection.city,
             companies=projection.companies,
+            reality_graph=RealityGraph(
+                graph_id=f"{run_id}:reality",
+                run_id=run_id,
+                records=graph,
+                latest_stage=StageId.S1,
+            ),
+            enterprise_memories=memories,
         )
+        self.memory_store.initialize_run(state)
+        return state
+
+    def resume_run(self, run_id: str, stage_id: StageId | None = None) -> SimulationState:
+        """Restore a run snapshot after a process restart.
+
+        ``stage_id`` selects an exact checkpoint; when omitted the latest
+        completed checkpoint is used.  The historical SQLite database remains
+        read-only and is never used as simulated memory.
+        """
+        if stage_id is not None:
+            state = self.memory_store.load_state(run_id, stage_id)
+        else:
+            state = self.memory_store.load_latest_state(run_id)
+        if state is None:
+            raise KeyError(f"no persisted simulation run: {run_id}")
+        return state
 
     def run_stage(self, state: SimulationState, stage_input: StageInput) -> StageResult:
         self._validate_stage(state, stage_input)
+        # The durable store is the source of continuity between requests.  If
+        # a caller deliberately edits a state in memory (useful for previews or
+        # counterfactual branches), keep that explicit branch instead of
+        # silently overwriting it with the persisted snapshot.
+        persisted_memories = self.memory_store.load_memories(state.run_id)
+        if persisted_memories:
+            persisted_by_company = {item.company_id: item for item in persisted_memories}
+            current_by_company = {item.company_id: item for item in state.enterprise_memories}
+            for company_id, persisted in persisted_by_company.items():
+                current = current_by_company.get(company_id)
+                if current is None or current.model_dump(mode="json") == persisted.model_dump(mode="json"):
+                    current_by_company[company_id] = persisted
+            state.enterprise_memories = list(current_by_company.values())
         companies = [item.model_copy(deep=True) for item in state.companies]
         city = state.city_metrics.model_copy(deep=True)
         action_by_company = {item.company_id: item for item in stage_input.actions}
@@ -140,6 +218,8 @@ class InvestmentEngine:
         deliberations = []
         belief_updates = []
         commitment_updates = []
+        reality_graph_updates = []
+        enterprise_memory_updates = []
         next_returns = 0
         new_commitment = 0
 
@@ -163,6 +243,9 @@ class InvestmentEngine:
             commitment_follow_ups,
             deltas,
         )
+        reality_graph_updates.extend(self._context_graph_records(
+            state.run_id, stage_input.stage_id, cutoff, real_context,
+        ))
         self._validate_negotiation_choices(
             companies,
             city,
@@ -177,6 +260,23 @@ class InvestmentEngine:
                 company_actions.append(self._wait_action(company))
                 continue
             player_action = action_by_company.get(company.company_id)
+            # Feed the enterprise cognitive loop with the traceable data that
+            # actually drove this company's projected state.  This includes
+            # bounded parent-company credit and price-cycle derivations, while
+            # retaining the original observation IDs for audit/replay.
+            derivation_evidence = [
+                evidence_id
+                for derivation in real_context.derivations
+                if derivation.entity_id in {"city", company.company_id}
+                for evidence_id in derivation.evidence_ids
+            ]
+            company_evidence = [
+                evidence_id
+                for agent in ("fiscal", "industry", "technology", "market")
+                for evidence_id in self.context_builder.evidence_ids(company.company_id, agent, real_context)
+            ]
+            evidence_ids.update(derivation_evidence)
+            evidence_ids.update(company_evidence)
             assessments.extend(self._assess(company, city, budget, event.evidence_ids, real_context))
             deliberation, company_beliefs, company_commitments = deliberate(
                 company,
@@ -192,6 +292,14 @@ class InvestmentEngine:
                 frozen_audit.context_hash,
                 negotiation_by_company.get(company.company_id),
                 self.department_runtime,
+                enterprise_private_state=self.loader.enterprise_private_state(
+                    company.company_id, stage_input.stage_id,
+                ),
+                enterprise_runtime=self.enterprise_runtime,
+                enterprise_memory=next(
+                    (memory for memory in state.enterprise_memories if memory.company_id == company.company_id),
+                    None,
+                ),
             )
             agreed_points = deliberation.enterprise_response.agreed_capital_points
             negotiation_choice = negotiation_by_company.get(company.company_id)
@@ -207,6 +315,10 @@ class InvestmentEngine:
             deliberations.append(deliberation)
             belief_updates.extend(company_beliefs)
             commitment_updates.extend(company_commitments)
+            previous_memory = next(
+                (memory for memory in state.enterprise_memories if memory.company_id == company.company_id),
+                None,
+            )
             if player_action:
                 evidence_ids.add(f"PLAYER-{stage_input.stage_id.value}-{company.company_id}")
                 commitment, returned = self._apply_player_action(
@@ -214,7 +326,9 @@ class InvestmentEngine:
                 )
                 new_commitment += commitment
                 next_returns += returned
-            company_action = self._choose_company_action(company, city, player_action, event.evidence_ids)
+            company_action = self._choose_company_action(
+                company, city, player_action, event.evidence_ids, previous_memory,
+            )
             company_actions.append(company_action)
             self._apply_company_action(company, company_action, deltas)
             self._apply_event(
@@ -226,6 +340,40 @@ class InvestmentEngine:
             )
             self._refresh_company_status(company)
             evidence_ids.update(company_action.evidence_ids)
+            private_state = self.loader.enterprise_private_state(company.company_id, stage_input.stage_id)
+            from .deliberation import build_enterprise_memory
+            memory = build_enterprise_memory(
+                private_state=private_state,
+                run_id=state.run_id,
+                stage_id=stage_input.stage_id,
+                company=company,
+                city=city,
+                previous=previous_memory,
+                intent=deliberation.enterprise_intent or EnterpriseAgentIntent(
+                    company_id=company.company_id,
+                    action="range",
+                    statement="企业未发起新的核验回应",
+                    rationale="no_intent",
+                ),
+                evidence_ids=evidence_ids,
+                follow_up_statuses=[
+                    item.status for item in commitment_follow_ups
+                    if item.company_id == company.company_id
+                ],
+            )
+            stage_graph_records = self._stage_graph_records(
+                state.run_id, stage_input.stage_id, cutoff, company, company_action,
+                deliberation, memory, evidence_ids,
+            )
+            memory = memory.model_copy(update={
+                "graph_record_ids": [item.record_id for item in stage_graph_records],
+                "observed_commitment_ids": [
+                    item.commitment_id for item in commitment_updates
+                    if item.company_id == company.company_id
+                ],
+            })
+            enterprise_memory_updates.append(memory)
+            reality_graph_updates.extend(stage_graph_records)
 
         self._apply_portfolio_feedback(city, companies, deltas)
         next_stage = self._next_stage(stage_input.stage_id)
@@ -244,6 +392,16 @@ class InvestmentEngine:
             exits_and_returns=min(25, next_returns),
             belief_ledger=[*state.belief_ledger, *belief_updates],
             commitment_ledger=[*state.commitment_ledger, *commitment_updates],
+            reality_graph=RealityGraph(
+                graph_id=state.reality_graph.graph_id,
+                run_id=state.run_id,
+                records=[*state.reality_graph.records, *reality_graph_updates],
+                latest_stage=stage_input.stage_id,
+            ),
+            enterprise_memories=[
+                *[memory for memory in state.enterprise_memories if memory.company_id not in {item.company_id for item in enterprise_memory_updates}],
+                *enterprise_memory_updates,
+            ],
             completed_stages=[*state.completed_stages, stage_input.stage_id],
             stage_audits=[
                 *state.stage_audits,
@@ -251,6 +409,7 @@ class InvestmentEngine:
                     stage_input.stage_id,
                     cutoff,
                     companies,
+                    stage_input.actions,
                     company_actions,
                     city,
                     deltas,
@@ -267,6 +426,10 @@ class InvestmentEngine:
             self.loader.evidence_for(evidence_ids, cutoff),
             self.real_data.evidence_at(cutoff),
         )
+        if stage_input.context_mode != "replay":
+            self.memory_store.append_graph_records(reality_graph_updates)
+            self.memory_store.save_memories(enterprise_memory_updates)
+            self.memory_store.save_state(next_state, stage_id=stage_input.stage_id)
         return StageResult(
             stage_id=stage_input.stage_id,
             cutoff_at=cutoff,
@@ -278,6 +441,8 @@ class InvestmentEngine:
             deliberations=deliberations,
             belief_updates=belief_updates,
             commitment_updates=commitment_updates,
+            reality_graph_updates=reality_graph_updates,
+            enterprise_memory_updates=enterprise_memory_updates,
             commitment_follow_ups=commitment_follow_ups,
             timeline_events=timeline_events,
             state_deltas=deltas,
@@ -285,9 +450,140 @@ class InvestmentEngine:
             evidence_refs=evidence,
             real_data_context=real_context,
             frozen_context_audit=frozen_audit,
+            model_runtime={
+                "provider": "opencode-go" if self.department_runtime.provider is not None else "deterministic_fallback",
+                "model": getattr(self.department_runtime.provider, "model", "deterministic-fallback"),
+                "prompt_version": "investment-department-v1-enterprise-v1",
+                "context_hash": frozen_audit.context_hash,
+                "seed": str(state.seed),
+            },
             next_candidates=[item.company_id for item in companies if item.status != CompanyStatus.EXITED],
             next_state=next_state,
         )
+
+    @staticmethod
+    def _seed_reality_graph(run_id, stage_id, city, companies):
+        cutoff = "2008-09-12" if stage_id == StageId.S1 else stage_id.value
+        records = [RealityGraphRecord(
+            record_id=f"{run_id}:{stage_id.value}:city:industrial_base",
+            run_id=run_id,
+            stage_id=stage_id,
+            entity_id="hefei",
+            record_type="fact",
+            subject="city",
+            predicate="industrial_base",
+            object_value=str(city.industrial_base),
+            visibility="both",
+            status="derived",
+            available_at=cutoff,
+        )]
+        for company in companies:
+            records.append(RealityGraphRecord(
+                record_id=f"{run_id}:{stage_id.value}:{company.company_id}:state",
+                run_id=run_id,
+                stage_id=stage_id,
+                entity_id=company.company_id,
+                record_type="fact",
+                subject=company.company_id,
+                predicate="status",
+                object_value=company.status.value,
+                visibility="both",
+                status="observed",
+                available_at=cutoff,
+            ))
+        return records
+
+    @staticmethod
+    def _context_graph_records(run_id, stage_id, cutoff, real_context):
+        records = []
+        for item in real_context.observations:
+            records.append(RealityGraphRecord(
+                record_id=f"{run_id}:{stage_id.value}:observation:{item.observation_id}",
+                run_id=run_id,
+                stage_id=stage_id,
+                entity_id=item.entity_id,
+                record_type="fact",
+                subject=item.entity_id,
+                predicate=item.indicator_id,
+                object_value=f"{item.value}{item.unit or ''}",
+                visibility="both",
+                status="observed",
+                evidence_ids=[f"observation:{item.observation_id}"],
+                available_at=item.information_available_date,
+            ))
+        for item in real_context.events:
+            event_id = item.get("event_id")
+            if not event_id:
+                continue
+            records.append(RealityGraphRecord(
+                record_id=f"{run_id}:{stage_id.value}:event:{event_id}",
+                run_id=run_id,
+                stage_id=stage_id,
+                entity_id="hefei",
+                record_type="event",
+                subject="hefei",
+                predicate="historical_event",
+                object_value=item.get("description") or item.get("title") or event_id,
+                visibility="both",
+                status="observed",
+                evidence_ids=[f"event:{event_id}"],
+                available_at=item.get("information_available_date") or cutoff,
+            ))
+        return records
+
+    @staticmethod
+    def _stage_graph_records(run_id, stage_id, cutoff, company, action, deliberation, memory, evidence_ids):
+        records = [
+            RealityGraphRecord(
+                record_id=f"{run_id}:{stage_id.value}:{company.company_id}:intent:{len(memory.intent_history)}",
+                run_id=run_id,
+                stage_id=stage_id,
+                entity_id=company.company_id,
+                record_type="event",
+                subject=company.company_id,
+                predicate="enterprise_intent",
+                object_value=memory.intent_history[-1].action,
+                visibility="enterprise",
+                status="simulated",
+                evidence_ids=sorted(evidence_ids)[-8:],
+                available_at=cutoff,
+            ),
+            RealityGraphRecord(
+                record_id=f"{run_id}:{stage_id.value}:{company.company_id}:action",
+                run_id=run_id,
+                stage_id=stage_id,
+                entity_id=company.company_id,
+                record_type="event",
+                subject=company.company_id,
+                predicate="company_action",
+                object_value=action.action.value,
+                visibility="both",
+                status="simulated",
+                evidence_ids=sorted(evidence_ids)[-8:],
+                available_at=cutoff,
+            ),
+        ]
+        for belief_type, value in (
+            ("market_outlook", memory.beliefs.market_outlook),
+            ("financing_continuity", memory.beliefs.financing_continuity),
+            ("delivery_feasibility", memory.beliefs.delivery_feasibility),
+            ("government_follow_through", memory.beliefs.government_follow_through),
+        ):
+            records.append(RealityGraphRecord(
+                record_id=f"{run_id}:{stage_id.value}:{company.company_id}:belief:{belief_type}",
+                run_id=run_id,
+                stage_id=stage_id,
+                entity_id=company.company_id,
+                record_type="relationship",
+                subject=company.company_id,
+                predicate=f"belief:{belief_type}",
+                object_value=f"{value:.4f}",
+                visibility="enterprise",
+                status="simulated",
+                evidence_ids=sorted(evidence_ids)[-8:],
+                available_at=cutoff,
+            ))
+        return records
 
     @staticmethod
     def _merge_evidence(configured, real):
@@ -331,6 +627,10 @@ class InvestmentEngine:
                 frozen_audit.cutoff_at,
                 frozen_audit.context_hash,
                 department_runtime=self.department_runtime,
+                enterprise_private_state=self.loader.enterprise_private_state(
+                    choice.company_id, stage_input.stage_id,
+                ),
+                enterprise_runtime=self.enterprise_runtime,
             )
             proposals = {item.proposal_id: item for item in preview.meeting.proposals}
             if choice.proposal_id not in proposals:
@@ -425,6 +725,7 @@ class InvestmentEngine:
         stage_id,
         cutoff,
         companies,
+        player_actions,
         company_actions,
         city,
         deltas,
@@ -453,6 +754,7 @@ class InvestmentEngine:
         return StageAudit(
             stage_id=stage_id,
             cutoff_at=cutoff,
+            player_actions={item.company_id: item.action.value for item in player_actions},
             company_actions={item.company_id: item.action.value for item in company_actions},
             company_statuses={item.company_id: item.status.value for item in companies},
             construction_progress={item.company_id: item.construction_progress for item in companies},
@@ -665,6 +967,17 @@ class InvestmentEngine:
             company_id: self.loader.raw_company_config(company_id).get("historical_case_id")
             for company_id in companies
         }
+        company_ids_by_case: dict[str, list[str]] = {}
+        for company_id, case_id in case_by_company.items():
+            if case_id:
+                company_ids_by_case.setdefault(case_id, []).append(company_id)
+        baseline_reconciliations = []
+        for case_id, company_ids in company_ids_by_case.items():
+            baseline = self.replay_baselines.for_case(case_id)
+            if baseline is not None:
+                baseline_reconciliations.append(
+                    reconcile_decision_baseline(baseline, state, company_ids)
+                )
         outcomes = self.real_data.case_outcomes({case_id for case_id in case_by_company.values() if case_id})
         direction_hits = []
         for company_id, company in companies.items():
@@ -700,6 +1013,26 @@ class InvestmentEngine:
         ]
         path_feedback_score = sum(path_checks) / len(path_checks)
         leakage_passed = not any(item.future_evidence_count for item in state.stage_audits)
+
+        memory_by_company = {item.company_id: item for item in state.enterprise_memories}
+        forecasts = []
+        for company_id in companies:
+            case_id = case_by_company.get(company_id)
+            outcome = outcomes.get(case_id) if case_id else None
+            if outcome not in {"success", "failure"}:
+                continue
+            memory = memory_by_company.get(company_id)
+            if memory is None:
+                continue
+            forecasts.append(derive_outcome_forecast(
+                case_id=case_id,
+                company_id=company_id,
+                cutoff_at=last.cutoff_at,
+                beliefs=memory.beliefs,
+                ground_truth=outcome,
+            ))
+        prediction = evaluate_forecasts(forecasts, leakage_passed=leakage_passed) if forecasts else None
+
         return ReplayScores(
             direction_score=round(direction_score, 4),
             sequence_score=round(sequence_score, 4),
@@ -714,10 +1047,12 @@ class InvestmentEngine:
                 "path_feedback": "产业基础、供应链和公共价值是否形成正向阶段反馈",
                 "leakage": "每阶段 Context 是否仅包含 information_available_date 不晚于 cutoff 的观测",
             },
+            decision_baselines=baseline_reconciliations,
             limitations=[
                 "方向评分是机制级校准，不等同于复原真实收益或财政回报。",
                 "当前深校准集中于京东方与赛维类原型，其余案例仍需补充决策日前企业数据。",
             ],
+            prediction=prediction,
         )
 
     def _validate_stage(self, state: SimulationState, stage_input: StageInput) -> None:
@@ -852,10 +1187,17 @@ class InvestmentEngine:
             return _clamp(50 + growth[-1])
         return 50
 
-    def _choose_company_action(self, company, city, player_action, evidence_ids) -> CompanyAction:
+    def _choose_company_action(self, company, city, player_action, evidence_ids, enterprise_memory=None) -> CompanyAction:
         if company.status == CompanyStatus.EXITED:
             return self._wait_action(company)
-        if company.financial_health < 35 or company.project_cashflow < -55:
+        beliefs = enterprise_memory.beliefs if enterprise_memory is not None else None
+        if beliefs is not None and beliefs.financing_continuity < 0.30:
+            action, milestone, response = CompanyActionType.FINANCE, "cash_buffer", "seek_external_financing"
+        elif beliefs is not None and beliefs.market_outlook < 0.28:
+            action, milestone, response = CompanyActionType.CONTRACT, "cost_reduction", "delay_expansion"
+        elif beliefs is not None and beliefs.delivery_feasibility < 0.32:
+            action, milestone, response = CompanyActionType.RESEARCH, "technical_validation", "protect_research_budget"
+        elif company.financial_health < 35 or company.project_cashflow < -55:
             action, milestone, response = CompanyActionType.FINANCE, "cash_buffer", "seek_external_financing"
         elif company.supply_pressure > 70 or city.market_cycle < -35:
             action, milestone, response = CompanyActionType.CONTRACT, "cost_reduction", "delay_expansion"

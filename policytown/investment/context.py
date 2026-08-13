@@ -47,6 +47,13 @@ class HefeiContextBuilder:
         "company_f": set(),
     }
 
+    # Keep the parent company's SEC figures in a separate unit domain.  The
+    # Hefei subsidiary is reported in RMB 亿元 while LDK parent figures are in
+    # USD millions; only dimensionless ratios/signals may cross this boundary.
+    PARENT_ENTITIES = {
+        "company_d": {"ldk"},
+    }
+
     AGENT_DOMAINS = {
         "fiscal": {"government", "project", "world"},
         "industry": {"industry", "world", "talent", "infrastructure"},
@@ -118,7 +125,7 @@ class HefeiContextBuilder:
         return item.value if item else None
 
     def evidence_ids(self, company_id: str, agent: str, context: RealDataContext) -> list[str]:
-        entities = self.COMPANY_ENTITIES.get(company_id, set())
+        entities = self.COMPANY_ENTITIES.get(company_id, set()) | self.PARENT_ENTITIES.get(company_id, set())
         domains = self.AGENT_DOMAINS[agent]
         company_specific = [
             f"observation:{item.observation_id}"
@@ -249,22 +256,73 @@ class HefeiContextBuilder:
                 "capital_intensity * 0.65",
                 [investment],
             ))
+        elif company_id == "company_a":
+            # The S1 BOE project record is a key grounding fact.  When it is
+            # absent from a copied/partial evidence store, surface the gap in
+            # the derived context instead of silently preserving the fixture's
+            # seeded capital intensity and request.
+            result.append(self._derived(
+                company_id, "capital_intensity", 0,
+                "missing total_investment evidence",
+                [],
+            ))
+            result.append(self._derived(
+                company_id, "capital_request", 10,
+                "missing total_investment evidence; conservative floor",
+                [],
+            ))
 
         assets = self._latest(context, "assets", entities)
         liabilities = self._latest(context, "liabilities", entities)
         net_profit = self._latest(context, "net_profit", entities)
         cashflow = self._latest(context, "operating_cash_flow", entities)
+
+        # Parent-company credit is deliberately derived as a dimensionless
+        # signal.  It never merges USD amounts into the subsidiary's RMB
+        # balance sheet.  The signal is used to update the enterprise's
+        # financing belief and to temper its operating financial health.
+        parent_entities = self.PARENT_ENTITIES.get(company_id, set())
+        parent_assets = self._latest(context, "assets", parent_entities)
+        parent_liabilities = self._latest(context, "liabilities", parent_entities)
+        parent_profit = self._latest(context, "net_profit", parent_entities)
+        parent_cashflow = self._latest(context, "operating_cash_flow", parent_entities)
+        parent_health: ContextDerivation | None = None
+        if parent_assets and parent_liabilities and float(parent_assets.value) > 0:
+            leverage = float(parent_liabilities.value) / float(parent_assets.value)
+            profit_margin = (
+                float(parent_profit.value) / float(parent_assets.value)
+                if parent_profit is not None else 0.0
+            )
+            cashflow_sign = 5 if parent_cashflow is not None and float(parent_cashflow.value) >= 0 else -5
+            parent_health = self._derived(
+                company_id,
+                "parent_financing_health",
+                _clamp(60 - leverage * 45 + profit_margin * 100 + cashflow_sign),
+                "60 - parent_liabilities / parent_assets * 45 + parent_net_profit / parent_assets * 100 + parent_cashflow_sign",
+                [parent_assets, parent_liabilities, parent_profit, parent_cashflow],
+            )
+            result.append(parent_health)
+
         if assets and liabilities and float(assets.value) > 0:
             equity_ratio = 1 - float(liabilities.value) / float(assets.value)
             profit_adjustment = 0
             if net_profit:
                 profit_adjustment = max(-15, min(15, float(net_profit.value) / float(assets.value) * 100))
             cash_adjustment = 5 if cashflow and float(cashflow.value) >= 0 else -5
+            base_health = _clamp(50 + (equity_ratio - .4) * 50 + profit_adjustment + cash_adjustment)
+            if parent_health is not None:
+                # Parent credit affects the subsidiary, but only as a bounded
+                # adjustment to the local signal; no currency conversion is
+                # performed and the parent observation remains auditable.
+                base_health = _clamp(base_health + (parent_health.value - 50) * .35)
             result.append(self._derived(
                 company_id, "financial_health",
-                _clamp(50 + (equity_ratio - .4) * 50 + profit_adjustment + cash_adjustment),
-                "50 + (equity_ratio - 0.4) * 50 + profit_margin_adjustment + cashflow_sign",
-                [assets, liabilities, net_profit, cashflow],
+                base_health,
+                "local_financial_health + (parent_financing_health - 50) * 0.35",
+                [assets, liabilities, net_profit, cashflow, *(
+                    [item for item in (parent_assets, parent_liabilities, parent_profit, parent_cashflow)
+                     if item is not None]
+                )],
             ))
         if cashflow and assets and float(assets.value) > 0:
             result.append(self._derived(
@@ -275,6 +333,8 @@ class HefeiContextBuilder:
             ))
 
         industry_growth = self._latest(context, "industry_growth", entities)
+        wafer_asp = self._latest(context, "wafer_asp", parent_entities)
+        polysilicon_price = self._latest(context, "polysilicon_purchase_price", parent_entities)
         if industry_growth:
             result.append(self._derived(
                 company_id, "customer_order_strength",
@@ -282,11 +342,22 @@ class HefeiContextBuilder:
                 "50 + latest_industry_growth",
                 [industry_growth],
             ))
+        if industry_growth or wafer_asp or polysilicon_price:
+            pressure_parts: list[int] = []
+            pressure_evidence: list[RawObservation | None] = [industry_growth]
+            if industry_growth:
+                pressure_parts.append(_clamp(50 - float(industry_growth.value) / 2))
+            if wafer_asp:
+                pressure_parts.append(_clamp(100 - float(wafer_asp.value) / 2.35 * 100))
+                pressure_evidence.append(wafer_asp)
+            if polysilicon_price:
+                pressure_parts.append(_clamp(100 - float(polysilicon_price.value) / 261.8 * 100))
+                pressure_evidence.append(polysilicon_price)
             result.append(self._derived(
                 company_id, "supply_pressure",
-                _clamp(50 - float(industry_growth.value) / 2),
-                "50 - latest_industry_growth / 2",
-                [industry_growth],
+                max(pressure_parts),
+                "max(50 - industry_growth / 2, 100 - wafer_asp / 2.35 * 100, 100 - polysilicon_purchase_price / 261.8 * 100)",
+                pressure_evidence,
             ))
         return result
 

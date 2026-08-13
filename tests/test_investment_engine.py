@@ -110,6 +110,11 @@ class InvestmentEngineTest(unittest.TestCase):
             {"direction", "sequence", "mechanism", "path_feedback", "leakage"},
             set(final.historical_replay.score_basis),
         )
+        baseline = final.historical_replay.decision_baselines[0]
+        self.assertEqual("boe_hefei_6g_s1_v1", baseline.baseline_id)
+        self.assertFalse(baseline.action_match)
+        self.assertTrue(baseline.timing_match)
+        self.assertEqual("not_evaluable", baseline.capital_match_status)
         self.assertTrue(final.story_timeline)
         self.assertEqual(
             [StageId.S1, StageId.S2, StageId.S3, StageId.S4],

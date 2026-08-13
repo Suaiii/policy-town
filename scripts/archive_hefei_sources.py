@@ -35,6 +35,7 @@ SOURCES = [
     ("src_boe_hefei_85g_capital_2012", "2012_boe_hefei_85g_capital_increase.pdf", "https://static.cninfo.com.cn/finalpage/2012-10-30/61732389.PDF"),
     ("src_boe_hefei_85g_investment_2013", "2013_boe_hefei_85g_investment.pdf", "https://static.cninfo.com.cn/finalpage/2013-04-03/62320672.PDF"),
     ("src_boe_hefei_105g_investment_2015", "2015_boe_hefei_105g_investment.pdf", "https://static.cninfo.com.cn/finalpage/2015-04-21/1200875921.PDF"),
+    ("src_tongwei_ldk_legal_2016", "2016_tongwei_ldk_supplemental_legal_opinion.pdf", "https://static.cninfo.com.cn/finalpage/2016-08-09/1202545941.PDF"),
 ]
 
 

@@ -23,6 +23,10 @@ from contracts.investment_simulation_v0_1 import (
     DepartmentChallenge,
     DeliberationRound,
     DepartmentMemo,
+    EnterpriseAgentIntent,
+    EnterpriseBeliefState,
+    EnterpriseMemoryState,
+    EnterprisePrivateState,
     EnterpriseResponse,
     EnterpriseCounteroffer,
     EnterpriseDisclosure,
@@ -68,6 +72,12 @@ CRITICAL_PROPOSITIONS = {
     "company_a": "企业是否具备已验证的建线、融资和持续扩代能力？",
     "company_d": "母公司能否在价格下降与高负债下持续提供运营资金、采购信用和技术人员？",
     "company_b": "技术团队、知识产权路径和长期资本能否按阶段形成闭环？",
+}
+
+ENTERPRISE_RESPONSE_RULES = {
+    "conservative": {"response_type": "range", "statement": "企业仅披露可由公开证据支撑的区间，并要求先补齐核验材料。"},
+    "balanced": {"response_type": "disclose", "statement": "企业披露可验证的阶段信息，同时保留内部财务与客户边界。"},
+    "aggressive": {"response_type": "exchange_condition", "statement": "企业愿意接受分期与审计，但要求以融资连续性或配套条件换取扩张空间。"},
 }
 
 
@@ -133,12 +143,15 @@ class OpenCodeGoDepartmentProvider:
             "state_summary": brief.state_summary,
             "output_fields": output_fields,
         }
+        return self.request_json(system, user)
+
+    def request_json(self, system: str, user: dict, *, max_tokens: int = 1600) -> dict:
         request = urllib.request.Request(
             self.endpoint,
             data=json.dumps({
                 "model": self.model,
                 "thinking": {"type": "disabled"},
-                "max_tokens": 1600,
+                "max_tokens": max_tokens,
                 "response_format": {"type": "json_object"},
                 "messages": [
                     {"role": "system", "content": system},
@@ -277,6 +290,30 @@ class DepartmentAgentRuntime:
             return value
         raise ValueError("model list field must be a string or list of strings")
 
+    @staticmethod
+    def _normalize_enterprise_action(value: object) -> str:
+        mapping = {
+            "proceed": "exchange_condition",
+            "continue_support": "exchange_condition",
+            "conditional_accept": "exchange_condition",
+            "accept": "disclose",
+            "disclose_range": "range",
+            "decline": "refuse",
+            "refuse": "refuse",
+            "exchange": "exchange_condition",
+            "request_partial_funding": "exchange_condition",
+            "respond": "disclose",
+            "negotiate": "exchange_condition",
+            "provide_range": "range",
+            "proceed_with_caveats": "exchange_condition",
+            "affirm_with_support": "exchange_condition",
+            "affirm_with_qualification": "exchange_condition",
+            "qualified_accept": "exchange_condition",
+        }
+        if not isinstance(value, str):
+            raise ValueError("enterprise action must be a string")
+        return mapping.get(value, value)
+
     def challenge(
         self,
         *,
@@ -341,6 +378,162 @@ class DepartmentAgentRuntime:
             return challenge
 
 
+class EnterpriseAgentRuntime:
+    """企业私有状态驱动的单回合回应；模型只生成意图，不结算数值。"""
+
+    def __init__(self, provider=None, *, use_api: bool | None = None) -> None:
+        if provider is not None:
+            self.provider = provider
+        elif use_api is True or (use_api is None and os.getenv("INVESTMENT_AGENT_LLM", "").lower() in {"1", "true", "yes", "on"}):
+            self.provider = OpenCodeGoDepartmentProvider()
+        else:
+            self.provider = None
+
+    def resolve(
+        self,
+        private_state: EnterprisePrivateState,
+        question: VerificationQuestionCard,
+        evidence_ids: list[str],
+        memory: EnterpriseMemoryState | None = None,
+    ) -> EnterpriseAgentIntent:
+        rule = ENTERPRISE_RESPONSE_RULES[private_state.risk_preference]
+        stage_key = question.question_id.split("-", 1)[0] if question.question_id else "S1"
+        beliefs = memory.beliefs if memory is not None else None
+        action = rule["response_type"]
+        requested_changes: list[str] = []
+        if beliefs is not None:
+            if beliefs.financing_continuity < 0.35:
+                action = "range"
+                requested_changes.append("先确认融资连续性，再谈扩产节奏")
+            elif beliefs.market_outlook < 0.30:
+                action = "exchange_condition"
+                requested_changes.append("以分期拨付和客户订单换取资金窗口")
+            elif beliefs.delivery_feasibility < 0.40:
+                action = "range"
+                requested_changes.append("以技术/建设里程碑换取下一笔资金")
+            elif beliefs.government_follow_through < 0.40:
+                action = "exchange_condition"
+                requested_changes.append("将政府承诺写入可执行的分期条款")
+        if private_state.risk_preference == "aggressive" and not requested_changes:
+            requested_changes.append("以里程碑和审计换取连续融资")
+        fallback = EnterpriseAgentIntent(
+            company_id=private_state.company_id,
+            stage_id=question.question_id.split("-", 1)[0] if question.question_id else None,
+            action=action,
+            statement=(
+                rule["statement"]
+                + " "
+                + private_state.stage_context.get(stage_key, "")
+            ),
+            requested_changes=requested_changes,
+            evidence_ids=evidence_ids[-6:],
+            rationale=(
+                f"企业风险偏好={private_state.risk_preference}，扩张惯性={private_state.expansion_inertia:.2f}；"
+                f"披露边界={';'.join(private_state.disclosure_boundary)}；"
+                f"上一阶段企业判断={memory.beliefs.model_dump_json() if memory else '初始判断'}"
+            ),
+        )
+        if self.provider is None:
+            return fallback
+        try:
+            if isinstance(self.provider, OpenCodeGoDepartmentProvider):
+                payload = self.provider.request_json(
+                    "你是企业 Agent，只输出 JSON，不要泄露政府内部判断，不要编造证据或数字。",
+                    {
+                        "task": "根据企业私有状态对政府核验问题做一次受约束回应。",
+                        "company_id": private_state.company_id,
+                        "question": question.question,
+                        "critical_proposition": question.critical_proposition,
+                        "private_state": private_state.model_dump(mode="json"),
+                        "visible_evidence_ids": evidence_ids,
+                        "output_fields": ["action", "statement", "requested_changes", "evidence_ids", "rationale"],
+                    },
+                    max_tokens=1000,
+                )
+            else:
+                try:
+                    payload = self.provider(
+                        private_state=private_state,
+                        question=question,
+                        evidence_ids=evidence_ids,
+                    )
+                except TypeError:
+                    return fallback
+            if isinstance(payload, str):
+                payload = json.loads(payload)
+            return EnterpriseAgentIntent.model_validate({
+                **payload,
+                "action": DepartmentAgentRuntime._normalize_enterprise_action(payload.get("action")),
+                "company_id": private_state.company_id,
+                "requested_changes": DepartmentAgentRuntime._normalize_list(payload.get("requested_changes")),
+                "evidence_ids": DepartmentAgentRuntime._normalize_evidence_ids(
+                    payload.get("evidence_ids", []), evidence_ids,
+                ),
+                "generation_mode": "model",
+                "fallback_reason": None,
+            })
+        except (TimeoutError, OSError, TypeError, ValueError, json.JSONDecodeError, ValidationError) as exc:
+            return fallback.model_copy(update={
+                "fallback_reason": f"{type(exc).__name__}: {exc}",
+            })
+
+
+def build_enterprise_memory(
+    *,
+    private_state: EnterprisePrivateState,
+    run_id: str,
+    stage_id: StageId,
+    company,
+    city,
+    previous: EnterpriseMemoryState | None,
+    intent: EnterpriseAgentIntent,
+    evidence_ids: list[str],
+    follow_up_statuses: list[str] | None = None,
+) -> EnterpriseMemoryState:
+    """Update one enterprise's private cognition without exposing it to government Context."""
+    current = EnterpriseBeliefState(
+        company_id=company.company_id,
+        run_id=run_id,
+        stage_id=stage_id,
+        market_outlook=max(0.0, min(1.0, (city.market_cycle + 100) / 200)),
+        financing_continuity=max(0.0, min(1.0, (company.financial_health + company.project_cashflow + 100) / 200)),
+        delivery_feasibility=max(0.0, min(1.0, (company.execution_ability + company.technology_readiness + company.production_ramp) / 300)),
+        government_follow_through=(
+            1.0 if not follow_up_statuses or "fulfilled" in follow_up_statuses
+            else 0.35 if "evidence_insufficient" in follow_up_statuses
+            else 0.1
+        ),
+        confidence=0.55 if not previous else min(0.95, previous.beliefs.confidence + 0.05),
+        update_reasons=[
+            f"{stage_id.value}当前状态更新",
+            f"企业意图={intent.action}",
+            *([f"承诺随访={','.join(follow_up_statuses)}"] if follow_up_statuses else []),
+        ],
+        evidence_ids=sorted(evidence_ids)[-8:],
+    )
+    if previous is not None:
+        old = previous.beliefs
+        current = current.model_copy(update={
+            field: round(getattr(old, field) * 0.65 + getattr(current, field) * 0.35, 4)
+            for field in (
+                "market_outlook", "financing_continuity", "delivery_feasibility",
+                "government_follow_through",
+            )
+        })
+    history = [*(previous.intent_history if previous else []), intent][-8:]
+    return EnterpriseMemoryState(
+        memory_id=f"{run_id}:{company.company_id}",
+        run_id=run_id,
+        company_id=company.company_id,
+        profile_version=private_state.profile_version,
+        current_stage=stage_id,
+        private_state=private_state,
+        beliefs=current,
+        intent_history=history,
+        observed_commitment_ids=list(previous.observed_commitment_ids if previous else []),
+        graph_record_ids=list(previous.graph_record_ids if previous else []),
+        last_update_reason=";".join(current.update_reasons),
+    )
 def _recommendation(score: int, *, cautious: bool = False) -> Recommendation:
     if score >= 72 and not cautious:
         return "support"
@@ -508,6 +701,9 @@ def deliberate(
     context_hash: str,
     choice: NegotiationChoice | None = None,
     department_runtime: DepartmentAgentRuntime | None = None,
+    enterprise_private_state: EnterprisePrivateState | None = None,
+    enterprise_runtime: EnterpriseAgentRuntime | None = None,
+    enterprise_memory: EnterpriseMemoryState | None = None,
 ):
     fallback_memos = [
         _memo(
@@ -661,6 +857,20 @@ def deliberate(
         disclosed_evidence_ids=evidence_ids[-6:],
         missing_information=verification_question.missing_information,
     )
+    enterprise_intent = None
+    if enterprise_private_state is not None:
+        enterprise_intent = (enterprise_runtime or EnterpriseAgentRuntime(use_api=department_runtime is not None and department_runtime.provider is not None)).resolve(
+            enterprise_private_state,
+            verification_question,
+            evidence_ids,
+            memory=enterprise_memory,
+        )
+        enterprise_intent = enterprise_intent.model_copy(update={"stage_id": stage_id})
+        enterprise_disclosure = enterprise_disclosure.model_copy(update={
+            "response_type": enterprise_intent.action,
+            "statement": enterprise_intent.statement,
+            "disclosed_evidence_ids": enterprise_intent.evidence_ids,
+        })
     selected = next((proposal for proposal in proposals if choice and choice.proposal_id == proposal.proposal_id), None)
     condition_sheet = None
     counteroffer = None
@@ -781,6 +991,7 @@ def deliberate(
         meeting=meeting,
         verification_question=verification_question,
         enterprise_disclosure=enterprise_disclosure,
+        enterprise_intent=enterprise_intent,
         selected_proposal_id=selected_id,
         condition_sheet=condition_sheet,
         enterprise_counteroffer=counteroffer,

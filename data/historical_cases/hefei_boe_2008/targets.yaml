@@ -8,3 +8,11 @@
   weight: 1.0
   expected: invest
   metric_path: decision.action
+- target_id: government_action_baseline
+  target_type: action_baseline
+  weight: 1.0
+  baseline_ref: decision_baseline.yaml
+  match_fields:
+  - government_action.action
+  - decision_date
+  - milestones

@@ -65,6 +65,18 @@ def export(case_id: str, cutoff: date, output: Path) -> None:
         {"target_id":"historical_outcome","target_type":"directional","weight":1.0,"expected":case["outcome"],"metric_path":"decision.expected_outcome"},
         {"target_id":"project_action","target_type":"behavior_pattern","weight":1.0,"expected":"invest","metric_path":"decision.action"},
     ]
+    if (output / "decision_baseline.yaml").exists():
+        targets.append({
+            "target_id": "government_action_baseline",
+            "target_type": "action_baseline",
+            "weight": 1.0,
+            "baseline_ref": "decision_baseline.yaml",
+            "match_fields": [
+                "government_action.action",
+                "decision_date",
+                "milestones",
+            ],
+        })
     for name, payload in (("case.yaml",metadata),("pre_cutoff.yaml",pre),("withheld.yaml",withheld),("targets.yaml",targets)):
         (output / name).write_text(yaml.safe_dump(payload, allow_unicode=True, sort_keys=False), encoding="utf-8")
     print(f"pre_cutoff={len(pre)} withheld={len(withheld)} output={output}")
